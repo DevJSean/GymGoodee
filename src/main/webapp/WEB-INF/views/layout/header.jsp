@@ -11,16 +11,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-	
-	<h1>index</h1>
-	
-	<a href="${contextPath}/member/login">로그인</a>
-	
-	<a href="${contextPath}/jsh">지시현 구현</a>
-	<a href="${contextPath}/ljm">이정민 구현</a>
-	<a href="${contextPath}/phg">박현규 구현</a>
-	<a href="${contextPath}/lsh">이상호 구현</a>
-	<a href="${contextPath}/ogy">오가연 구현</a>
-	
+
 </body>
 </html>

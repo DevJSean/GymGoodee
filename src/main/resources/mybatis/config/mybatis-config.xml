@@ -10,7 +10,22 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 	</settings>
 	
 	<typeAliases>
+		<typeAlias type="com.goodee.gym.domain.AnswerDTO" alias="AnswerDTO" />
+		<typeAlias type="com.goodee.gym.domain.ClassDTO" alias="ClassDTO" />
+		<typeAlias type="com.goodee.gym.domain.LocationDTO" alias="LocationDTO" />
 		<typeAlias type="com.goodee.gym.domain.MemberDTO" alias="MemberDTO" />
+		<typeAlias type="com.goodee.gym.domain.MemberLogDTO" alias="MemberLogDTO" />
+		<typeAlias type="com.goodee.gym.domain.NoticeDTO" alias="NoticeDTO" />
+		<typeAlias type="com.goodee.gym.domain.NoticeFileAttachDTO" alias="NoticeFileAttachDTO" />
+		<typeAlias type="com.goodee.gym.domain.PayListDTO" alias="PayListDTO" />
+		<typeAlias type="com.goodee.gym.domain.QuestionDTO" alias="QuestionDTO" />
+		<typeAlias type="com.goodee.gym.domain.QuestionFileAttachDTO" alias="QuestionFileAttachDTO" />
+		<typeAlias type="com.goodee.gym.domain.RemainTicketDTO" alias="RemainTicketDTO" />
+		<typeAlias type="com.goodee.gym.domain.ReservationDTO" alias="ReservationDTO" />
+		<typeAlias type="com.goodee.gym.domain.ReviewDTO" alias="ReviewDTO" />
+		<typeAlias type="com.goodee.gym.domain.SignOutMemberDTO" alias="SignOutMemberDTO" />
+		<typeAlias type="com.goodee.gym.domain.TeacherDTO" alias="TeacherDTO" />
+		<typeAlias type="com.goodee.gym.domain.TicketDTO" alias="TicketDTO" />
 	</typeAliases>
 	
 </configuration>

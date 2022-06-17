@@ -13,6 +13,27 @@ public class IndexController {
 		return "index";              
 	}
 	
+	@GetMapping(value={"/jsh"}) 
+	public String jsh() {
+		return "jsh_index";              
+	}
+	@GetMapping(value={"/lsh"}) 
+	public String lsh() {
+		return "lsh_index";              
+	}
+	@GetMapping(value={"/ljm"}) 
+	public String ljm() {
+		return "ljm_index";              
+	}
+	@GetMapping(value={"/ogy"}) 
+	public String ogy() {
+		return "ogy_index";              
+	}
+	@GetMapping(value={"/phg"}) 
+	public String phg() {
+		return "phg_index";              
+	}
+	
 	@GetMapping(value="/member/login")    
 	public String member() {
 		return "member/login";         
