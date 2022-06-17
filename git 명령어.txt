@@ -1,0 +1,68 @@
+## 최초 1회 작업
+(1) 깃 복제
+git clone https://github.com/DevJSean/GymGoodee.git
+
+(2) 복제된 로컬 레파지토리로 이동
+cd GymGoodee
+
+(3) 자신의 브랜치 생성 (브랜치 명은 자신의 이름 이니셜로 정했습니다.)
+git branch jsh
+
+(4) 자신의 브랜치로 이동
+git checkout jsh
+
+전원 작업 완료
+--------------------------------------------------------------------------
+			반복 	수행
+--------------------------------------------------------------------------
+## 모든 조원은 작업을 시작하기 전에 작업을 수행합니다.
+(1) main branch로 이동
+git checkout main
+
+(2) main의 내용 pull 하기
+git pull origin main
+
+(3) 자신의 branch로 이동하기
+git checkout jsh
+
+(4) main에서 pull한 내용을 자신의 branch로 병합하기
+git merge main
+
+---------------------------------------------------------------------------
+## 모든 조원은 기능 구현을 완료한 후 이 과정을 수행합니다.
+## 관리자가 merge하기 이전에 여러 명이 동시에 push하게 되면 충돌(conflict)이 일어날 수 있습니다.
+## push 하기 이전에 다른 조원이 push 하지 않았는지 확인하면 충돌을 방지할 수 있습니다.
+(1) 자신이 맡은 작업을 열심히 한다.
+
+(2) stage에 올리기
+git add .
+
+(3) commit하기
+git commit -m '2022-00-00 지시현 로그인 구현 완료'
+
+(4) push하기 
+git push origin jsh
+
+(5) 꼭 git 관리자에게 push 했다고 알려주기
+    관리자가 merge하기 이전에 다른 조원이 또 push를 하게 되면 충돌이 발생할 수 있습니다.  
+
+---------------------------------------------------------------------------
+## 관리자가 할 일
+(1) push 받고 merge할 내용이 생기면
+git checkout main
+
+(2) git 히스토리를 가져온다
+git fetch origin
+
+(3) merge 하기
+git merge [origin/push 한 사람의 branch]     ## git merge origin/jsh
+
+(4) push 하기
+git push origin main
+
+(5) vim editor는 :wq
+
+(4) 관리자가 merge와 push 완료했다고 조원에게 알림
+
+
+
