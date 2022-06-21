@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.goodee.gym.mapper.BoardMapper">
+
+	<!-- 공지사항 -->
+	<!-- 공지사항 전체레코드 개수 -->
+	<select id="selectAllNoticesCount" resultType="Integer">
+		SELECT COUNT(NOTICE_NO)
+		  FROM NOTICE
+	</select>
+	<!-- 공지사항 BEGIN~END 사이 목록 반환 -->
+	<select id="selectNotices" parameterType="Map" resultType="NoticeDTO">
+		SELECT A.ROW_NUM, A.NOTICE_NO, A.NOTICE_TITLE, A.NOTICE_CONTENT, A.NOTICE_IP, A.NOTICE_HIT, A.NOTICE_CREATED, A.NOTICE_MODIFIED
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY NOTICE_CREATED DESC) AS ROW_NUM, NOTICE_NO, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_IP, NOTICE_HIT, NOTICE_CREATED, NOTICE_MODIFIED
+		          FROM NOTICE) A
+         WHERE A.ROW_NUM BETWEEN #{beginRecord} AND #{endRecord}
+	</select>
+	<!-- 검색된 레코드 갯수 -->
+	<select id="selectNoticesCount" parameterType="Map" resultType="Integer">
+		SELECT COUNT(NOTICE_NO)
+		  FROM NOTICE
+		<where>
+			<choose>
+		 		<when test="column == 'NOTICE_TITLE'">UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+		 		<when test="column == 'NOTICE_CONTENT'">UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+		 		<when test="column == 'NOTICE_CREATED'">${column} BETWEEN TO_DATE(#{begin}, 'YYYY-MM-DD') AND TO_DATE(#{end}, 'YYYY-MM-DD')</when>
+		 	</choose>
+		</where>
+	</select>
+	<!-- 검색 -->
+	<select id="selectNoticeList" parameterType="Map" resultType="NoticeDTO">
+		SELECT A.ROW_NUM, A.NOTICE_NO, A.NOTICE_TITLE, A.NOTICE_CONTENT, A.NOTICE_IP, A.NOTICE_HIT, A.NOTICE_CREATED, A.NOTICE_MODIFIED
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY NOTICE_CREATED DESC) AS ROW_NUM, NOTICE_NO, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_IP, NOTICE_HIT, NOTICE_CREATED, NOTICE_MODIFIED
+		          FROM NOTICE
+				<where>
+					<choose>
+				 		<when test="column == 'NOTICE_TITLE'">UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+				 		<when test="column == 'NOTICE_CONTENT'">UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+				 		<when test="column == 'NOTICE_CREATED'">${column} BETWEEN TO_DATE(#{begin}, 'YYYY-MM-DD') AND TO_DATE(#{end}, 'YYYY-MM-DD')</when>
+				 	</choose>
+				</where>) A
+         WHERE A.ROW_NUM BETWEEN #{beginRecord} AND #{endRecord}
+	</select>	
+	<!-- 자동완성 -->
+	<select id="noticeAutoComplete" parameterType="Map" resultType="NoticeDTO">
+		SELECT DISTINCT ${column}
+		  FROM NOTICE
+		 WHERE ${column} LIKE #{query} || '%'
+	</select>	
+
+</mapper>

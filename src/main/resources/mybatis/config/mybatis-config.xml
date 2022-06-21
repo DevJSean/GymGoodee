@@ -19,7 +19,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<typeAlias type="com.goodee.gym.domain.NoticeFileAttachDTO" alias="NoticeFileAttachDTO" />
 		<typeAlias type="com.goodee.gym.domain.PayListDTO" alias="PayListDTO" />
 		<typeAlias type="com.goodee.gym.domain.QuestionDTO" alias="QuestionDTO" />
-		<typeAlias type="com.goodee.gym.domain.QuestionFileAttachDTO" alias="QuestionFileAttachDTO" />
 		<typeAlias type="com.goodee.gym.domain.RemainTicketDTO" alias="RemainTicketDTO" />
 		<typeAlias type="com.goodee.gym.domain.ReservationDTO" alias="ReservationDTO" />
 		<typeAlias type="com.goodee.gym.domain.ReviewDTO" alias="ReviewDTO" />
