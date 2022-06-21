@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.goodee.gym.mapper.MyPageMapper">
+
+	<!-- 다가올 수업 -->
+	<select id="selectCommingReservationsByNo" parameterType="Long" resultType="reservationDTO">
+		SELECT C.CLASS_DATE, C.CLASS_TIME, R.RESERVATION_CODE, R.MEMBER_NO, R.CLASS_CODE, R.RESERVATION_DATE, R.RESERVATION_STATE
+		  FROM RESERVATION R JOIN CLASS C
+		    ON R.CLASS_CODE = C.CLASS_CODE
+		 WHERE R.MEMBER_NO = #{memberNo}
+		   AND R.RESERVATION_STATE = 0
+	</select>
+
+	<!-- 지난 수업 -->
+	<select id="selectOverReservationsByNo" parameterType="Long" resultType="reservationDTO">
+		SELECT C.CLASS_DATE, C.CLASS_TIME, R.RESERVATION_CODE, R.MEMBER_NO, R.CLASS_CODE, R.RESERVATION_DATE, R.RESERVATION_STATE
+		  FROM RESERVATION R JOIN CLASS C
+		    ON R.CLASS_CODE = C.CLASS_CODE
+		 WHERE R.MEMBER_NO = #{memberNo}
+		   AND R.RESERVATION_STATE = 1
+	</select>
+	
+</mapper>

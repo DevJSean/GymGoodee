@@ -10,3 +10,17 @@
 
 오후 5:14 2022-06-17
 진심 마지막..
+
+
+====================================
+
+2022-06-20 월요일
+ 1. ReservationDTO 필드 추가
+ 2. 새로운 파일 추가
+    - mypage 폴더 아래 4개, MyPageController.java, MyPageMapper.java, MyPageService.java, MyPageServiceImple.java
+ 3. 마이페이지 - 수강내역 조회
+ 
+====================================
+
+2022-06-21 화요일
+
