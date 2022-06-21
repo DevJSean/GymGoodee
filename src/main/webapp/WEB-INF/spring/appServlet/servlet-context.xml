@@ -23,6 +23,30 @@
 	
 	<context:component-scan base-package="com.goodee.gym" />
 	
+		<beans:bean class="com.goodee.gym.interceptor.LoginInterceptor" id="loginInterceptor" />
+	<beans:bean class="com.goodee.gym.interceptor.PreventLoginInterceptor" id="preventLoginInterceptor" />
+	<beans:bean class="com.goodee.gym.interceptor.RequiredLoginInterceptor" id="requiredLoginInterceptor" />
+	<beans:bean class="com.goodee.gym.interceptor.KeepLoginInterceptor" id="keepLoginInterceptor" />
 	
+	<interceptors>
+		<interceptor>
+			<mapping path="/member/login"/>
+			<beans:ref bean="loginInterceptor"/>
+		</interceptor>
+		<interceptor>
+			<mapping path="/member/agreePage"/>
+			<mapping path="/member/signUpPage"/>
+			<mapping path="/member/loginPage"/>
+			<beans:ref bean="preventLoginInterceptor"/>
+		</interceptor>
+		<interceptor>
+			<mapping path="/board/savePage"/>
+			<beans:ref bean="requiredLoginInterceptor"/>
+		</interceptor>
+		<interceptor>
+			<mapping path="/**"/>
+			<beans:ref bean="keepLoginInterceptor"/>
+		</interceptor>
+	</interceptors>	
 	
 </beans:beans>
