@@ -71,7 +71,7 @@ public class PageUtils {
 	}
 	
 	// path : "/employee/list", "/board/list" 등이 각 ServiceImpl에서 전달된다.
-	/*
+	// 1  prevBlock prev  1  2  3  4  5  next nextBlock 마지막페이지
 	public String getPaging(String path) {
 		
 		StringBuilder sb = new StringBuilder(); 
@@ -132,11 +132,9 @@ public class PageUtils {
 		
 		return sb.toString();
 	}
-	*/
 	
 
 	// ◀◀ 1 2 3 4 5 ▶▶
-	/*
 	public String getPaging1(String path) {
 		
 		StringBuilder sb = new StringBuilder();
@@ -168,10 +166,9 @@ public class PageUtils {
 		}
 		return sb.toString();
 	}
-	*/
+
 	
 	// ◀◀  prev  1  2  3  4  5  next  ▶▶
-	/*
 	public String getPaging2(String path) {
 		
 		StringBuilder sb = new StringBuilder();
@@ -219,5 +216,5 @@ public class PageUtils {
 		return sb.toString();
 		
 	}
-	*/
+
 }

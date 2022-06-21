@@ -12,8 +12,8 @@
 </head>
 <body>
 	
-	
-	<h1>지시현</h1>
+	<a href="${contextPath}/jsh">지시현 구현</a>
+	<h1>QnA 목록</h1>
 
 	
 </body>

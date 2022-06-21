@@ -13,7 +13,9 @@
 <body>
 	
 	
-	<h1>지시현</h1>
+		<a href="${contextPath}/board/noticeSearchPage">공지사항</a>
+		<a href="${contextPath}/board/qnaSearchPage">QnA</a>
+		<a href="${contextPath}/board/reviewSearchPage">리뷰</a>
 
 	
 </body>
