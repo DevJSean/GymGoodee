@@ -27,6 +27,10 @@ public interface AdminService {
 	public Map<String, Object> getLocationsBySubject(String subject);
 
 	// 개설 강좌 추가하기
-	public Map<String, Object> addClass(ClassDTO registclass);
+	public Map<String, Object> addClass(ClassDTO registclass, HttpServletResponse response);
+	
+	// 개설 강좌 목록 가져오기
+	public Map<String, Object> getClasses();
+	
 
 }

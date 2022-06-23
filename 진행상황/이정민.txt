@@ -8,3 +8,26 @@
 
 오후 5:12 2022-06-17
 찐막.....
+===========================================
+2022-06-22
+
+swimClasses.js 에 <tbody>에 추가되어 있던 부분!
+==> ajax로 목록을 안받고 그냥 페이지 이동했을 때 받아오는 것!
+
+<c:forEach items="${classes}" var="registclass" varStatus="vs">
+				<tr id="class${vs.index}">
+					<input type="hidden" value="${registclass.classCode}">
+					<td>${registclass.teacherName}</td>
+					<td>${registclass.classTime}</td>
+					<td>${registclass.locationCode}</td>
+					<td>${registclass.currentCount} / ${registclass.locationLimit}</td>
+					<td>
+						<c:if test="${registclass.currentCount < registclass.locationLimit}">
+							<input type="button" class="btnreserve" data-vs="${vs.index}" value="예약">					
+						</c:if>
+						<c:if test="${registclass.currentCount >= registclass.locationLimit}">
+							<input type="button" class="btnreserve" data-vs="${vs.index}" value="마감">					
+						</c:if>
+					</td>
+				</tr>
+			</c:forEach>

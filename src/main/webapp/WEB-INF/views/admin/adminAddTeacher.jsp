@@ -15,20 +15,35 @@
 	/* 페이지 로드 이벤트 */
 	$(function(){
 		fnTeacherList();
-		fnaddTeacher();
-		
+		fnaddTeacher();		
 	})
 	
 	/* 함수 */
 	
 	// 1. 강사 추가
 	function fnaddTeacher(){
-		$('#btnTeacherAdd').on('click',function(){
+		$('#btnTeacherAdd').on('click',function(ev){
+			var Gender =  $(':radio[name="teacherGender"]:checked').val();
+			var Subject = $(':radio[name="teacherSubject"]:checked').val();
+			
+			if($('#teacherName').val() == ''){
+				alert('강사명을 입력해주세요.');
+				fnInit();
+				ev.preventDefault();
+				return false;
+			}
+			if(typeof(Gender) == 'undefined'|| typeof(Subject) == 'undefined'){
+				alert('성별과 종목은 필수입니다.');
+				ev.preventDefault();
+				fnInit();
+				return false;
+			}
+			
 			let teacher = JSON.stringify(
 				{
 					teacherName: $('#teacherName').val(),
-					teacherGender: $(':radio[name="teacherGender"]:checked').val(),
-					teacgerSubject: $(':radio[name="teacherSubject"]:checked').val(),
+					teacherGender: Gender,
+					teacherSubject: Subject
 				}
 					
 			); // teacher
@@ -42,7 +57,7 @@
 				// 응답
 				dataType: 'json',
 				success: function(obj){
-					console.log(obj);
+					//console.log(obj);
 					if(obj.res > 0){
 						alert('강사가 등록되었습니다.');
 						fnTeacherList();
@@ -56,6 +71,7 @@
 				
 			}) // ajax
 
+			fnInit();
 		}) // click
 
 	} // fnaddTeacher
@@ -70,14 +86,14 @@
 			success: function(obj){
 				$('#teachers').empty();
 				// obj에 res 와 members 둘다 담자
-				console.log(obj);
+				//console.log(obj);
 				if(obj.res == 1){
 					$.each(obj.teachers, function(i,teacher){
-						console.log(teacher);
+						//console.log(teacher);
 						var tr = $('<tr>');
 						tr.append($('<td>').text(teacher.teacherName));
 						tr.append($('<td>').text(teacher.teacherGender));
-						tr.append($('<td>').text(teacher.teacgerSubject));
+						tr.append($('<td>').text(teacher.teacherSubject));
 						tr.appendTo($('#teachers'));
 					}) // each
 				}
@@ -87,6 +103,14 @@
 		
 		}) // ajax
 	} // fnTeacherList
+	
+	
+	// 3. 강사 등록창 초기화
+	function fnInit(){
+		$('#teacherName').val('');
+		$(':radio[name=teacherGender]').prop('checked',false);
+		$(':radio[name=teacherSubject]').prop('checked',false);
+	}
 	
 	
 	
@@ -113,7 +137,7 @@
 		<br>
 		종목
 		<label for="SWIN">
-			수영<input type="radio" name="teacherSubject" value="SWIN" id="SWIN">
+			수영<input type="radio" name="teacherSubject" value="SWIM" id="SWIM">
 		</label>
 		<label for="PILATES">
 			필라테스<input type="radio" name="teacherSubject" value="PILATES" id="PILATES">

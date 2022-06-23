@@ -35,7 +35,7 @@ public class AdminController {
 		return "admin/adminAddClass";
 	}
 	
-	// 강사 추가
+	// 강사 추가(INSERT)
 	@ResponseBody
 	@PostMapping(value="/admin/addTeacher", produces="application/json")
 	public Map<String, Object> addTeacher(@RequestBody TeacherDTO teacher) {
@@ -43,32 +43,39 @@ public class AdminController {
 		return adminService.addTeacher(teacher);
 	}
 	
-	// 강사 목록 가져오기
+	// 강사 목록 가져오기 (SELECT)
 	@ResponseBody
 	@GetMapping(value="/admin/TeacherList", produces="application/json")
 	public Map<String, Object> TeacherList(){
 		return adminService.getMembers();
 	}
 	
-	// 종목 별 강사 목록 가져오기
+	// 종목 별 강사 목록 가져오기 (SELECT)
 	@ResponseBody
 	@GetMapping(value="/admin/teachersBySubject", produces="application/json")
 	public Map<String, Object> teachersBySubject(@RequestParam String subject){
 		return adminService.getMembersBySubject(subject);
 	}
 	
-	// 종목 별 장소 목록 가져오기
+	// 종목 별 장소 목록 가져오기 (SELECT)
 	@ResponseBody
 	@GetMapping(value="/admin/locationsBySubject", produces="application/json")
 	public Map<String, Object> locationsBySubject(@RequestParam String subject){
 		return adminService.getLocationsBySubject(subject);
 	}
 	
-	// 강좌 개설하기
+	// 강좌 개설하기 (INSERT)
 	@ResponseBody
 	@PostMapping(value="/admin/addClass", produces="application/json")
-	public Map<String, Object> addClass(@RequestParam ClassDTO registclass) {
-		System.out.println("하하호홓");
-		return adminService.addClass(registclass);
+	public Map<String, Object> addClass(ClassDTO registclass, HttpServletResponse response) {
+		return adminService.addClass(registclass, response);
 	}
+	
+	// 개설 강좌 목록 가져오기 (SELECT)
+	@ResponseBody
+	@GetMapping(value="/admin/ClassList", produces="application/json")
+	public Map<String, Object> ClassList(){
+		return adminService.getClasses();
+	}
+	
 }

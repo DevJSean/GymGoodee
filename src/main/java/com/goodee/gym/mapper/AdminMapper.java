@@ -16,4 +16,5 @@ public interface AdminMapper {
 	public List<TeacherDTO> selectTeachersBySubject(String subject);
 	public List<LocationDTO> selectLocationsBySubject(String subject);
 	public int insertClass(ClassDTO registclass);
+	public List<ClassDTO> selectClasses();
 }

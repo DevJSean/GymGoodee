@@ -18,6 +18,11 @@
 	<a href="${contextPath}/admin/addTeacherPage">강사 추가하기</a><br>
 	<a href="${contextPath}/admin/addClassPage">강좌 개설하기</a>
 	
+	<hr>
+	
+	<a href="${contextPath}/reserve/swimPage">수영 예약페이지</a>
+	
+	
 	
 </body>
 </html>

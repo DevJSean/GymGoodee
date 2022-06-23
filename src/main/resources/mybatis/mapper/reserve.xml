@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.goodee.gym.mapper.ReserveMapper">
+
+
+	<!-- 종목, 날짜가 파라미터로 넘어오면 해당 날짜에 개설된 강좌 보여주기 -->
+	<select id="selectClassList" parameterType="Map" resultType="ClassDTO">
+		SELECT A.CLASS_CODE, A.TEACHER_NO, A.LOCATION_CODE, A.CLASS_DATE, A.CLASS_TIME, A.LOCATION_LIMIT, A.TEACHER_NAME
+		  FROM( SELECT C.CLASS_CODE, C.TEACHER_NO, C.LOCATION_CODE, C.CLASS_DATE, C.CLASS_TIME, L.LOCATION_LIMIT, T.TEACHER_NAME
+        		  FROM CLASS C, LOCATION L, TEACHER T
+       			 WHERE C.LOCATION_CODE = L.LOCATION_CODE 
+       			 AND  C.TEACHER_NO = T.TEACHER_NO
+       			 AND SUBSTR(C.LOCATION_CODE,1,2) = #{subject} AND C.CLASS_DATE = #{classDate}
+       		  ) A
+	</select>
+
+	<!-- 현재 각 강좌에 신청한 인원이 몇명인지 -->
+	<select id="selectCountByClassCode" parameterType="String" resultType="Integer">
+		SELECT COUNT(MEMBER_NO)
+		  FROM RESERVATION
+		 WHERE CLASS_CODE = #{classCode}
+	</select>
+
+
+	<!-- 수영강좌 예약하기 -->
+	<insert id="insertSwim" parameterType="ReservationDTO">
+		INSERT INTO RESERVATION
+			(RESERVATION_CODE, MEMBER_NO, CLASS_CODE, RESERVATION_DATE, RESERVATION_STATE)
+		VALUES
+			(#{reservationCode} || SWIM_SEQ.NEXTVAL ,#{memberNo}, #{classCode}, SYSTIMESTAMP, 0)
+	</insert>
+
+</mapper>

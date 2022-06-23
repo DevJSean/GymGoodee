@@ -17,6 +17,8 @@
 	/* 페이지 로드 이벤트 */
 	$(function(){
 		
+		fnClassList();
+		
 		// 개설 날짜 선택하기
 		$('#classDate').datepicker({	// 달력 나타나서 날짜 선택하기!
 			'showOn' : 'focus',		// both 쓰면 옆에 버튼 생길 수 있다! / focus, button, both
@@ -85,28 +87,78 @@
 	} // fnGetLocation
 	
 	
-	// 3. 강좌 개설하기 (POST 방식으로 INSERT 하기) -- 다시하기
+	// 3. 강좌 개설하기 (POST 방식으로 INSERT 하기)
 	function fnRegistClass(){
-		$('#f').on('submit',function(ev){
+		$('#btnAdd').on('click',function(ev){
 			// 강좌 코드, 강사번호, 장소코드, 날짜, 시간 정보를 CLASS 테이블에 INSERT 해야한다.
 			// 강좌 코드 (날짜_시간_장소 형태로 생성)
 			// 강사번호는 teacherNo, 장소코드는 locadtionCode 으로, 날짜는 $('#classDate').val(), 시간은 classTime으로 파라미터로 넘겨주면 된다.
-		
+			var subject = $(':radio[name=subject]:checked').val();
+			if(typeof(subject) == 'undefined'){
+				alert('종목을 선택하세요.');
+				ev.preventDefault();
+				return false;
+			}
+			
+			if($('#classDate').val() == ''){
+				alert('날짜 선택은 필수 입니다.');
+				ev.preventDefault();
+				return false;
+			}
+
 			$.ajax({
 				url : '${contextPath}/admin/addClass',
 				type: 'POST',
 				data: $('#f').serialize(),
 				dataTye:'json',
 				success : function(obj){
-					console.log(obj);
-					alert(obj.res);
+					//console.log(obj);
+					if(obj.res == 1){
+						alert('강좌 개설에 성공했습니다.');
+						fnClassList();
+					}
+					else{
+						alert('강좌 개설에 실패했습니다.');
+					}
+				},
+				error: function(jqXHR){
+					alert('예외코드[' + jqXHR.status + '] : ' + jqXHR.responseText);
 				}
-			}) // ajax
+			}) // ajax	
 			
 			
 		}) // click
 		
 	} // fnRegistClass
+	
+	
+	// 4. 개설강좌 목록 가져오기 => paging 처리 x
+	function fnClassList(){
+		$.ajax({
+			url : '${contextPath}/admin/ClassList',
+			type : 'GET',
+			dataType : 'json',
+			success: function(obj){
+				$('#classes').empty();
+				// obj에 res 와 classes 둘다 담자
+				//console.log(obj);
+				if(obj.res == 1){
+					$.each(obj.classes, function(i,registclass){
+						//console.log(registclass);
+						var tr = $('<tr>');
+						tr.append($('<td>').text(registclass.locationCode));
+						tr.append($('<td>').text(registclass.teacherName));
+						tr.append($('<td>').text(registclass.classDate));
+						tr.append($('<td>').text(registclass.classTime));
+						tr.appendTo($('#classes'));
+					}) // each
+				}
+			},error : function(jqXHR){
+				
+			}
+		
+		}) // ajax
+	} // fnClassList
 	
 </script>
 
@@ -127,8 +179,8 @@
 	-->
 	
 	개설하고자 하는 종목을 선택하세요!<br>
-	<label for="SWIN">
-		수영<input type="radio" name="subject" id="SWIN">	
+	<label for="SWIM">
+		수영<input type="radio" name="subject" id="SWIM">	
 	</label>
 	<label for="PILATES">
 		필라테스<input type="radio" name="subject" id="PILATES">	
@@ -164,8 +216,25 @@
 			<option value="D">D</option>
 		</select>
 		<br><br>
-		<button>강좌 개설하기</button>
+		<button id="btnAdd">강좌 개설하기</button>
 	</form>
+	
+	<hr>
+	
+	<h2>개설 강좌 목록</h2>
+	<table border="1">
+		<thead>
+			<tr>
+				<td>장소</td>
+				<td>강사명</td>
+				<td>날짜</td>
+				<td>시간</td>
+			</tr>
+		</thead>
+		<tbody id="classes">
+			
+		</tbody>
+	</table>
 	
 	
 	

@@ -18,7 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT 
 			TEACHER_NO, TEACHER_NAME, TEACHER_GENDER, TEACHER_SUBJECT 
 		  FROM TEACHER
-		ORDER BY TEACHER_NO DESC
+		ORDER BY TEACHER_SUBJECT, TEACHER_NO DESC
 	</select>
 	
 	
@@ -46,6 +46,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		VALUES
 			(#{classCode}, #{teacherNo}, #{locationCode}, #{classDate}, #{classTime})
 	</insert>
+	
+	<!-- 개설 강좌 목록 가져오기 -->
+	<select id="selectClasses" resultType="ClassDTO">
+		SELECT A.CLASS_CODE, A.TEACHER_NO, A.LOCATION_CODE, A.CLASS_DATE, A.CLASS_TIME, A.TEACHER_NAME
+		    FROM (SELECT T.TEACHER_NAME, C.CLASS_CODE, T.TEACHER_NO, C.LOCATION_CODE, C.CLASS_DATE, C.CLASS_TIME
+		            FROM CLASS C, TEACHER T
+		            WHERE T.TEACHER_NO = C.TEACHER_NO) A
+		ORDER BY A.CLASS_DATE DESC
+	</select>
 	
 
 </mapper>
