@@ -7,20 +7,89 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 다가올 수업 -->
 	<select id="selectCommingReservationsByNo" parameterType="Long" resultType="reservationDTO">
-		SELECT C.CLASS_DATE, C.CLASS_TIME, R.RESERVATION_CODE, R.MEMBER_NO, R.CLASS_CODE, R.RESERVATION_DATE, R.RESERVATION_STATE
-		  FROM RESERVATION R JOIN CLASS C
+		SELECT C.CLASS_DATE, C.CLASS_TIME, R.RN, R.RESERVATION_CODE, R.MEMBER_NO, R.CLASS_CODE, R.RESERVATION_DATE, R.RESERVATION_STATE
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY CLASS_CODE) AS RN, RESERVATION_CODE, MEMBER_NO, CLASS_CODE, RESERVATION_DATE, RESERVATION_STATE
+		          FROM RESERVATION
+		         WHERE RESERVATION_STATE = 0) R JOIN CLASS C
 		    ON R.CLASS_CODE = C.CLASS_CODE
 		 WHERE R.MEMBER_NO = #{memberNo}
-		   AND R.RESERVATION_STATE = 0
+	</select>
+
+	<!-- 다가올 수업 갯수 -->
+	<select id="selectCommingCount" parameterType="Long" resultType="Integer">
+		SELECT COUNT(*)
+		  FROM RESERVATION
+		 WHERE MEMBER_NO = #{memberNo}
+		   AND RESERVATION_STATE = 0
 	</select>
 
 	<!-- 지난 수업 -->
-	<select id="selectOverReservationsByNo" parameterType="Long" resultType="reservationDTO">
-		SELECT C.CLASS_DATE, C.CLASS_TIME, R.RESERVATION_CODE, R.MEMBER_NO, R.CLASS_CODE, R.RESERVATION_DATE, R.RESERVATION_STATE
-		  FROM RESERVATION R JOIN CLASS C
+	<select id="selectOverReservationsByNo" parameterType="Map" resultType="reservationDTO">
+		SELECT C.CLASS_DATE, C.CLASS_TIME, R.RN, R.RESERVATION_CODE, R.MEMBER_NO, R.CLASS_CODE, R.RESERVATION_DATE, R.RESERVATION_STATE
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY CLASS_CODE DESC) AS RN, RESERVATION_CODE, MEMBER_NO, CLASS_CODE, RESERVATION_DATE, RESERVATION_STATE
+		          FROM RESERVATION 
+		         WHERE RESERVATION_STATE = 1) R JOIN CLASS C
 		    ON R.CLASS_CODE = C.CLASS_CODE
 		 WHERE R.MEMBER_NO = #{memberNo}
-		   AND R.RESERVATION_STATE = 1
+		   AND R.RN BETWEEN #{beginRecord} AND #{endRecord}
+		 ORDER BY CLASS_CODE DESC
 	</select>
+	
+	<!-- 지난 수업 갯수 -->
+	<select id="selectOverCount" parameterType="Long" resultType="Integer">
+		SELECT COUNT(*)
+		  FROM RESERVATION
+		 WHERE MEMBER_NO = #{memberNo}
+		   AND RESERVATION_STATE = 1
+	</select>
+	
+	<resultMap type="TicketDTO" id="TicketMap">
+		<result column="TICKET_SUBJECT" property="ticketSubject" />
+		<result column="TICKET_COUNT" property="ticketCount" />
+		<result column="TICKET_PERIOD" property="ticketPeriod" />
+		<result column="TICKET_PRICE" property="ticketPrice" />
+	</resultMap>
+	
+	<resultMap type="PayListDTO" id="PayListMap">
+		<result column="PAYLIST_NO" property="payListNo" />
+		<result column="MEMBER_NO" property="memberNo" />
+		<result column="TICKET_NO" property="ticketNo" />
+		<result column="PAYLIST_DATE" property="payListDate" />
+		<result column="RN" property="rn" />
+		<result column="TICKET_DUEDATE" property="dueDate" />
+		<collection resultMap="TicketMap" property="ticket" />
+	</resultMap>
+	
+	<!-- 마이페이지 - 결제내역조회 -->
+	<select id="selectPayList" parameterType="Map" resultMap="PayListMap">
+		SELECT P.RN, P.PAYLIST_NO, P.MEMBER_NO, P.TICKET_NO, P.PAYLIST_DATE, T.TICKET_SUBJECT, T.TICKET_PERIOD, T.TICKET_COUNT, T.TICKET_PRICE, (P.PAYLIST_DATE + T.TICKET_PERIOD) AS TICKET_DUEDATE
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY PAYLIST_DATE DESC) AS RN, PAYLIST_NO, MEMBER_NO, TICKET_NO, PAYLIST_DATE
+		  	      FROM PAYLIST
+		  	     WHERE MEMBER_NO = #{memberNo}) P JOIN TICKET T
+		  	ON P.TICKET_NO = T.TICKET_NO
+		 ORDER BY PAYLIST_DATE DESC
+	</select>
+
+	<!-- 비밀번호 일치하는지 조회 -->
+	<select id="selectPwByNo" parameterType="Long" resultType="String">
+		SELECT MEMBER_PW
+		  FROM MEMBER
+		 WHERE MEMBER_NO = #{memberNo}
+	</select>
+	
+	<!-- 개인정보 가져오기 -->
+	<select id="selectMyInfoByNo" parameterType="Long" resultType="MemberDTO">
+		SELECT MEMBER_NO, MEMBER_ID, MEMBER_PW, MEMBER_NAME, MEMBER_BIRTH, MEMBER_GENDER, MEMBER_PHONE, MEMBER_EMAIL, MEMBER_AGREE_STATE, MEMBER_SIGN_UP, MEMBER_PW_MODIFIED
+		  FROM MEMBER
+		 WHERE MEMBER_NO = #{memberNo} 
+	</select>
+	
+	<!-- 비밀번호 수정 -->
+	<update id="updatePw" parameterType="String">
+		UPDATE MEMBER
+		   SET MEMBER_PW = #{memberPw}
+		 WHERE MEMBER_NO = #{memberNo}
+	</update>
+	
 	
 </mapper>
