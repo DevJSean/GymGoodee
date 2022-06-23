@@ -1,15 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/> 
-
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <style>
 	* {
 		box-sizing: border-box;
@@ -32,8 +29,10 @@
 	}
 	td:nth-of-type(1) { width: 70px; }
 	td:nth-of-type(2) { width: 300px; }
-	td:nth-of-type(3) { width: 100px; }
+	td:nth-of-type(3) { width: 150px; }
 	td:nth-of-type(4) { width: 100px; }
+	td:nth-of-type(5) { width: 100px; }
+	td:nth-of-type(6) { width: 100px; }
 	td {
 		padding: 5px;
 		border: 1px solid silver;
@@ -50,41 +49,46 @@
 </head>
 <body>
 	
-	<h1>공지사항 목록</h1>
+	<h1>QnA 목록</h1>
 	<a href="${contextPath}/jsh">메인으로 돌아가기</a>
 	<a href="${contextPath}/board/noticeList">공지사항</a>
 	<a href="${contextPath}/board/questionList">QnA</a>
 	<a href="${contextPath}/board/reviewList">리뷰</a>
 	<br><br>
-	<a href="${contextPath}/board/noticeAddPage">글 작성</a>
-	
+	<a href="${contextPath}/board/questionAddPage">글 작성</a>
 	<table>
 		<thead>
 			<tr>
 				<td>글 번호</td>
 				<td>제목</td>
+				<td>작성자</td>
 				<td>작성일</td>
 				<td>조회수</td>
+				<td>상태</td>
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach items="${notices}" var="notice" varStatus="vs">
+			<c:forEach items="${questions}" var="question" varStatus="vs">
 				<tr>
 					<td>${beginNo - vs.index}</td>
-					<td><a href="${contextPath}/board/noticeDetail?noticeNo=${notice.noticeNo}">${notice.noticeTitle}</a></td>
-					<td>${notice.noticeCreated}</td>
-					<td>${notice.noticeHit}</td>
+					<td><a href="${contextPath}/board/questionDetail?questionNo=${question.questionNo}">${question.questionTitle}</a></td>
+					<td>${question.memberId}</td>
+					<td>${question.questionCreated}</td>
+					<td>${question.questionHit}</td>
+					<td>작성상태</td>
 				</tr>
 			</c:forEach>
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="4">
+				<td colspan="6">
 					${paging}
 				</td>
 			</tr>
 		</tfoot>
 	</table>
 
+
+	
 </body>
 </html>

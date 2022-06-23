@@ -10,10 +10,7 @@ public class WebMvcConfig implements WebMvcConfigurer{
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
-		// /getImage/abc.jpg 요청하면
-		// C:\\upload\\summernote\\abc.jpg로 인식해라
-		registry.addResourceHandler("/getImage/**")
-			.addResourceLocations("file:///C:/upload/summernote/");
+		registry.addResourceHandler("/getImage/**").addResourceLocations("file:///C:/upload/gymgoodee/");
 		
 	}
 	

@@ -105,7 +105,3 @@ INSERT INTO NOTICE VALUES(1002, '공지2', '내용2', '000.000.000.001', 0, '22/
 INSERT INTO NOTICE VALUES(1003, '공지3', '내용3', '000.000.000.001', 0, '22/06/22', '22/06/22');
 
 -- 공지사항 파일첨부(파일첨부번호, 공지사항번호, 경로, 실제파일명, 저장파일명)
-INSERT INTO NOTICE_FILE_ATTACH VALUES(1101, 1001, 'C:\\upload\\2022\\6\\20', 'ac40d9755ef2426f94acf18c267dda5d.jpg', 'C:\\upload\\2022\\6\\20');
-INSERT INTO NOTICE_FILE_ATTACH VALUES(1102, 1002, 'C:\\upload\\2022\\6\\21', 'ae933497ef0e4ad69d847149e3bce6e2.jpg', 'C:\\upload\\2022\\6\\21');
-INSERT INTO NOTICE_FILE_ATTACH VALUES(1103, 1003, 'C:\\upload\\2022\\6\\22', '138c134e8cf94b6b8528fdf58998dd75.jpg', 'C:\\upload\\2022\\6\\22');
-

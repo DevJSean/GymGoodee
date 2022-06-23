@@ -18,7 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		          FROM NOTICE) A
          WHERE A.ROW_NUM BETWEEN #{beginRecord} AND #{endRecord}
 	</select>
-	<!-- 검색된 레코드 갯수 -->
+	<!-- 공지사항 검색된 레코드 갯수 -->
 	<select id="selectNoticesCount" parameterType="Map" resultType="Integer">
 		SELECT COUNT(NOTICE_NO)
 		  FROM NOTICE
@@ -30,7 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 	</choose>
 		</where>
 	</select>
-	<!-- 검색 -->
+	<!-- 공지사항 검색 -->
 	<select id="selectNoticeList" parameterType="Map" resultType="NoticeDTO">
 		SELECT A.ROW_NUM, A.NOTICE_NO, A.NOTICE_TITLE, A.NOTICE_CONTENT, A.NOTICE_IP, A.NOTICE_HIT, A.NOTICE_CREATED, A.NOTICE_MODIFIED
 		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY NOTICE_CREATED DESC) AS ROW_NUM, NOTICE_NO, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_IP, NOTICE_HIT, NOTICE_CREATED, NOTICE_MODIFIED
@@ -44,11 +44,149 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				</where>) A
          WHERE A.ROW_NUM BETWEEN #{beginRecord} AND #{endRecord}
 	</select>	
-	<!-- 자동완성 -->
+	<!-- 공지사항 검색 noticeNo 이용 -->
+	<select id="selectNoticeByNo" parameterType="Long" resultType="NoticeDTO">
+		SELECT NOTICE_NO, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_IP, NOTICE_HIT, NOTICE_CREATED, NOTICE_MODIFIED
+		  FROM NOTICE
+		 WHERE NOTICE_NO = #{noticeNo}
+	</select>
+	<!-- 공지사항에 첨부된 첨부 파일 목록 -->
+	<select id="selectFileAttachListInTheNotice" parameterType="Long" resultType="NoticeFileAttachDTO">
+		SELECT NOTICE_FILE_ATTACH_NO, NOTICE_NO, NOTICE_FILE_ATTACH_PATH, NOTICE_FILE_ATTACH_ORIGIN, NOTICE_FILE_ATTACH_SAVED
+		  FROM NOTICE_FILE_ATTACH
+		 WHERE NOTICE_NO = #{noticeNo}
+	</select>
+	<!-- 조회수 늘리기 -->
+	<update id="updateNoticeHit" parameterType="Long">
+		UPDATE NOTICE
+		   SET NOTICE_HIT = NOTICE_HIT + 1
+		 WHERE NOTICE_NO = #{noticeNo}
+	</update>
+	<!-- 첨부파일 반환 -->
+	<select id="selectNoticeFileAttachByNo" parameterType="Long" resultType="NoticeFileAttachDTO">
+		SELECT NOTICE_FILE_ATTACH_NO, NOTICE_NO, NOTICE_FILE_ATTACH_PATH, NOTICE_FILE_ATTACH_ORIGIN, NOTICE_FILE_ATTACH_SAVED
+		  FROM NOTICE_FILE_ATTACH
+		 WHERE NOTICE_FILE_ATTACH_NO = #{noticeFileAttachNo}
+	</select>
+	<!-- 공지사항 추가 -->
+	<insert id="insertNotice" parameterType="NoticeDTO">
+		<selectKey keyProperty="noticeNo" resultType="Long" order="BEFORE">
+			SELECT NOTICE_SEQ.NEXTVAL
+			  FROM DUAL
+		</selectKey>
+		INSERT INTO NOTICE
+			(NOTICE_NO, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_IP, NOTICE_HIT, NOTICE_CREATED, NOTICE_MODIFIED)
+		VALUES
+			(#{noticeNo}, #{noticeTitle}, #{noticeContent}, #{noticeIp}, 0, SYSDATE, SYSDATE)
+	</insert>
+	<!-- 파일 첨부 추가 -->
+	<insert id="insertNoticeFileAttach" parameterType="NoticeFileAttachDTO">
+		INSERT INTO NOTICE_FILE_ATTACH
+			(NOTICE_FILE_ATTACH_NO, NOTICE_NO, NOTICE_FILE_ATTACH_PATH, NOTICE_FILE_ATTACH_ORIGIN, NOTICE_FILE_ATTACH_SAVED)
+		VALUES
+			(NOTICE_FILE_ATTACH_SEQ.NEXTVAL, #{noticeNo}, #{noticeFileAttachPath}, #{noticeFileAttachOrigin}, #{noticeFileAttachSaved})
+	</insert>
+	<!-- 공지사항 삭제 -->
+	<delete id="deleteNotice" parameterType="Long">
+		DELETE
+		  FROM NOTICE
+		 WHERE NOTICE_NO = #{noticeNo}
+	</delete>
+	<!-- 공지사항 수정 -->
+	<update id="updateNotice" parameterType="NoticeDTO">
+		UPDATE NOTICE
+		   SET NOTICE_TITLE = #{noticeTitle}, NOTICE_CONTENT = #{noticeContent}, NOTICE_MODIFIED = SYSDATE
+		 WHERE NOTICE_NO = #{noticeNo}
+	</update>
+	<!-- 첨부 파일 삭제 -->
+	<delete id="deleteNoticeFileAttach" parameterType="Long">
+		DELETE
+		  FROM NOTICE_FILE_ATTACH
+		 WHERE NOTICE_FILE_ATTACH_NO = #{noticeFileAttachNo}
+	</delete>
+	<!-- 어제 저장된 첨부 파일 목록 -->
+	<select id="selectNoticeFileAttachListAtYesterday" resultType="NoticeFileAttachDTO">
+		SELECT NOTICE_FILE_ATTACH_NO, NOTICE_NO, NOTICE_FILE_ATTACH_PATH, NOTICE_FILE_ATTACH_ORIGIN, NOTICE_FILE_ATTACH_SAVED
+		  FROM NOTICE_FILE_ATTACH
+		 WHERE NOTICE_FILE_ATTACH_PATH = 'C:\\upload\\' || TO_CHAR(SYSDATE - 1, 'yyyy\\mm\\dd')
+	</select>
+	
+	<!-- 공지사항 자동완성 -->
 	<select id="noticeAutoComplete" parameterType="Map" resultType="NoticeDTO">
 		SELECT DISTINCT ${column}
 		  FROM NOTICE
 		 WHERE ${column} LIKE #{query} || '%'
+	</select>
+	
+	
+	
+	
+	<!-- question/answer -->
+	<!-- question 전체레코드 개수 -->
+	<select id="selectAllQuestionsCount" resultType="Integer">
+		SELECT COUNT(QUESTION_NO)
+		  FROM QUESTION
+	</select>
+	<!-- question BEGIN~END 사이 목록 반환 -->
+	<select id="selectQuestions" parameterType="Map" resultType="QuestionDTO">
+		SELECT A.ROW_NUM, A.QUESTION_NO, A.MEMBER_ID, A.QUESTION_TITLE, A.QUESTION_CONTENT, A.QUESTION_HIT, A.QUESTION_IP, A.QUESTION_CREATED, A.QUESTION_MODIFIED
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY QUESTION_CREATED DESC) AS ROW_NUM, QUESTION_NO, MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_HIT, QUESTION_IP, QUESTION_CREATED, QUESTION_MODIFIED
+		          FROM QUESTION) A
+         WHERE A.ROW_NUM BETWEEN #{beginRecord} AND #{endRecord}
+	</select>
+	<!-- question 검색된 레코드 갯수 -->
+	<select id="selectQuestionsCount" parameterType="Map" resultType="Integer">
+		SELECT COUNT(QUESTION_NO)
+		  FROM QUESTION
+		<where>
+			<choose>
+		 		<when test="column == 'QUESTION_TITLE'">UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+		 		<when test="column == 'MEMBER_ID'">UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+		 		<when test="column == 'QUESTION_CONTENT'">UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+		 		<when test="column == 'QUESTION_CREATED'">${column} BETWEEN TO_DATE(#{begin}, 'YYYY-MM-DD') AND TO_DATE(#{end}, 'YYYY-MM-DD')</when>
+		 	</choose>
+		</where>
+	</select>
+	<!-- question 검색 -->
+	<select id="selectQuestionList" parameterType="Map" resultType="QuestionDTO">
+		SELECT A.ROW_NUM, A.QUESTION_NO, A.MEMBER_ID, A.QUESTION_TITLE, A.QUESTION_CONTENT, A.QUESTION_HIT, A.QUESTION_IP, A.QUESTION_CREATED, A.QUESTION_MODIFIED
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY QUESTION_CREATED DESC) AS ROW_NUM, QUESTION_NO, MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_HIT, QUESTION_IP, QUESTION_CREATED, QUESTION_MODIFIED
+		          FROM QUESTION
+				<where>
+					<choose>
+				 		<when test="column == 'QUESTION_TITLE'">UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+				 		<when test="column == 'MEMBER_ID'">UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+				 		<when test="column == 'QUESTION_CONTENT'">UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+				 		<when test="column == 'QUESTION_CREATED'">${column} BETWEEN TO_DATE(#{begin}, 'YYYY-MM-DD') AND TO_DATE(#{end}, 'YYYY-MM-DD')</when>
+				 	</choose>
+				</where>) A
+         WHERE A.ROW_NUM BETWEEN #{beginRecord} AND #{endRecord}
 	</select>	
+	<!-- question 검색 questionNo이용 -->
+	<select id="selectQuestionByNo" parameterType="Long" resultType="QuestionDTO">
+		SELECT QUESTION_NO, MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_HIT, QUESTION_IP, QUESTION_CREATED, QUESTION_MODIFIED
+		  FROM QUESTION
+		 WHERE QUESTION_NO = #{questionNo}
+	</select>
+	<!-- question 삽입 -->
+	<insert id="insertQuestion" parameterType="QuestionDTO">
+		INSERT INTO QUESTION
+			(QUESTION_NO, MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_HIT, QUESTION_IP, QUESTION_CREATED, QUESTION_MODIFIED)
+		VALUES
+			(QUESTION_SEQ.NEXTVAL, #{memberId}, #{questionTitle}, #{questionContent}, 0, #{questionIp}, SYSDATE, SYSDATE)
+	</insert>
+	<!-- question 삭제 -->
+	<delete id="deleteQuestion" parameterType="Long">
+		DELETE
+		  FROM QUESTION
+		 WHERE QUESTION_NO = #{questionNo}
+	</delete>
+	<!-- question 자동완성 -->
+	<select id="questionAutoComplete" parameterType="Map" resultType="QuestionDTO">
+		SELECT DISTINCT ${column}
+		  FROM QUESTION
+		 WHERE ${column} LIKE #{query} || '%'
+	</select>
+	
 
 </mapper>
