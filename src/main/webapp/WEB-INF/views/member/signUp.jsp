@@ -20,19 +20,18 @@
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script>
 
-	/* 페이지 로드 이벤트 */
 	$(function(){
 		fnIdCheck();
 		fnPwCheck();
 		fnPwConfirm();
 		fnEmailAuth();
+		fnPhoneAuth();
 		fnToUpperCase();
 		fnSignUp();
 	})
 	
 	/* 함수 */
-	
-	// 8. 회원가입
+	// 11. 회원가입
 	function fnSignUp(){
 		$('#f').on('submit', function(event){
 			if(idPass == false){
@@ -45,7 +44,12 @@
 				event.preventDefault();
 				return false;
 			}
-			else if(authCodePass == false){
+			else if(authCodePassSMS == false){
+				alert('SMS 인증을 받아야 합니다.');
+				event.preventDefault();
+				return false;
+			}
+			else if(authCodePassEmail == false){
 				alert('이메일 인증을 받아야 합니다.');
 				event.preventDefault();
 				return false;
@@ -54,40 +58,82 @@
 		})
 	}
 	
+	// 10. SMS 인증코드 검증
+	let authCodePassSMS = false;
+	function fnVerifyAuthCodeSMS(authCodeSMS){  
+		$('#btnVerifyAuthCodeSMS').on('click', function(){
+			if($('#authCodeSMS').val() == authCodeSMS){
+				alert('인증되었습니다.');
+				authCodePassSMS = true;
+			} else {
+				alert('인증에 실패했습니다.');
+				authCodePassSMS = false;
+			}
+		})
+	}
+	
+	// 9. 연락처 정규식 체크
+	function fnPhoneCheck(){
+
+	}
+	
+	// 8. SMS 인증
+	function fnPhoneAuth(){
+		$('#btnGetAuthCodeSMS').on('click', function(){
+			let regPhone = /^01[0169]-[0-9]{3,4}-[0-9]{4}$/; 
+			if(regPhone.test($('#memberPhone').val())==false){
+				alert('잘못된 형식의 핸드폰 번호입니다.');
+				return;
+			}
+			$.ajax({
+				url: '${contextPath}/member/sendAuthCodeSMS',
+				type: 'get',
+				data: 'memberPhone=' + $('#memberPhone').val(),
+				dataType: 'json',
+				success: function(obj){  
+					alert('인증코드를 발송했습니다. 핸드폰을 확인하세요.');
+					fnVerifyAuthCodeSMS(obj.authCodeSMS);  
+				},
+				error: function(){
+					alert('인증코드 발송이 실패했습니다.');
+				}
+			})
+		})
+	}
+	
 	// 7. 입력을 무조건 대문자로 처리
 	function fnToUpperCase(){
-		$('#authCode').on('keyup', function(){
-			$('#authCode').val($('#authCode').val().toUpperCase());
+		$('#authCodeEmail').on('keyup', function(){
+			$('#authCodeEmail').val($('#authCodeEmail').val().toUpperCase());
+		})
+		$('#authCodeSMS').on('keyup', function(){
+			$('#authCodeSMS').val($('#authCodeSMS').val().toUpperCase());
 		})
 	}
 	
 	// 6. 인증코드 검증
-	let authCodePass = false;
-	function fnVerifyAuthCode(authCode){  // 이메일로 전송한 인증코드
-		$('#btnVerifyAuthCode').on('click', function(){
-			if($('#authCode').val() == authCode){
+	let authCodePassEmail = false;
+	function fnVerifyAuthCodeEmail(authCodeEmail){  
+		$('#btnVerifyAuthCodeEmail').on('click', function(){
+			if($('#authCodeEmail').val() == authCodeEmail){
 				alert('인증되었습니다.');
-				authCodePass = true;
+				authCodePassEmail = true;
 			} else {
 				alert('인증에 실패했습니다.');
-				authCodePass = false;
+				authCodePassEmail = false;
 			}
 		})
 	}
 	
 	
 	// 5. 이메일 중복체크
-	
 	function fnEmailCheck(){
 		return new Promise(function(resolve, reject) {
-			// 1) 이메일 정규식 체크
-			let regEmail = /^[a-zA-Z0-9-_]+@[a-zA-Z0-9]+(\.[a-zA-Z]{2,}){1,2}$/;  // 실제 서비스에서 그대로 사용 가능.
+			let regEmail = /^[a-zA-Z0-9-_]+@[a-zA-Z0-9]+(\.[a-zA-Z]{2,}){1,2}$/;  
 			if(regEmail.test($('#memberEmail').val())==false){
-				reject(1000);      // reject는 Promise 객체의 catch 메소드에 전달되는 함수
-				                   // 이메일 형식이 잘못된 경우의 코드값 : 1000
+				reject(1000);      
 				return;
 			}
-			// 2) 이메일 중복 체크
 			$.ajax({
 				url: '${contextPath}/member/emailCheck',
 				type: 'get',
@@ -95,10 +141,9 @@
 				dataType: 'json',
 				success: function(obj){
 					if(obj.res == null){
-						resolve();     // resolve는 Promise 객체의 then 메소드에 전달되는 함수
+						resolve();     
 					} else {
-						reject(2000);  // reject는 Promise 객체의 catch 메소드에 전달되는 함수
-						               // 중복된 이메일이 있는 경우의 코드값 : 2000
+						reject(2000);  
 					}
 				}
 			})
@@ -107,17 +152,17 @@
 	
 	// 4. 이메일 인증
 	function fnEmailAuth(){
-		$('#btnGetAuthCode').on('click', function(){
+		$('#btnGetAuthCodeEmail').on('click', function(){
 			fnEmailCheck().then(
 				function(){
 					$.ajax({
-						url: '${contextPath}/member/sendAuthCode',
+						url: '${contextPath}/member/sendAuthCodeEmail',
 						type: 'get',
 						data: 'memberEmail=' + $('#memberEmail').val(),
 						dataType: 'json',
-						success: function(obj){  // obj에는 발송한 인증코드(authCode)가 저장되어 있음.
+						success: function(obj){  
 							alert('인증코드를 발송했습니다. 이메일을 확인하세요.');
-							fnVerifyAuthCode(obj.authCode);  // 발송한 인증코드와 사용자가 입력한 인증코드가 일치하는지 점검.
+							fnVerifyAuthCodeEmail(obj.authCodeEmail); 
 						},
 						error: function(jqXHR){
 							alert('인증코드 발송이 실패했습니다.');
@@ -128,10 +173,10 @@
 				function(code){
 					if(code == 1000){
 						$('#emailMsg').text('이메일 형식이 올바르지 않습니다.').addClass('dont').removeClass('ok');
-						$('#authCode').prop('readonly', true);
+						$('#authCodeEmail').prop('readonly', true);
 					} else if(code == 2000){
 						$('#emailMsg').text('이미 사용 중인 이메일입니다.').addClass('dont').removeClass('ok');
-						$('#authCode').prop('readonly', true);
+						$('#authCodeEmail').prop('readonly', true);
 					}
 				}
 			)
@@ -155,11 +200,10 @@
 	// 2. 비밀번호 정규식
 	let pwPass = false;
 	function fnPwCheck(){
-		// 비밀번호 정규식 검사
 		$('#memberPw').on('keyup', function(){
-			let regPw = /^[0-9]{1,4}$/;  // 숫자 1~4자
+			let regPw = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/;
 			if(regPw.test($('#memberPw').val())==false){
-				$('#pwMsg').text('8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.').addClass('dont').removeClass('ok');
+				$('#pwMsg').text('8~16자 영문, 숫자, 특수문자를 모두 사용하세요.').addClass('dont').removeClass('ok');
 				pwPass = false;
 			} else {
 				$('#pwMsg').text('사용 가능한 비밀번호입니다.').addClass('ok').removeClass('dont');
@@ -172,14 +216,12 @@
 	let idPass = false;
 	function fnIdCheck(){
 		$('#memberId').on('keyup', function(){
-			// 정규식 체크하기
-			let regId = /^[a-z]{1,32}$/;  // 소문자 1~32자 사이(실제 서비스는 바꿔야 함)
+			let regId = /^[a-z0-9-_]{5,20}$/;  
 			if(regId.test($('#memberId').val())==false){
-				$('#idMsg').text('아이디는 어쩌구 저쩌구 입니다.').addClass('dont').removeClass('ok');
+				$('#idMsg').text('아이디는 5~20자의 영문 소문자, 숫자와 특수기호 (-, _)만 사용이 가능합니다.').addClass('dont').removeClass('ok');
 				idPass = false;
 				return;
 			}
-			// 아이디 중복 체크
 			$.ajax({
 				url: '${contextPath}/member/idCheck',
 				type: 'get',
@@ -241,22 +283,26 @@
 			<input type="text" name="memberBirth" id="memberBirth"><br>
 		</label><br><br>
 		
+		성별
 		<label for="male"><input type="radio" name="memberGender" value="M" id="male">남</label>
-		<label for="female"><input type="radio" name="memberGender" value="F" id="female">여</label>
-		<label for="none"><input type="radio" name="memberGender" value="NONE" id="none" checked>선택</label><br>
+		<label for="female"><input type="radio" name="memberGender" value="F" id="female">여</label><br><br>
 		
 		<label for="memberPhone">
 			연락처<br>
-			<input type="text" name="memberPhone" id="memberPhone"><br>
+			<input type="text" name="memberPhone" id="memberPhone" placeholder="'-' 포함">
+			<input type="button" value="인증번호받기" id="btnGetAuthCodeSMS"><br>
+			<span id="phoneMsg"></span><br>
+			<input type="text" name="authCodeSMS" id="authCodeSMS" placeholder="인증코드 입력">
+			<input type="button" value="인증하기" id="btnVerifyAuthCodeSMS"><br><br>
 		</label><br><br>
 		
 		<label for="email">
 			이메일<br>
 			<input type="text" name="memberEmail" id="memberEmail">
-			<input type="button" value="인증번호받기" id="btnGetAuthCode"><br>
+			<input type="button" value="인증번호받기" id="btnGetAuthCodeEmail"><br>
 			<span id="emailMsg"></span><br>
-			<input type="text" name="authCode" id="authCode" placeholder="인증코드 입력">
-			<input type="button" value="인증하기" id="btnVerifyAuthCode"><br><br>
+			<input type="text" name="authCodeEmail" id="authCodeEmail" placeholder="인증코드 입력">
+			<input type="button" value="인증하기" id="btnVerifyAuthCodeEmail"><br><br>
 		</label><br><br>
 		
 		<button>가입하기</button>

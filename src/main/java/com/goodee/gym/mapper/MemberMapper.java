@@ -13,10 +13,15 @@ public interface MemberMapper {
 	public int insertMember(MemberDTO member);
 	public MemberDTO selectMemberByIdPw(MemberDTO member);
 	public int insertMemberLog(Long memberNo);
+	
+	/* 네이버 */
+	public int insertNaver(MemberDTO naver);
+
+	
 	/* 아이디 찾기 */
 	public MemberDTO selectMemberByNameEmail(MemberDTO member);
 	/* 비밀번호 찾기 */
-	public MemberDTO selectMemberByIdEmail(MemberDTO member);
+	public MemberDTO selectMemberByIdPhone(MemberDTO member);
 	public int updatePw(MemberDTO member);
 	
 }
