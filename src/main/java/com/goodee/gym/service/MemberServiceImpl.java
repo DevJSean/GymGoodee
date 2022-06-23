@@ -1,6 +1,17 @@
 package com.goodee.gym.service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -14,13 +25,17 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.goodee.gym.domain.MemberDTO;
 import com.goodee.gym.mapper.MemberMapper;
 import com.goodee.gym.util.SecurityUtils;
+
+import net.nurigo.java_sdk.exceptions.CoolsmsException;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -43,24 +58,20 @@ public class MemberServiceImpl implements MemberService {
 	}
 	
 	@Override
-	public Map<String, Object> sendAuthCode(String memberEmail) {
+	public Map<String, Object> sendAuthCodeEmail(String memberEmail) {
 		
-		// 인증코드
-		String authCode = SecurityUtils.authCode(6);    // 6자리 인증코드
-		System.out.println(authCode);
+		String authCodeEmail = SecurityUtils.authCode(6);    
+		System.out.println(authCodeEmail);
 		
-		// 필수 속성
 		Properties props = new Properties();
-		props.put("mail.smtp.host", "smtp.gmail.com");  // 구글 메일로 보냅니다.
-		props.put("mail.smtp.port", "587");             // 구글 메일 보내는 포트.
-		props.put("mail.smtp.auth", "true");            // 인증되었다.
-		props.put("mail.smtp.starttls.enable", "true"); // TLS 허용한다.
+		props.put("mail.smtp.host", "smtp.gmail.com");  
+		props.put("mail.smtp.port", "587");            
+		props.put("mail.smtp.auth", "true");            
+		props.put("mail.smtp.starttls.enable", "true"); 
 		
-		// 메일을 보내는 사용자 정보
 		final String USERNAME = "forspringlec@gmail.com";
-		final String PASSWORD = "ukpiajijxfirdgcz";     // 발급 받은 앱 비밀번호
+		final String PASSWORD = "ukpiajijxfirdgcz";     
 		
-		// 사용자 정보를 javax.mail.Session에 저장
 		Session session = Session.getInstance(props, new Authenticator() {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
@@ -68,17 +79,16 @@ public class MemberServiceImpl implements MemberService {
 			}
 		});
 		
-		
 		// 이메일 전송하기
 		try {
 			
 			Message message = new MimeMessage(session);
 			
 			message.setHeader("Content-Type", "text/plain; charset=UTF-8");
-			message.setFrom(new InternetAddress(USERNAME, "인증코드관리자"));
+			message.setFrom(new InternetAddress(USERNAME, "GYM관리자"));
 			message.setRecipient(Message.RecipientType.TO, new InternetAddress(memberEmail));
 			message.setSubject("인증 요청 메일입니다.");
-			message.setText("인증번호는 " + authCode + "입니다.");
+			message.setText("안녕하세요. GYMGOODEE 관리자입니다. 인증번호는 " + authCodeEmail + "입니다.");
 			
 			Transport.send(message);
 			
@@ -87,9 +97,37 @@ public class MemberServiceImpl implements MemberService {
 		}
 		
 		Map<String, Object> map = new HashMap<>();
-		map.put("authCode", authCode);
+		map.put("authCodeEmail", authCodeEmail);
 		return map;
 		
+	}
+	
+	@Override
+	public Map<String, Object> sendAuthCodeSMS(String memberPhone) {
+		
+		String authCodeSMS = SecurityUtils.authCode(6);
+		
+	    String api_key = "NCSM4A6HJTQWGBU3";
+	    String api_secret = "G0IP0LQVML0IOUNCZCJRQQWBHJGJH982";
+	    net.nurigo.java_sdk.api.Message coolsms = new net.nurigo.java_sdk.api.Message(api_key, api_secret);
+		
+	    HashMap<String, String> params = new HashMap<>();
+	    params.put("to", memberPhone);
+		params.put("from", "01056466373");
+		params.put("type", "SMS");
+		params.put("text", "[gym] 인증번호는 " + authCodeSMS + "입니다.");
+		params.put("app_version", "test app 1.2");
+		
+		try {
+			JSONObject obj = (JSONObject)(coolsms).send(params);
+			System.out.println(obj);
+		} catch (CoolsmsException e) {
+			e.printStackTrace();
+		}
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("authCodeSMS", authCodeSMS);
+		return map;
 	}
 	
 	@Override
@@ -136,7 +174,7 @@ public class MemberServiceImpl implements MemberService {
 			if(res == 1) {
 				out.println("<script>");
 				out.println("alert('회원 가입되었습니다.')");
-				out.println("location.href='" + request.getContextPath() + "'");
+				out.println("location.href='" + request.getContextPath() + "/lsh_index'");
 				out.println("</script>");
 				out.close();
 			} else {
@@ -179,6 +217,167 @@ public class MemberServiceImpl implements MemberService {
 		
 	}
 	
+	@Override
+	public String naverLogin(HttpSession session) {
+
+		String clientId = "XYULZHj0e4wadrMeNhvI";//애플리케이션 클라이언트 아이디값";
+		String redirectURI = null;
+		try {
+			redirectURI = URLEncoder.encode("http://localhost:9090/gym/member/callback", "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}	
+	    SecureRandom random = new SecureRandom();
+	    String state = new BigInteger(130, random).toString();
+	    String apiURL = "https://nid.naver.com/oauth2.0/authorize?response_type=code";
+	    apiURL += "&client_id=" + clientId;
+	    apiURL += "&redirect_uri=" + redirectURI;
+	    apiURL += "&state=" + state;
+	    session.setAttribute("state", state);
+		
+		return apiURL;
+	}
+	
+	@Override
+	public void callback(HttpServletRequest request) {
+		
+		String clientId = "XYULZHj0e4wadrMeNhvI";
+	    String clientSecret = "4gVLsa0no9";
+	    String code = request.getParameter("code");
+	    String state = request.getParameter("state");
+	    String redirectURI = null;
+		try {
+			redirectURI = URLEncoder.encode("http://localhost:9090/gym/member/callback", "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}	    
+		String apiURL;
+	    apiURL = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&";
+	    apiURL += "client_id=" + clientId;
+	    apiURL += "&client_secret=" + clientSecret;
+	    apiURL += "&redirect_uri=" + redirectURI;
+	    apiURL += "&code=" + code;
+	    apiURL += "&state=" + state;
+
+	    try {
+	      URL url = new URL(apiURL);
+	      HttpURLConnection con = (HttpURLConnection)url.openConnection();
+	      con.setRequestMethod("GET");
+	      int responseCode = con.getResponseCode();
+	      BufferedReader br;
+	      if(responseCode==200) { // 정상 호출
+	        br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+	      } else {  // 에러 발생
+	        br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+	      }
+	      String inputLine;
+	      StringBuffer res = new StringBuffer();
+	      while ((inputLine = br.readLine()) != null) {
+	        res.append(inputLine);
+	      }
+	      br.close();
+	      org.json.JSONObject obj = new org.json.JSONObject(res.toString());
+	      
+		  String access_token = obj.getString("access_token"); 
+	      
+		  String header = "Bearer " + access_token; 
+
+	      String apiURL2 = "https://openapi.naver.com/v1/nid/me";
+
+
+	      Map<String, String> requestHeaders = new HashMap<>();
+	      requestHeaders.put("Authorization", header);
+	      String responseBody = get(apiURL2,requestHeaders);
+
+	      org.json.JSONObject obj2 = new org.json.JSONObject(responseBody.toString());
+	      
+	      org.json.JSONObject obj3 = obj2.getJSONObject("response");
+	      String memberId = obj3.getString("id");
+	      String memberName = obj3.getString("name");
+	      String memberBirth = obj3.getString("birthyear") + "-" + obj3.getString("birthday");
+	      String memberGender = obj3.getString("gender");
+	      String memberPhone = obj3.getString("mobile");
+	      String memberEmail = obj3.getString("email");
+	      
+		  MemberDTO naver = MemberDTO.builder()
+				  .memberId(memberId)
+				  .memberName(memberName)
+				  .memberBirth(memberBirth)
+				  .memberGender(memberGender)
+				  .memberPhone(memberPhone)
+				  .memberEmail(memberEmail)
+				  .build();
+			
+		  
+		  if(memberMapper.selectMemberById(memberId) == null) {
+			  memberMapper.insertNaver(naver);
+		  } 
+		  MemberDTO loginMember = memberMapper.selectMemberById(memberId);
+		  
+		  memberMapper.insertMemberLog(loginMember.getMemberNo());
+		  
+		  HttpSession session = request.getSession();
+	      session.setAttribute("loginMember", loginMember);
+	      
+	    } catch (Exception e) {
+	    	e.printStackTrace();
+	    }
+	}
+	
+	
+    private static String get(String apiUrl, Map<String, String> requestHeaders){
+        HttpURLConnection con = connect(apiUrl);
+        try {
+            con.setRequestMethod("GET");
+            for(Map.Entry<String, String> header :requestHeaders.entrySet()) {
+                con.setRequestProperty(header.getKey(), header.getValue());
+            }
+
+
+            int responseCode = con.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) { 
+                return readBody(con.getInputStream());
+            } else { 
+                return readBody(con.getErrorStream());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("API 요청과 응답 실패", e);
+        } finally {
+            con.disconnect();
+        }
+    }
+
+
+    private static HttpURLConnection connect(String apiUrl){
+        try {
+            URL url = new URL(apiUrl);
+            return (HttpURLConnection)url.openConnection();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("API URL이 잘못되었습니다. : " + apiUrl, e);
+        } catch (IOException e) {
+            throw new RuntimeException("연결이 실패했습니다. : " + apiUrl, e);
+        }
+    }
+
+    private static String readBody(InputStream body){
+        InputStreamReader streamReader = new InputStreamReader(body);
+
+
+        try (BufferedReader lineReader = new BufferedReader(streamReader)) {
+            StringBuilder responseBody = new StringBuilder();
+
+
+            String line;
+            while ((line = lineReader.readLine()) != null) {
+                responseBody.append(line);
+            }
+
+
+            return responseBody.toString();
+        } catch (IOException e) {
+            throw new RuntimeException("API 응답을 읽는데 실패했습니다.", e);
+        }
+    }
 	
 	/* 아이디 찾기 */
 	@Override
@@ -190,9 +389,9 @@ public class MemberServiceImpl implements MemberService {
 	
 	/* 비밀번호 찾기 */
 	@Override
-	public Map<String, Object> idEmailCheck(MemberDTO member) {
+	public Map<String, Object> idPhoneCheck(MemberDTO member) {
 		Map<String, Object> map = new HashMap<>();
-		map.put("findMember", memberMapper.selectMemberByIdEmail(member));
+		map.put("findMember", memberMapper.selectMemberByIdPhone(member));
 		return map;
 	}
 	

@@ -25,13 +25,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		VALUES
 			(MEMBER_SEQ.NEXTVAL, #{memberId}, #{memberPw}, #{memberName}, #{memberBirth}, #{memberGender}, #{memberPhone}, #{memberEmail}, #{memberAgreeState}, SYSDATE, SYSDATE)
 	</insert>
-
-	<!-- 회원탈퇴 -->
-	<delete id="deleteMember" parameterType="Long">
-		DELETE
-		  FROM MEMBER
-		 WHERE MEMBER_NO = #{memberNo}
-	</delete>
+	
+	<!-- 네이버 -->
+	<insert id="insertNaver" parameterType="MemberDTO">
+		<selectKey keyProperty="memberNo" resultType="Long" order="BEFORE">
+			SELECT MEMBER_SEQ.NEXTVAL
+			  FROM DUAL
+		</selectKey>
+		INSERT INTO MEMBER
+			(MEMBER_NO, MEMBER_ID, MEMBER_PW, MEMBER_NAME, MEMBER_BIRTH, MEMBER_GENDER, MEMBER_PHONE, MEMBER_EMAIL, MEMBER_AGREE_STATE, MEMBER_SIGN_UP, MEMBER_PW_MODIFIED)
+		VALUES
+			(#{memberNo}, #{memberId}, 0, #{memberName}, #{memberBirth}, #{memberGender}, #{memberPhone}, #{memberEmail}, 1, SYSDATE, SYSDATE)
+	</insert>
 
 	<!--  -->
 	<select id="selectMemberByIdPw" parameterType="MemberDTO" resultType="MemberDTO">
@@ -58,11 +63,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<!-- 비밀번호 찾기 -->
-	<select id="selectMemberByIdEmail" parameterType="MemberDTO" resultType="MemberDTO">
+	<select id="selectMemberByIdPhone" parameterType="MemberDTO" resultType="MemberDTO">
 		SELECT MEMBER_NO, MEMBER_ID, MEMBER_PW, MEMBER_NAME, MEMBER_BIRTH, MEMBER_GENDER, MEMBER_PHONE, MEMBER_EMAIL, MEMBER_AGREE_STATE, MEMBER_SIGN_UP, MEMBER_PW_MODIFIED, MEMBER_SESSION_ID, MEMBER_SESSION_LIMIT
 		  FROM MEMBER
 		 WHERE MEMBER_ID = #{memberId}
-		   AND MEMBER_EMAIL = #{memberEmail}
+		   AND MEMBER_PHONE = #{memberPhone}
 	</select>
 	<update id="updatePw" parameterType="MemberDTO">
 		UPDATE MEMBER

@@ -16,7 +16,7 @@
 	$(function(){
 		fnPwCheck();
 		fnPwConfirm();
-		fnEmailAuth();
+		fnPhoneAuth();
 		fnToUpperCase();
 		fnChangePw();
 	})
@@ -28,9 +28,9 @@
 	function fnPwCheck(){
 		// 비밀번호 정규식 검사
 		$('#memberPw').on('keyup', function(){
-			let regPw = /^[0-9]{1,4}$/;  // 숫자 1~4자
+			let regPw = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/;
 			if(regPw.test($('#memberPw').val())==false){
-				$('#pwMsg').text('8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.').addClass('dont').removeClass('ok');
+				$('#pwMsg').text('8~16자 영문, 숫자, 특수문자를 모두 사용하세요.').addClass('dont').removeClass('ok');
 				pwPass = false;
 			} else {
 				$('#pwMsg').text('사용 가능한 비밀번호입니다.').addClass('ok').removeClass('dont');
@@ -42,8 +42,8 @@
 	// 2. 비밀번호 입력확인
 	let rePwPass = false;
 	function fnPwConfirm(){
-		$('#memberRePw').on('keyup', function(){
-			if($('#memberRePw').val() != '' && $('#memberPw').val() != $('#memberRePw').val()){
+		$('#pwConfirm').on('keyup', function(){
+			if($('#pwConfirm').val() != '' && $('#memberPw').val() != $('#pwConfirm').val()){
 				$('#rePwMsg').text('비밀번호를 확인하세요.').addClass('dont').removeClass('ok');
 				rePwPass = false;
 			} else {
@@ -53,76 +53,76 @@
 		})
 	}
 	
-	// 3. 아이디 + 이메일 일치하는 회원 확인
-	function fnIdEmailCheck(){
+	// 3. 아이디 + 연락처 일치하는 회원 확인
+	function fnIdPhoneCheck(){
 		return new Promise(function(resolve, reject){
-			// 1) 이메일 정규식 체크
-			let regEmail = /^[a-zA-Z0-9-_]+@[a-zA-Z0-9]+(\.[a-zA-Z]{2,}){1,2}$/;  // 실제 서비스에서 그대로 사용 가능.
-			if(regEmail.test($('#memberEmail').val())==false){
-				alert('잘못된 형식의 이메일입니다.');
+			// 1) 연락처 정규식 체크
+			let regPhone = /^01[0169]-[0-9]{3,4}-[0-9]{4}$/; 
+			if(regPhone.test($('#memberPhone').val())==false){
+				alert('잘못된 형식의 핸드폰 번호입니다.');
 				return;
 			}
-			// 2) 아이디와 이메일이 일치하는 회원 정보 확인
+			// 2) 아이디와 연락처가 일치하는 회원 정보 확인
 			$.ajax({
-				url: '${contextPath}/member/idEmailCheck',
+				url: '${contextPath}/member/idPhoneCheck',
 				type: 'get',
-				data: 'memberId=' + $('#memberId').val() + '&memberEmail=' + $('#memberEmail').val(),
+				data: 'memberId=' + $('#memberId').val() + '&memberPhone=' + $('#memberPhone').val(),
 				dataType: 'json',
 				success: function(obj){
-					if(obj.findMember != null){  // 아이디와 이메일이 일치하는 회원이 있으면 정상 진행(resolve)
+					if(obj.findMember != null){  // 아이디와 연락처가 일치하는 회원이 있으면 정상 진행(resolve)
 						resolve();
 					} else {
-						reject(401);  // 아이디와 이메일이 일치하는 회원이 없으면 401 반환
+						reject(401);  // 아이디와 연락처가 일치하는 회원이 없으면 401 반환
 					}
 				}
 			})
 		})
 	}
 	
-	// 4. 이메일 인증
-	function fnEmailAuth(){
-		$('#btnGetAuthCode').on('click', function(){
-			fnIdEmailCheck()
+	// 4. SMS 인증
+	function fnPhoneAuth(){
+		$('#btnGetAuthCodeSMS').on('click', function(){
+			fnIdPhoneCheck()
 				.then(function(){
 					$.ajax({
-						url: '${contextPath}/member/sendAuthCode',
+						url: '${contextPath}/member/sendAuthCodeSMS',
 						type: 'get',
-						data: 'memberEmail=' + $('#memberEmail').val(),
+						data: 'memberPhone=' + $('#memberPhone').val(),
 						dataType: 'json',
-						success: function(obj){  // obj에는 발송한 인증코드(authCode)가 저장되어 있음.
-							alert('인증코드를 발송했습니다. 이메일을 확인하세요.');
-							fnVerifyAuthCode(obj.authCode);  // 발송한 인증코드와 사용자가 입력한 인증코드가 일치하는지 점검.
+						success: function(obj){  // obj에는 발송한 인증코드(authCodeSMS)가 저장되어 있음.
+							alert('인증코드를 발송했습니다. 핸드폰을 확인하세요.');
+							fnVerifyAuthCodeSMS(obj.authCodeSMS);  // 발송한 인증코드와 사용자가 입력한 인증코드가 일치하는지 점검.
 						},
 						error: function(){
 							alert('인증코드 발송이 실패했습니다.');
 						}
 					})
 				}).catch(function(errorCode){
-					alert('예외코드[' + errorCode + '] 회원 정보를 찾을 수 없습니다.');
+					alert('회원 정보를 찾을 수 없습니다.');
 				})
 		})
 	}
 	
 	// 6. 인증코드 검증
-	let authCodePass = false;
-	function fnVerifyAuthCode(authCode){  // 이메일로 전송한 인증코드
-		$('#btnVerifyAuthCode').on('click', function(){
-			if($('#authCode').val() == authCode){
+	let authCodePassSMS = false;
+	function fnVerifyAuthCodeSMS(authCodeSMS){  // 핸드폰으로 전송한 인증코드
+		$('#btnVerifyAuthCodeSMS').on('click', function(){
+			if($('#authCodeSMS').val() == authCodeSMS){
 				alert('인증되었습니다.');
-				$('.authArea').css('display', 'none');
+				$('.authAreaSMS').css('display', 'none');
 				$('.changeArea').css('display', 'block');
-				authCodePass = true;
+				authCodePassSMS = true;
 			} else {
 				alert('인증에 실패했습니다.');
-				authCodePass = false;
+				authCodePassSMS = false;
 			}
 		})
 	}
 	
 	// 7. 입력을 무조건 대문자로 처리
 	function fnToUpperCase(){
-		$('#authCode').on('keyup', function(){
-			$('#authCode').val($('#authCode').val().toUpperCase());
+		$('#authCodeSMS').on('keyup', function(){
+			$('#authCodeSMS').val($('#authCodeSMS').val().toUpperCase());
 		})
 	}
 	
@@ -134,8 +134,8 @@
 				event.preventDefault();
 				return false;
 			}
-			else if(authCodePass == false){
-				alert('이메일 인증을 받아야 합니다.');
+			else if(authCodePassSMS == false){
+				alert('연락처 인증을 받아야 합니다.');
 				event.preventDefault();
 				return false;
 			}
@@ -163,23 +163,23 @@
 	
 		<h3>비밀번호 찾기</h3>
 	
-		<div class="authArea">	
+		<div class="authAreaSMS">	
 			아이디<br>
 			<input type="text" name="memberId" id="memberId"><br><br>
-			가입 당시 이메일<br>
-			<input type="text" id="memberEmail">
-			<input type="button" value="인증번호받기" id="btnGetAuthCode"><br>
+			가입 당시 연락처<br>
+			<input type="text" id="memberPhone" placeholder="-를 포함하여 입력">
+			<input type="button" value="인증번호받기" id="btnGetAuthCodeSMS"><br>
 			<span id="emailMsg"></span><br>
-			<input type="text" id="authCode" placeholder="인증코드 입력">
-			<input type="button" value="인증하기" id="btnVerifyAuthCode"><br><br>
+			<input type="text" id="authCodeSMS" placeholder="인증코드 입력">
+			<input type="button" value="인증하기" id="btnVerifyAuthCodeSMS"><br><br>
 		</div>
 	
 		<div class="changeArea">
 			<h3>새로운 비밀번호를 설정하세요</h3>
 			<input type="password" name="memberPw" id="memberPw" placeholder="새 비밀번호">
 			<span id="pwMsg"></span><br><br>
-			<input type="password" id="memberRePw" placeholder="새 비밀번호 확인">
-			<span id="rePwMsg"></span><br><br>
+			<input type="password" id="pwConfirm" placeholder="새 비밀번호 확인">
+			<span id="pwConfirmMsg"></span><br><br>
 			<button>비밀번호 변경하기</button>
 		</div>
 		

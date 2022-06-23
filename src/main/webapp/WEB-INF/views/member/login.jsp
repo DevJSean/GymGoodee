@@ -9,48 +9,19 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script type="text/javascript" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
+<script src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.2.js" charset="utf-8"></script>
+
 <!-- jquery -->
 <script src="../resources/js/jquery-3.6.0.js"></script>
-<!-- jquery-cookie -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" integrity="sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
 	
-	
-
 	/* 페이지 로드 이벤트 */
 	$(function(){
 		fnLogin();
 		fnDisplayRememberId();
-		fnNaver();
-		fnCallback();
 	})
 	
 	/* 함수 */
-	
-	function fnNaver(){
-		$('#btnNaver').on('click', function(){
-			var naver_id_login = new naver_id_login("XYULZHj0e4wadrMeNhvI", "http://localhost");
-			var state = naver_id_login.getUniqState();
-			naver_id_login.setButton("white", 2,40);
-			naver_id_login.setDomain("http://localhost");
-			naver_id_login.setState(state);
-			naver_id_login.setPopup();
-			naver_id_login.init_naver_id_login();
-		})
-	}
-	
-	  var naver_id_login = new naver_id_login("XYULZHj0e4wadrMeNhvI", "http://localhost");
-	  // 접근 토큰 값 출력
-	  alert(naver_id_login.oauthParams.access_token);
-	  // 네이버 사용자 프로필 조회
-	  naver_id_login.get_naver_userprofile("naverSignInCallback()");
-	  // 네이버 사용자 프로필 조회 이후 프로필 정보를 처리할 callback function
-	  function naverSignInCallback() {
-	    alert(naver_id_login.getProfileData('email'));
-	    alert(naver_id_login.getProfileData('nickname'));
-	    alert(naver_id_login.getProfileData('age'));
-	  }
 	
 	// 1. 로그인
 	function fnLogin(){
@@ -92,11 +63,6 @@
 	
 	<h3>로그인</h3>
 	
-	<a>카카오 로그인</a>
-	<input type="button" value="Naver" id="btnNaver">
-	<div id="naver_id_login" style="text-align:center"><a href="${url}">			
-	<img width="223" src="https://developers.naver.com/doc/review_201802/CK_bEFnWMeEBjXpQ5o8N_20180202_7aot50.png"/></a></div>			<br>
-	
 	<form id="f" action="${contextPath}/member/login" method="post">
 		
 		<input type="hidden" name="url" value="${url}">
@@ -112,6 +78,13 @@
 		<label for="rememberId"><input type="checkbox" id="rememberId">아이디 저장</label>
 	
 	</form>
+	
+	<!-- 네이버 로그인 창으로 이동 -->			
+	<div id="naver_id_login">
+	<a href="${naver}">			
+	<img width="200" src="https://developers.naver.com/doc/review_201802/CK_bEFnWMeEBjXpQ5o8N_20180202_7aot50.png"/>
+	</a></div>			
+	<br>
 	
 	<br>
 	

@@ -43,7 +43,6 @@ public class LoginInterceptor implements HandlerInterceptor {
 		Map<String, Object> map = modelAndView.getModel();
 		Object loginMember = map.get("loginMember");
 		Object url = map.get("url");
-		System.out.println("1");
 		
 		// loginMember가 있다면 (로그인 성공) session에 저장
 		if(loginMember != null) {

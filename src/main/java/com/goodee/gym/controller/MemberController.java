@@ -54,9 +54,15 @@ public class MemberController {
 	}
 	
 	@ResponseBody
-	@GetMapping(value="/member/sendAuthCode", produces="application/json")
-	public Map<String, Object> sendAuthCode(@RequestParam String memberEmail) {
-		return memberService.sendAuthCode(memberEmail);
+	@GetMapping(value="/member/sendAuthCodeEmail", produces="application/json")
+	public Map<String, Object> sendAuthCodeEmail(@RequestParam String memberEmail) {
+		return memberService.sendAuthCodeEmail(memberEmail);
+	}
+	
+	@ResponseBody
+	@GetMapping(value="/member/sendAuthCodeSMS", produces="application/json")
+	public Map<String, Object> sendAuthCodeSMS(@RequestParam String memberPhone) {
+		return memberService.sendAuthCodeSMS(memberPhone);
 	}
 	
 	@PostMapping("/member/signUp")
@@ -65,8 +71,9 @@ public class MemberController {
 	}
 	
 	@GetMapping("/member/loginPage")
-	public String loginPage(@RequestParam(required=false) String url, Model model) {
+	public String loginPage(@RequestParam(required=false) String url, Model model, HttpSession session) {
 		model.addAttribute("url", url);    // member/login.jsp로 url 속성값을 전달한다.
+		model.addAttribute("naver", memberService.naverLogin(session));
 		return "member/login";
 	}
 	
@@ -84,6 +91,17 @@ public class MemberController {
 		// LoginIntercepter의 postHandle() 메소드에 로그인 이후에 이동할 경로 전달
 		model.addAttribute("url", request.getParameter("url"));
 		
+	}
+	
+	@GetMapping("/member/naverLogin")
+	public String login(Model model, HttpSession session) {
+		model.addAttribute("naver", memberService.naverLogin(session));
+		return "login";
+	}
+	@GetMapping("/member/callback")
+	public String session(HttpServletRequest request) {
+		memberService.callback(request);
+		return "lsh_index";
 	}
 	
 	@GetMapping("/member/logout")
@@ -114,9 +132,9 @@ public class MemberController {
 		return "member/findPw";
 	}
 	@ResponseBody
-	@GetMapping("/member/idEmailCheck")
-	public Map<String, Object> idEmailCheck(MemberDTO member){
-		return memberService.idEmailCheck(member);
+	@GetMapping("/member/idPhoneCheck")
+	public Map<String, Object> idPhoneCheck(MemberDTO member){
+		return memberService.idPhoneCheck(member);
 	}
 	@PostMapping("/member/changePw")
 	public void changePw(HttpServletRequest request, HttpServletResponse response) {
