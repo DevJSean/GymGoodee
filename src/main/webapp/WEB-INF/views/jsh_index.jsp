@@ -13,9 +13,9 @@
 <body>
 	
 	
-		<a href="${contextPath}/board/noticeSearchPage">공지사항</a>
-		<a href="${contextPath}/board/qnaSearchPage">QnA</a>
-		<a href="${contextPath}/board/reviewSearchPage">리뷰</a>
+		<a href="${contextPath}/board/noticeList">공지사항</a>
+		<a href="${contextPath}/board/questionList">QnA</a>
+		<a href="${contextPath}/board/reviewList">리뷰</a>
 
 	
 </body>
