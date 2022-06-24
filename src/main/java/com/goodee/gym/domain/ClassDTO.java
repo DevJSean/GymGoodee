@@ -25,4 +25,7 @@ public class ClassDTO {
 	
 	// 현재 신청인원수
 	private Integer currentCount;
+	
+	// 이미 예약을 한 강좌인지 아닌 구분
+	private Integer reservationState;
 }

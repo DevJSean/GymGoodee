@@ -26,9 +26,13 @@
 	// 1. 날짜 선택시 해당 날짜에 개설된 강좌 목록과 실시간 예약 현황 불러오기
 	function fnGetClassList(){
 		$('#test').on('click',function(){
-			//window.open("${contextPath}/reserve/getClasses?subject=SWIM&classDate=" + $(this).text(),"a_Test","width=200","hieght=100");
-			window.open("${contextPath}/reserve/test?subject=SWIM&classDate=" + $(this).text(),"a_Test","width=200","hieght=100");
-			//location.href='${contextPath}/reserve/getClasses?subject=SWIM&classDate=' + $(this).text();
+			var popupX = (window.screen.width / 2) - (600 / 2);
+			// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+
+			var popupY= (window.screen.height /2) - (300 / 2);
+			// 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
+
+			window.open("${contextPath}/reserve/reserveSwim?subject=SWIM&classDate=" + $(this).text(), '', 'status=no, height=300, width=600, left='+ popupX + ', top='+ popupY + ', scrollbars=yes,resizable=yes');
 		})
 
 	} // fnGetClassList
@@ -88,7 +92,7 @@
 		</div>
 		<div class="wrapper3">
 			<div class="week1"></div>
-				<div class="test" name="classDate" id="test">20220610</div>
+				<div class="test" name="classDate" id="test">20220623</div>
 			<div class="week2"></div>
 			<div class="week3"></div>
 			<div class="week4"></div>

@@ -16,21 +16,70 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
        			 AND SUBSTR(C.LOCATION_CODE,1,2) = #{subject} AND C.CLASS_DATE = #{classDate}
        		  ) A
 	</select>
+	
+	<select id="selectCountClassList" parameterType="Map" resultType="Integer">
+		SELECT COUNT(CLASS_CODE)
+		 FROM CLASS
+       	WHERE SUBSTR(LOCATION_CODE,1,2) = #{subject} AND CLASS_DATE = #{classDate}
+	</select>
+	
+	
+	<!-- 잔여수강권 테이블에서 잔여 수강권 가져오기 -->
+	<select id="getRemainTicketBySubject" parameterType="Map" resultType="String">
+		SELECT REMAIN_TICKET_REMAIN_COUNT
+		FROM REMAIN_TICKET
+		WHERE MEMBER_ID = #{memberId} AND REMAIN_TICKET_SUBJECT = #{subject}
+	</select>
 
 	<!-- 현재 각 강좌에 신청한 인원이 몇명인지 -->
 	<select id="selectCountByClassCode" parameterType="String" resultType="Integer">
 		SELECT COUNT(MEMBER_NO)
 		  FROM RESERVATION
-		 WHERE CLASS_CODE = #{classCode}
+		 WHERE CLASS_CODE = #{classCode} AND RESERVATION_STATE = 0
 	</select>
+	
+	<!-- 예약 테이블에서 예약 내역이 있는지 없는지 가져오기 -->
+	<select id="selectReservationByClassCode" parameterType="Map" resultType="String">
+		SELECT RESERVATION_STATE
+		FROM RESERVATION
+		WHERE MEMBER_NO = #{memberNo} AND CLASS_CODE = #{classCode}
+	</select>
+	
+	<!-- 예약 테이블에서 memberNo, classCode 일치하는 회원 찾기 -->
+	<select id="selectMemberFromReservation" parameterType="Map" resultType="Integer">
+		SELECT COUNT(MEMBER_NO)
+		FROM RESERVATION
+		WHERE MEMBER_NO = #{memberNo} AND CLASS_CODE = #{classCode}
+	</select>
+	
+	<!-- 수영강좌 예약하기(1) -->
+	<update id="updateAgainReserve" parameterType="Map">
+		UPDATE RESERVATION
+		SET RESERVATION_STATE = 0
+		WHERE MEMBER_NO = #{memberNo} AND CLASS_CODE = #{classCode}
+	</update>
 
-
-	<!-- 수영강좌 예약하기 -->
-	<insert id="insertSwim" parameterType="ReservationDTO">
+	<!-- 수영강좌 예약하기(2) // 종목별로 다 만들기 -->
+	<insert id="insertReserveSwim" parameterType="ReservationDTO">
 		INSERT INTO RESERVATION
 			(RESERVATION_CODE, MEMBER_NO, CLASS_CODE, RESERVATION_DATE, RESERVATION_STATE)
 		VALUES
-			(#{reservationCode} || SWIM_SEQ.NEXTVAL ,#{memberNo}, #{classCode}, SYSTIMESTAMP, 0)
+			(#{subject} || SWIM_SEQ.NEXTVAL ,#{memberNo}, #{classCode}, SYSTIMESTAMP, 0)
 	</insert>
+	
+	
+
+	
+	
+	<!-- 수영 예약 취소하기(update) -->
+	<update id="updateCancelSwim" parameterType="Map">
+		UPDATE RESERVATION
+		SET RESERVATION_STATE = -1
+		WHERE MEMBER_NO = #{memberNo} AND CLASS_CODE = #{classCode}
+	</update>
+	
+	
+	
+
 
 </mapper>
