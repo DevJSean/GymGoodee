@@ -41,16 +41,12 @@ public class MemberController {
 	@GetMapping(value="/member/idCheck", produces="application/json")
 	public Map<String, Object> idCheck(@RequestParam String memberId) {
 		return memberService.idCheck(memberId);
-		// {"res": null}
-		// {"res": {"memberNo":1, ...}}
 	}
 	
 	@ResponseBody
 	@GetMapping(value="/member/emailCheck", produces="application/json")
 	public Map<String, Object> emailCheck(@RequestParam String memberEmail) {
 		return memberService.emailCheck(memberEmail);
-		// {"res": null}
-		// {"res": {"memberNo":1, ...}}
 	}
 	
 	@ResponseBody
@@ -74,21 +70,20 @@ public class MemberController {
 	public String loginPage(@RequestParam(required=false) String url, Model model, HttpSession session) {
 		model.addAttribute("url", url);    // member/login.jsp로 url 속성값을 전달한다.
 		model.addAttribute("naver", memberService.naverLogin(session));
+		model.addAttribute("kakao", memberService.kakaoLogin(session));
+
 		return "member/login";
 	}
 	
 	@PostMapping("/member/login")
 	public void login(HttpServletRequest request, Model model) {
 		
-		// 아이디, 비밀번호가 일치하는 회원 정보 가져오기
 		MemberDTO loginMember = memberService.login(request);
 		
-		// 아이디, 비밀번호가 일치하는 회원이 있으면(로그인 성공) LoginIntercepter의 postHandle() 메소드에 회원 정보 전달
 		if(loginMember != null) {
-			model.addAttribute("loginMember", loginMember);  // Model에 저장된 속성은 LoginInterceptor의 postHandle() 메소드의 ModelAndView 매개변수가 받는다.
+			model.addAttribute("loginMember", loginMember);  
 		}
 		
-		// LoginIntercepter의 postHandle() 메소드에 로그인 이후에 이동할 경로 전달
 		model.addAttribute("url", request.getParameter("url"));
 		
 	}
@@ -98,15 +93,19 @@ public class MemberController {
 		model.addAttribute("naver", memberService.naverLogin(session));
 		return "login";
 	}
-	@GetMapping("/member/callback")
-	public String session(HttpServletRequest request) {
-		memberService.callback(request);
+	@GetMapping("/member/naverCallback")
+	public String naverCallback(HttpServletRequest request, HttpServletResponse response) {
+		memberService.naverCallback(request, response);
 		return "lsh_index";
+	}
+	
+	@GetMapping("/member/kakaoCallback")
+	public void kakaoCallback(HttpServletRequest request, HttpServletResponse response) {
+		memberService.kakaoCallback(request, response);
 	}
 	
 	@GetMapping("/member/logout")
 	public String logout(HttpSession session, HttpServletResponse response) {
-		// session의 모든 정보(로그인 정보 포함) 제거
 		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
 		if(loginMember != null) {
 			session.invalidate();
@@ -114,7 +113,6 @@ public class MemberController {
 		return "redirect:/lsh";
 	}
 	
-	/* 아이디 찾기 */
 	@GetMapping("/member/findIdPage")
 	public String findIdPage() {
 		return "member/findId";
@@ -126,7 +124,6 @@ public class MemberController {
 		return memberService.findId(member);
 	}
 	
-	/* 비밀번호 찾기 */
 	@GetMapping("/member/findPwPage")
 	public String findPwPage() {
 		return "member/findPw";

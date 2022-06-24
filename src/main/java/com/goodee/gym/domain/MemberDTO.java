@@ -24,7 +24,5 @@ public class MemberDTO {
 	private Integer memberAgreeState;
 	private Date memberSignUp;
 	private Date memberPwModified;
-	private String memberSessionId;
-	private Date memberSessionLimit;
 	
 }

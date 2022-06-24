@@ -10,10 +10,8 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 
-<!-- jquery -->
 <script src="../resources/js/jquery-3.6.0.js"></script>
 
-<!-- moment(날짜/시간 format) -->
 <script src="https://momentjs.com/downloads/moment-with-locales.js"></script>
 
 <script>
@@ -45,6 +43,8 @@
 				dataType: 'json',
 				success: function(obj) {
 					if (obj.findMember != null) {
+						$('.authArea').css('display', 'none');
+						$('.changeArea').css('display', 'block');
 						$('#findIdMsg').html('회원님의 아이디는 ' + obj.findMember.memberId + '입니다.<br>(가입일 : ' + moment(obj.findMember.memberSignUp).format("YYYY년 MM월 DD일 a h:mm:ss") + ')');
 					} else {
 						$('#findIdMsg').html('일치하는 회원이 없습니다. 입력 정보를 확인하세요.');
@@ -55,27 +55,36 @@
 	}
 	
 </script>
+<style>
+	.changeArea {
+		display: none;
+	}
+</style>
 </head>
 <body>
 
+	
 	<h3>아이디 찾기</h3>
 	
-	이름<br>
-	<input type="text" name="memberName" id="memberName"><br><br>
-	
-	이메일 주소<br>
-	<input type="text" name="memberEmail" id="memberEmail"><br><br>
-	
-	<input type="button" value="아이디찾기" id="btnFindId"><br><br>
-	
-	<div>
-		<a href="${contextPath}/member/findPwPage">비밀번호 찾기</a> /
-		<a href="${contextPath}/member/agreePage">회원가입</a>
+	<div class="authArea">
+		이름<br>
+		<input type="text" name="memberName" id="memberName"><br><br>
+		
+		이메일 주소<br>
+		<input type="text" name="memberEmail" id="memberEmail"><br><br>
+		
+		<input type="button" value="아이디찾기" id="btnFindId"><br><br>
 	</div>
 	
-	<hr>
+	<div class="changeArea">
+		<div id="findIdMsg"></div><br><hr><br>
+		
+		<div>
+			<a href="${contextPath}/member/findPwPage">비밀번호 찾기</a> /
+			<a href="${contextPath}/member/agreePage">회원가입</a>
+		</div>
+	</div>
 	
-	<div id="findIdMsg"></div>
 	
 </body>
 </html>

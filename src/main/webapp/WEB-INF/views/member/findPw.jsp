@@ -12,7 +12,6 @@
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script>
 
-	/* 페이지 로드 이벤트 */
 	$(function(){
 		fnPwCheck();
 		fnPwConfirm();
@@ -21,12 +20,10 @@
 		fnChangePw();
 	})
 	
-	/* 함수 */
 	
 	// 1. 비밀번호 정규식
 	let pwPass = false;
 	function fnPwCheck(){
-		// 비밀번호 정규식 검사
 		$('#memberPw').on('keyup', function(){
 			let regPw = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/;
 			if(regPw.test($('#memberPw').val())==false){
@@ -56,23 +53,21 @@
 	// 3. 아이디 + 연락처 일치하는 회원 확인
 	function fnIdPhoneCheck(){
 		return new Promise(function(resolve, reject){
-			// 1) 연락처 정규식 체크
 			let regPhone = /^01[0169]-[0-9]{3,4}-[0-9]{4}$/; 
 			if(regPhone.test($('#memberPhone').val())==false){
 				alert('잘못된 형식의 핸드폰 번호입니다.');
 				return;
 			}
-			// 2) 아이디와 연락처가 일치하는 회원 정보 확인
 			$.ajax({
 				url: '${contextPath}/member/idPhoneCheck',
 				type: 'get',
 				data: 'memberId=' + $('#memberId').val() + '&memberPhone=' + $('#memberPhone').val(),
 				dataType: 'json',
 				success: function(obj){
-					if(obj.findMember != null){  // 아이디와 연락처가 일치하는 회원이 있으면 정상 진행(resolve)
+					if(obj.findMember != null){  
 						resolve();
 					} else {
-						reject(401);  // 아이디와 연락처가 일치하는 회원이 없으면 401 반환
+						reject(401);
 					}
 				}
 			})
@@ -89,9 +84,9 @@
 						type: 'get',
 						data: 'memberPhone=' + $('#memberPhone').val(),
 						dataType: 'json',
-						success: function(obj){  // obj에는 발송한 인증코드(authCodeSMS)가 저장되어 있음.
+						success: function(obj){  
 							alert('인증코드를 발송했습니다. 핸드폰을 확인하세요.');
-							fnVerifyAuthCodeSMS(obj.authCodeSMS);  // 발송한 인증코드와 사용자가 입력한 인증코드가 일치하는지 점검.
+							fnVerifyAuthCodeSMS(obj.authCodeSMS); 
 						},
 						error: function(){
 							alert('인증코드 발송이 실패했습니다.');
@@ -103,9 +98,9 @@
 		})
 	}
 	
-	// 6. 인증코드 검증
+	// 5. 인증코드 검증
 	let authCodePassSMS = false;
-	function fnVerifyAuthCodeSMS(authCodeSMS){  // 핸드폰으로 전송한 인증코드
+	function fnVerifyAuthCodeSMS(authCodeSMS){ 
 		$('#btnVerifyAuthCodeSMS').on('click', function(){
 			if($('#authCodeSMS').val() == authCodeSMS){
 				alert('인증되었습니다.');
@@ -119,14 +114,14 @@
 		})
 	}
 	
-	// 7. 입력을 무조건 대문자로 처리
+	// 6. 입력을 무조건 대문자로 처리
 	function fnToUpperCase(){
 		$('#authCodeSMS').on('keyup', function(){
 			$('#authCodeSMS').val($('#authCodeSMS').val().toUpperCase());
 		})
 	}
 	
-	// 8. 비밀번호 변경
+	// 7. 비밀번호 변경
 	function fnChangePw(){
 		$('#f').on('submit', function(event){
 			if(pwPass == false || rePwPass == false){

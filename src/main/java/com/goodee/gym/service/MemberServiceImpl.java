@@ -46,7 +46,8 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public Map<String, Object> idCheck(String memberId) {
 		Map<String, Object> map = new HashMap<>();
-		map.put("res", memberMapper.selectMemberById(memberId));
+		map.put("res1", memberMapper.selectMemberById(memberId));
+		map.put("res2", memberMapper.selectSignOutMemberById(memberId));
 		return map;
 	}
 	
@@ -133,14 +134,13 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public void signUp(HttpServletRequest request, HttpServletResponse response) {
 		
-		// 파라미터
-		String memberId = SecurityUtils.xss(request.getParameter("memberId"));        // 크로스 사이트 스크립팅
-		String memberPw = SecurityUtils.sha256(request.getParameter("memberPw"));     // SHA-256 암호화
-		String memberName = SecurityUtils.xss(request.getParameter("memberName"));    // 크로스 사이트 스크립팅
-		String memberBirth = SecurityUtils.xss(request.getParameter("memberBirth"));    // 크로스 사이트 스크립팅
-		String memberGender = SecurityUtils.xss(request.getParameter("memberGender"));    // 크로스 사이트 스크립팅
-		String memberPhone = SecurityUtils.xss(request.getParameter("memberPhone"));    // 크로스 사이트 스크립팅
-		String memberEmail = SecurityUtils.xss(request.getParameter("memberEmail"));  // 크로스 사이트 스크립팅
+		String memberId = SecurityUtils.xss(request.getParameter("memberId"));       
+		String memberPw = SecurityUtils.sha256(request.getParameter("memberPw"));     
+		String memberName = SecurityUtils.xss(request.getParameter("memberName"));    
+		String memberBirth = SecurityUtils.xss(request.getParameter("memberBirth"));    
+		String memberGender = SecurityUtils.xss(request.getParameter("memberGender"));   
+		String memberPhone = SecurityUtils.xss(request.getParameter("memberPhone"));    
+		String memberEmail = SecurityUtils.xss(request.getParameter("memberEmail")); 
 		String location = request.getParameter("location");
 		String promotion = request.getParameter("promotion");
 		int memberAgreeState = 1;  // 필수 동의
@@ -152,7 +152,6 @@ public class MemberServiceImpl implements MemberService {
 			memberAgreeState = 3;  // 필수 + 프로모션 동의
 		}
 		
-		// MemberDTO
 		MemberDTO member = MemberDTO.builder()
 				.memberId(memberId)
 				.memberPw(memberPw)
@@ -164,17 +163,15 @@ public class MemberServiceImpl implements MemberService {
 				.memberAgreeState(memberAgreeState)
 				.build();
 		
-		// MEMBER 테이블에 member 저장
 		int res = memberMapper.insertMember(member);
 		
-		// 응답
 		try {
 			response.setContentType("text/html");
 			PrintWriter out = response.getWriter();
 			if(res == 1) {
 				out.println("<script>");
 				out.println("alert('회원 가입되었습니다.')");
-				out.println("location.href='" + request.getContextPath() + "/lsh_index'");
+				out.println("location.href='" + request.getContextPath() + "/lsh'");
 				out.println("</script>");
 				out.close();
 			} else {
@@ -194,21 +191,16 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public MemberDTO login(HttpServletRequest request) {
 		
-		// 파라미터
-
 		String memberId = SecurityUtils.xss(request.getParameter("memberId"));
 		String memberPw = SecurityUtils.sha256(request.getParameter("memberPw"));
 		
-		// MemberDTO
 		MemberDTO member = MemberDTO.builder()
 				.memberId(memberId)
 				.memberPw(memberPw)
 				.build();
 		
-		// ID/Password가 일치하는 회원 조회
 		MemberDTO loginMember = memberMapper.selectMemberByIdPw(member);
 		
-		// 로그인 기록 남기기
 		if(loginMember != null) {
 			memberMapper.insertMemberLog(loginMember.getMemberNo());
 		}
@@ -220,7 +212,7 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public String naverLogin(HttpSession session) {
 
-		String clientId = "XYULZHj0e4wadrMeNhvI";//애플리케이션 클라이언트 아이디값";
+		String clientId = "XYULZHj0e4wadrMeNhvI";
 		String redirectURI = null;
 		try {
 			redirectURI = URLEncoder.encode("http://localhost:9090/gym/member/callback", "UTF-8");
@@ -239,7 +231,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 	
 	@Override
-	public void callback(HttpServletRequest request) {
+	public void naverCallback(HttpServletRequest request, HttpServletResponse response) {
 		
 		String clientId = "XYULZHj0e4wadrMeNhvI";
 	    String clientSecret = "4gVLsa0no9";
@@ -265,9 +257,9 @@ public class MemberServiceImpl implements MemberService {
 	      con.setRequestMethod("GET");
 	      int responseCode = con.getResponseCode();
 	      BufferedReader br;
-	      if(responseCode==200) { // 정상 호출
+	      if(responseCode==200) { 
 	        br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-	      } else {  // 에러 발생
+	      } else {  
 	        br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
 	      }
 	      String inputLine;
@@ -309,21 +301,165 @@ public class MemberServiceImpl implements MemberService {
 				  .build();
 			
 		  
-		  if(memberMapper.selectMemberById(memberId) == null) {
+		  if(memberMapper.selectMemberByEmail(memberEmail) == null) {
 			  memberMapper.insertNaver(naver);
-		  } 
+		  } else {
+			  try {
+			    	response.setContentType("text/html");
+			    	PrintWriter out = response.getWriter();
+			    		out.println("<script>");
+			    		out.println("alert('등록된 아이디가 있습니다.')");
+						out.println("location.href='" + request.getContextPath() + "/login'");
+			    		out.println("</script>");
+			    		out.close();
+			    	  
+			    } catch (Exception e) {
+			    	e.printStackTrace();
+			    }
+		  }
 		  MemberDTO loginMember = memberMapper.selectMemberById(memberId);
 		  
 		  memberMapper.insertMemberLog(loginMember.getMemberNo());
 		  
 		  HttpSession session = request.getSession();
 	      session.setAttribute("loginMember", loginMember);
+	      session.setMaxInactiveInterval(60*60);
 	      
 	    } catch (Exception e) {
 	    	e.printStackTrace();
 	    }
 	}
 	
+	@Override
+	public String kakaoLogin(HttpSession session) {
+		
+		String clientId = "3e6d88b955a2408ebdcace4d52b2bf99";
+		String redirectURI = null;
+		try {
+			redirectURI = URLEncoder.encode("http://localhost:9090/gym/member/kakaoCallback", "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}	
+	    SecureRandom random = new SecureRandom();
+	    String state = new BigInteger(130, random).toString();
+	    String apiURL = "https://kauth.kakao.com/oauth/authorize?response_type=code";
+	    apiURL += "&client_id=" + clientId;
+	    apiURL += "&redirect_uri=" + redirectURI;
+	    apiURL += "&state=" + state;
+	    session.setAttribute("state", state);
+		
+		return apiURL;
+	}
+	
+	@Override
+	public void kakaoCallback(HttpServletRequest request, HttpServletResponse response) {
+		String clientId = "3e6d88b955a2408ebdcace4d52b2bf99";
+	    String clientSecret = "BENF6ElBnkKLakylegki6AoLsK8SYuJO";
+	    String code = request.getParameter("code");
+	    String state = request.getParameter("state");
+	    String redirectURI = null;
+	    String header = null;
+	    String access_token = null;
+	    MemberDTO loginMember;
+	    
+		try {
+			redirectURI = URLEncoder.encode("http://localhost:9090/gym/member/kakaoCallback", "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}	
+		
+		String apiURL;
+	    apiURL = "https://kauth.kakao.com/oauth/token?grant_type=authorization_code&";
+	    apiURL += "client_id=" + clientId;
+	    apiURL += "&client_secret=" + clientSecret;
+	    apiURL += "&redirect_uri=" + redirectURI;
+	    apiURL += "&code=" + code;
+	    apiURL += "&state=" + state;
+
+	    try {
+	      URL url = new URL(apiURL);
+	      HttpURLConnection con = (HttpURLConnection)url.openConnection();
+	      con.setRequestMethod("POST");
+	      int responseCode = con.getResponseCode();
+	      BufferedReader br;
+	      System.out.println("responseCode="+responseCode);
+	      if(responseCode==200) { 
+	        br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+	      } else {  
+	        br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+	      }
+	      String inputLine;
+	      StringBuffer res = new StringBuffer();
+	      while ((inputLine = br.readLine()) != null) {
+	        res.append(inputLine);
+	      }
+	      br.close();
+	      org.json.JSONObject obj = new org.json.JSONObject(res.toString());
+	      
+		  access_token = obj.getString("access_token");
+	      
+		  header = "Bearer " + access_token; 
+
+	      String apiURL2 = "https://kapi.kakao.com/v2/user/me";
+
+	      Map<String, String> requestHeaders = new HashMap<>();
+	      requestHeaders.put("Authorization", header);
+	      
+	      String responseBody = get(apiURL2,requestHeaders);
+
+	      org.json.JSONObject obj2 = new org.json.JSONObject(responseBody.toString());
+	      
+	      org.json.JSONObject obj3 = obj2.getJSONObject("kakao_account");
+	      org.json.JSONObject obj4 = obj3.getJSONObject("profile");
+	      String memberId = String.valueOf(obj2.getLong("id"));
+	      String memberName = obj4.getString("nickname");
+	      String memberEmail = obj3.getString("email");
+	      
+	      String gender2 = obj3.getString("gender");
+	      char memberGender = gender2.charAt(0);
+	      
+	      String memberBirth = obj3.getString("birthday");
+	      String memberPhone = "카카오가입";
+	      
+		  MemberDTO kakao = MemberDTO.builder()
+				  .memberId(memberId)
+				  .memberName(memberName)
+				  .memberEmail(memberEmail)
+				  .memberGender(String.valueOf(memberGender))
+				  .memberBirth(memberBirth)
+				  .memberPhone(memberPhone)
+				  .build();
+		  
+		  
+		  if(memberMapper.selectMemberByEmail(memberEmail) == null) {
+			  memberMapper.insertKakao(kakao);
+		  } else {
+			  try {
+			    	response.setContentType("text/html");
+			    	PrintWriter out = response.getWriter();
+			    		out.println("<script>");
+			    		out.println("alert('등록된 회원입니다.')");
+						out.println("location.href='" + request.getContextPath() + "/member/loginPage'");
+			    		out.println("</script>");
+			    		out.close();
+			    	  
+			    } catch (Exception e) {
+			    	e.printStackTrace();
+			    }
+		  }
+		  loginMember = memberMapper.selectMemberById(memberId);
+		  
+		  memberMapper.insertMemberLog(loginMember.getMemberNo());
+		  
+		  HttpSession session = request.getSession();
+	      session.setAttribute("loginMember", loginMember);
+	      session.setMaxInactiveInterval(60*60);
+	      
+	    } catch (Exception e) {
+	    	e.printStackTrace();
+	    }
+	    
+	}
 	
     private static String get(String apiUrl, Map<String, String> requestHeaders){
         HttpURLConnection con = connect(apiUrl);
@@ -332,7 +468,6 @@ public class MemberServiceImpl implements MemberService {
             for(Map.Entry<String, String> header :requestHeaders.entrySet()) {
                 con.setRequestProperty(header.getKey(), header.getValue());
             }
-
 
             int responseCode = con.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) { 
