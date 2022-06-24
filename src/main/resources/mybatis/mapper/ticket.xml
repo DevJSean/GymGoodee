@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.goodee.gym.mapper.TicketMapper">
+
+	
+	<!-- 수강권 정보 가져오기 -->
+	<select id="selectTicketByNo" parameterType="Long" resultType="TicketDTO">
+		SELECT TICKET_NO, TICKET_SUBJECT, TICKET_COUNT, TICKET_PERIOD, TICKET_PRICE
+		  FROM TICKET
+		 WHERE TICKET_NO = #{ticketNo}
+	</select>
+	
+	<!-- 결제내역 추가 -->
+	<insert id="insertPayList" parameterType="PayListDTO">
+		INSERT INTO PayList
+			(PAYLIST_NO, MEMBER_NO, TICKET_NO, PAYLIST_DATE)
+		VALUES
+			(PAYLIST_SEQ.NEXTVAL, #{memberNo}, #{ticketNo}, #{payListDate})
+	</insert>
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+</mapper>
