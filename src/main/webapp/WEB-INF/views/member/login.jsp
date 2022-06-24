@@ -9,37 +9,28 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.2.js" charset="utf-8"></script>
-
-<!-- jquery -->
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script>
 	
-	/* 페이지 로드 이벤트 */
 	$(function(){
 		fnLogin();
 		fnDisplayRememberId();
 	})
 	
-	/* 함수 */
 	
 	// 1. 로그인
 	function fnLogin(){
 		$('#f').on('submit', function(event){
-			// 아이디, 비밀번호 입력 확인
 			if($('#memberId').val() == '' || $('#memberPw').val() == ''){
 				alert('아이디와 비밀번호를 모두 입력하세요.');
 				event.preventDefault();
 				return false;
 			}
-			// 아이디 저장 체크 확인
-			// 아이디 저장은 쿠키를 이용한다.
 			if($('#rememberId').is(':checked')){
-				$.cookie('rememberId', $('#memberId').val());  // 입력한 id를 쿠키에 rememberId로 저장한다.
+				$.cookie('rememberId', $('#memberId').val());  
 			} else {
 				$.cookie('rememberId', '');
 			}
-			// 서브밋 수행
 			return true;
 		})
 	}
@@ -81,12 +72,16 @@
 	
 	<!-- 네이버 로그인 창으로 이동 -->			
 	<div id="naver_id_login">
-	<a href="${naver}">			
-	<img width="200" src="https://developers.naver.com/doc/review_201802/CK_bEFnWMeEBjXpQ5o8N_20180202_7aot50.png"/>
-	</a></div>			
+		<a href="${naver}">			
+			<img width="200" src="https://developers.naver.com/doc/review_201802/CK_bEFnWMeEBjXpQ5o8N_20180202_7aot50.png"/>
+		</a></div>			
 	<br>
-	
-	<br>
+	<!-- 카카오 로그인 창으로 이동 -->			
+	<div id="kakao_id_login">
+		<a href="${kakao}">			
+			<img width="200" src="../resources/images/kakao_login_medium_narrow.png"/>
+		</a></div>			
+	<br><br>
 	
 	<div>
 		<a href="${contextPath}/member/agreePage">회원가입페이지</a> | 

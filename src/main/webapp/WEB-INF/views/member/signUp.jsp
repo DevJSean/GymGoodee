@@ -30,7 +30,6 @@
 		fnSignUp();
 	})
 	
-	/* 함수 */
 	// 11. 회원가입
 	function fnSignUp(){
 		$('#f').on('submit', function(event){
@@ -141,6 +140,7 @@
 				dataType: 'json',
 				success: function(obj){
 					if(obj.res == null){
+						$('#emailMsg').text('');
 						resolve();     
 					} else {
 						reject(2000);  
@@ -176,7 +176,6 @@
 						$('#authCodeEmail').prop('readonly', true);
 					} else if(code == 2000){
 						$('#emailMsg').text('이미 사용 중인 이메일입니다.').addClass('dont').removeClass('ok');
-						$('#authCodeEmail').prop('readonly', true);
 					}
 				}
 			)
@@ -228,7 +227,7 @@
 				data: 'memberId=' + $('#memberId').val(),
 				dataType: 'json',
 				success: function(obj){
-					if(obj.res == null){
+					if(obj.res1 == null && obj.res2 == null){
 						$('#idMsg').text('멋진 아이디네요!').addClass('ok').removeClass('dont');
 						idPass = true;
 					} else {
@@ -290,7 +289,7 @@
 		<label for="memberPhone">
 			연락처<br>
 			<input type="text" name="memberPhone" id="memberPhone" placeholder="'-' 포함">
-			<input type="button" value="인증번호받기" id="btnGetAuthCodeSMS"><br>
+			<input type="button" value="인증코드받기" id="btnGetAuthCodeSMS"><br>
 			<span id="phoneMsg"></span><br>
 			<input type="text" name="authCodeSMS" id="authCodeSMS" placeholder="인증코드 입력">
 			<input type="button" value="인증하기" id="btnVerifyAuthCodeSMS"><br><br>
@@ -299,7 +298,7 @@
 		<label for="email">
 			이메일<br>
 			<input type="text" name="memberEmail" id="memberEmail">
-			<input type="button" value="인증번호받기" id="btnGetAuthCodeEmail"><br>
+			<input type="button" value="인증코드받기" id="btnGetAuthCodeEmail"><br>
 			<span id="emailMsg"></span><br>
 			<input type="text" name="authCodeEmail" id="authCodeEmail" placeholder="인증코드 입력">
 			<input type="button" value="인증하기" id="btnVerifyAuthCodeEmail"><br><br>
