@@ -11,21 +11,69 @@
 <title>비밀번호 확인</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script>
+
 	$(function() {
-		$('#btnPwChange').on('click', function(event) {
-			if($('#pw').val() == '') {
-				alert('비밀번호를 입력하세요.');
+		fnNewPwCheck();
+		fnNewPwConfirm();
+		fnChangePw();
+	})
+	
+	/* 함수 */
+	
+	// 1. 비밀번호 정규식
+	let pwPass = false;
+	function fnNewPwCheck(){
+		// 비밀번호 정규식 검사
+		$('#newPw').on('keyup', function(){
+			let regPw = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/;
+			if(regPw.test($('#newPw').val())==false){
+				$('#pwMsg').text('8~16자 영문, 숫자, 특수문자를 모두 사용하세요.').addClass('dont').removeClass('ok');
+				pwPass = false;
+			} else {
+				$('#pwMsg').text('사용 가능한 비밀번호입니다.').addClass('ok').removeClass('dont');
+				pwPass = true;
+			}
+		})
+	}
+	
+	// 2. 비밀번호 입력확인
+	let rePwPass = false;
+	function fnNewPwConfirm(){
+		$('#newPwConfirm').on('keyup', function(){
+			if($('#newPwConfirm').val() != '' && $('#newPw').val() != $('#newPwConfirm').val()){
+				$('#pwConfirmMsg').text('비밀번호를 확인하세요.').addClass('dont').removeClass('ok');
+				rePwPass = false;
+			} else {
+				$('#pwConfirmMsg').text('');
+				rePwPass = true;
+			}
+		})
+	}
+	
+	// 3. 비밀번호 변경
+	function fnChangePw(){
+		$('#f').on('submit', function(event){
+			if($('#currentPw').val() == '') {
+				alert('현재 비밀번호를 입력하세요.');
 				event.preventDefault();
 				return false;
-			} else if($('#pw').val() != '${memberPw}') {
-				alert('비밀번호가 일치하지 않습니다.');
-				$('#pw').val('');
+			} else if(pwPass == false || rePwPass == false){
+				alert('비밀번호를 확인하세요.');
+				fnInit();
 				event.preventDefault();
 				return false;
 			}
 			return true;
 		})
-	})
+	}
+	
+	function fnInit() {
+		$('#currentPw').val('');
+		$('#newPw').val('');
+		$('#newPwConfirm').val('');
+		$('#pwMsg').text('');
+		$('#pwConfirmMsg').text('');
+	}
 </script>
 <style>
 	.myPageNav {
@@ -73,7 +121,7 @@
 		border: none;
 		border-radius: 15px;
 	}
-	#btnCancle {
+	button {
 		width: 300px;
 		padding: 16px 0px 15px;
 		margin-top: 10px;
@@ -81,7 +129,12 @@
 		color: white;
 		border: none;
 		border-radius: 15px;
-	
+	}
+	.ok {
+		color: limegreen;
+	}
+	.dont {
+		color: crimson;
 	}
 </style>
 </head>
@@ -96,29 +149,32 @@
 		<nav>
 			<ul class="myPageNav">
 				<li class="navItem nowPage">수강내역</li>
-				<li class="navItem"><a href="${contextPath}/mypage/myPayList?memberNo=101">결제내역</a></li>
-				<li class="navItem"><a href="${contextPath}/mypage/myPwCheck?memberNo=101">개인정보</a></li>
+				<li class="navItem"><a href="${contextPath}/mypage/myPayList?memberNo=${loginMember.memberNo}">결제내역</a></li>
+				<li class="navItem"><a href="${contextPath}/mypage/myInfo?memberNo=${loginMember.memberNo}">개인정보</a></li>
 			</ul>	
 		</nav>
 	
-		<div>
+		<form id="f" action="${contextPath}/mypage/changePw" method="post">
 			<h1>비밀번호 입력</h1>
+			<input type="hidden" name="memberNo" value="${loginMember.memberNo}">
 			<label for="pw">
 				현재 비밀번호
-				<input type="password" name="pw" id="pw"><br><br>
+				<input type="password" name="currentPw" id="currentPw"><br><br>
 			</label>
 			<label for="newPW">
 				새 비밀번호
 				<input type="password" name="newPw" id="newPw"><br>
-			</label>			
-			<label for="newPwCheck">
+				<span id="pwMsg"></span>
+			</label><br>
+			<label for="newPwConfirm">
 				새 비밀번호 확인
-				<input type="password" name="newPwCheck" id="newPwCheck"><br>
-			</label>
+				<input type="password" id="newPwConfirm"><br>
+				<span id="pwConfirmMsg"></span>
+			</label><br>
 			
-			<input type="button" value="확인" id="btnPwChange"><br>
+			<button>확인</button><br>
 			<input type="button" value="취소" id="btnCancle" onclick='history.back()'>
-		</div>
+		</form>
 		
 	</section>
 	

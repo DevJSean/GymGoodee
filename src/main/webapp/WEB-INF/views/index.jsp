@@ -9,12 +9,13 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script src="./resources/js/jquery-3.6.0.js"></script>
 </head>
 <body>
 	
 	<h1>index</h1>
 	
-	<a href="${contextPath}/member/login">로그인</a>
+	<jsp:include page="./layout/header.jsp"></jsp:include>
 	
 	<a href="${contextPath}/jsh">지시현 구현</a>
 	<a href="${contextPath}/ljm">이정민 구현</a>
