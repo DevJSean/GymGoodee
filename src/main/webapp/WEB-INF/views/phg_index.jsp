@@ -16,5 +16,7 @@
 	<h1>박현규</h1>
 	
 	
+	<a href="${contextPath}/pay/paySwim">결제창 이동</a>
+	
 </body>
 </html>
