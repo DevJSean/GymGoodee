@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.goodee.gym.domain.AnswerDTO;
 import com.goodee.gym.domain.NoticeDTO;
 import com.goodee.gym.domain.NoticeFileAttachDTO;
 import com.goodee.gym.domain.QuestionDTO;
@@ -35,7 +36,12 @@ public interface BoardMapper {
 	public int selectQuestionsCount(Map<String, Object> map);
 	public List<QuestionDTO> selectQuestionList(Map<String, Object> map);
 	public QuestionDTO selectQuestionByNo(Long questionNo);
+	public AnswerDTO selectAnswerByNo(Long questionNo);
+	public int updateQuestionHit(Long questionNo);
 	public int insertQuestion(QuestionDTO question);
 	public int deleteQuestion(Long questionNo);
 	public List<QuestionDTO> questionAutoComplete(Map<String, Object> map);
+	public int insertAnswer(AnswerDTO answer);
+	public int deleteAnswer(Long questionNo);
 }
+

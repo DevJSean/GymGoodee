@@ -10,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.goodee.gym.domain.QuestionDTO;
-
 public interface BoardService {
 
 	// 공지사항 전체조회
@@ -41,12 +39,16 @@ public interface BoardService {
 	public void findQuestions(HttpServletRequest request, Model model);
 	// 질문 자동완성
 	public Map<String, Object> questionAutoComplete(HttpServletRequest request);
-	// 질문 검색 (questionDetail)
-	public QuestionDTO getQuestionByNo(Long questionNo);
+	// 질문 검색 상세 보기
+	public void getQuestionByNo(HttpServletRequest request, Model model);
 	// 질문 추가
 	public void addQuestion(HttpServletRequest request, HttpServletResponse response);
 	// 질문 삭제
 	public void removeQuestion(HttpServletRequest request, HttpServletResponse response);
 	// 질문 summernote에 image 첨부하기
 	public Map<String, Object> uploadSummernoteImage(MultipartHttpServletRequest multipartRequest);
+	// 답변 등록
+	public Map<String, Object> answerAdd(HttpServletRequest request);
+	// 답변 삭제
+	public Map<String, Object> answerRemove(Long questionNo);
 }

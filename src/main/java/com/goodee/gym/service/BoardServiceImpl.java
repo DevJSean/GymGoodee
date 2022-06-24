@@ -28,6 +28,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.goodee.gym.domain.AnswerDTO;
 import com.goodee.gym.domain.NoticeDTO;
 import com.goodee.gym.domain.NoticeFileAttachDTO;
 import com.goodee.gym.domain.QuestionDTO;
@@ -233,12 +234,16 @@ public class BoardServiceImpl implements BoardService {
 		List<String> thumbnails = new ArrayList<>();
 
 		int noticeFileAttachResult;
-		if(files.get(0).getOriginalFilename().isEmpty()) {
-			noticeFileAttachResult = 1; 
-		} else { 
+		if(files.size() > 0) {
+			if(files.get(0).getOriginalFilename().isEmpty()) {
+				noticeFileAttachResult = 1; 
+			} else { 
+				noticeFileAttachResult = 0;
+			}	
+		} else {
 			noticeFileAttachResult = 0;
-		}		
-		
+		}
+	
 		String path = null;
 		
 		for(MultipartFile multipartFile : files) {
@@ -284,7 +289,7 @@ public class BoardServiceImpl implements BoardService {
 		}
 		Map<String, Object> map = new HashMap<>();
 		map.put("noticeResult", noticeResult == 1);   
-		map.put("noticeFileAttachResult", noticeFileAttachResult == files.size());
+		map.put("noticeFileAttachResult", noticeFileAttachResult); // noticeFileAttachResult == files.size()
 		map.put("thumbnails", thumbnails);
 		map.put("path", path); 
 		return map;
@@ -486,6 +491,11 @@ public class BoardServiceImpl implements BoardService {
 	/*** Question/Answer  ***/
 	@Override
 	public void getAllquestions(HttpServletRequest request, Model model) {
+		HttpSession session = request.getSession();
+		if(session.getAttribute("updateHit") != null) {
+			session.removeAttribute("updateHit");
+		}
+		
 		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
 		int page = Integer.parseInt(opt.orElse("1"));
 		
@@ -576,8 +586,22 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	@Override
-	public QuestionDTO getQuestionByNo(Long questionNo) {
-		return boardMapper.selectQuestionByNo(questionNo);
+	public void getQuestionByNo(HttpServletRequest request, Model model) {
+		
+		Long questionNo = Long.parseLong(request.getParameter("questionNo"));
+		
+		// 조회수 증가
+		String referer = request.getHeader("referer");
+		HttpSession session = request.getSession(); 
+		if(referer.endsWith("List") && session.getAttribute("updateHit") == null) {
+			boardMapper.updateQuestionHit(questionNo);  
+			session.setAttribute("updateHit", "done");  
+		} else if(referer.endsWith("Search") && session.getAttribute("updateHit") == null) {
+			boardMapper.updateQuestionHit(questionNo);  
+			session.setAttribute("updateHit", "done");  
+		}
+		model.addAttribute("question", boardMapper.selectQuestionByNo(questionNo));
+		model.addAttribute("answer", boardMapper.selectAnswerByNo(questionNo));
 	}
 	
 	@Override
@@ -681,7 +705,37 @@ public class BoardServiceImpl implements BoardService {
 		
 		// 저장된 파일의 경로를 반환
 		Map<String, Object> map = new HashMap<>();
-		map.put("src", "/getImage/" + saved);    //"/getImage/" + 
+		map.put("src", multipartRequest.getContextPath() + "/getImage/" + saved);
 		return map;
 	}
+	
+	@Override
+	public Map<String, Object> answerAdd(HttpServletRequest request) {
+		Long questionNo = Long.parseLong(request.getParameter("questionNo"));
+		if(boardMapper.selectAnswerByNo(questionNo) != null) {
+			boardMapper.deleteAnswer(questionNo);
+		}
+		AnswerDTO answer = AnswerDTO.builder()
+				.questionNo(questionNo)
+				.answerContent(request.getParameter("answerContent"))
+				.build();
+		Map<String, Object> map = new HashMap<>();
+		map.put("res", boardMapper.insertAnswer(answer));
+		map.put("answerContent", boardMapper.selectAnswerByNo(questionNo));
+		return map;
+	}
+	
+	@Override
+	public Map<String, Object> answerRemove(Long questionNo) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("res", boardMapper.deleteAnswer(questionNo));
+		return map;
+	}
+	
+	
+	
+	
+	
+	
+	
 }

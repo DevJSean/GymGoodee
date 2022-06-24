@@ -129,9 +129,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	<!-- question BEGIN~END 사이 목록 반환 -->
 	<select id="selectQuestions" parameterType="Map" resultType="QuestionDTO">
-		SELECT A.ROW_NUM, A.QUESTION_NO, A.MEMBER_ID, A.QUESTION_TITLE, A.QUESTION_CONTENT, A.QUESTION_HIT, A.QUESTION_IP, A.QUESTION_CREATED, A.QUESTION_MODIFIED
-		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY QUESTION_CREATED DESC) AS ROW_NUM, QUESTION_NO, MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_HIT, QUESTION_IP, QUESTION_CREATED, QUESTION_MODIFIED
-		          FROM QUESTION) A
+		SELECT A.ROW_NUM, A.QUESTION_NO, A.MEMBER_ID, A.QUESTION_TITLE, A.QUESTION_CONTENT, A.QUESTION_HIT, A.QUESTION_IP, A.QUESTION_CREATED, A.ANSWER_NO
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY Q.QUESTION_CREATED DESC) AS ROW_NUM, Q.QUESTION_NO, Q.MEMBER_ID, Q.QUESTION_TITLE, Q.QUESTION_CONTENT, Q.QUESTION_HIT, Q.QUESTION_IP, Q.QUESTION_CREATED, AN.ANSWER_NO
+		          FROM QUESTION Q LEFT OUTER JOIN ANSWER AN
+		            ON Q.QUESTION_NO = AN.QUESTION_NO) A
          WHERE A.ROW_NUM BETWEEN #{beginRecord} AND #{endRecord}
 	</select>
 	<!-- question 검색된 레코드 갯수 -->
@@ -149,9 +150,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	<!-- question 검색 -->
 	<select id="selectQuestionList" parameterType="Map" resultType="QuestionDTO">
-		SELECT A.ROW_NUM, A.QUESTION_NO, A.MEMBER_ID, A.QUESTION_TITLE, A.QUESTION_CONTENT, A.QUESTION_HIT, A.QUESTION_IP, A.QUESTION_CREATED, A.QUESTION_MODIFIED
-		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY QUESTION_CREATED DESC) AS ROW_NUM, QUESTION_NO, MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_HIT, QUESTION_IP, QUESTION_CREATED, QUESTION_MODIFIED
-		          FROM QUESTION
+		SELECT A.ROW_NUM, A.QUESTION_NO, A.MEMBER_ID, A.QUESTION_TITLE, A.QUESTION_CONTENT, A.QUESTION_HIT, A.QUESTION_IP, A.QUESTION_CREATED, A.ANSWER_NO
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY Q.QUESTION_CREATED DESC) AS ROW_NUM, Q.QUESTION_NO, Q.MEMBER_ID, Q.QUESTION_TITLE, Q.QUESTION_CONTENT, Q.QUESTION_HIT, Q.QUESTION_IP, Q.QUESTION_CREATED, AN.ANSWER_NO
+		          FROM QUESTION Q LEFT OUTER JOIN ANSWER AN
+		            ON Q.QUESTION_NO = AN.QUESTION_NO
 				<where>
 					<choose>
 				 		<when test="column == 'QUESTION_TITLE'">UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
@@ -164,16 +166,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>	
 	<!-- question 검색 questionNo이용 -->
 	<select id="selectQuestionByNo" parameterType="Long" resultType="QuestionDTO">
-		SELECT QUESTION_NO, MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_HIT, QUESTION_IP, QUESTION_CREATED, QUESTION_MODIFIED
+		SELECT QUESTION_NO, MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_HIT, QUESTION_IP, QUESTION_CREATED
 		  FROM QUESTION
 		 WHERE QUESTION_NO = #{questionNo}
 	</select>
+	<!-- answer 검색 questionNo이용 -->
+	<select id="selectAnswerByNo" parameterType="Long" resultType="AnswerDTO">
+		SELECT ANSWER_NO, QUESTION_NO, ANSWER_CONTENT, ANSWER_CREATED
+		  FROM ANSWER
+		 WHERE QUESTION_NO = #{questionNo}
+	</select>
+	<!-- question 조회수 늘리기 -->
+	<update id="updateQuestionHit" parameterType="Long">
+		UPDATE QUESTION
+		   SET QUESTION_HIT = QUESTION_HIT + 1
+		 WHERE QUESTION_NO = #{questionNo}
+	</update>
 	<!-- question 삽입 -->
 	<insert id="insertQuestion" parameterType="QuestionDTO">
 		INSERT INTO QUESTION
-			(QUESTION_NO, MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_HIT, QUESTION_IP, QUESTION_CREATED, QUESTION_MODIFIED)
+			(QUESTION_NO, MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_HIT, QUESTION_IP, QUESTION_CREATED)
 		VALUES
-			(QUESTION_SEQ.NEXTVAL, #{memberId}, #{questionTitle}, #{questionContent}, 0, #{questionIp}, SYSDATE, SYSDATE)
+			(QUESTION_SEQ.NEXTVAL, #{memberId}, #{questionTitle}, #{questionContent}, 0, #{questionIp}, SYSDATE)
 	</insert>
 	<!-- question 삭제 -->
 	<delete id="deleteQuestion" parameterType="Long">
@@ -187,6 +201,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  FROM QUESTION
 		 WHERE ${column} LIKE #{query} || '%'
 	</select>
+	<!-- answer 삽입 -->
+	<insert id="insertAnswer" parameterType="AnswerDTO">
+		INSERT INTO ANSWER
+			(ANSWER_NO, QUESTION_NO, ANSWER_CONTENT, ANSWER_CREATED)
+		VALUES
+			(ANSWER_SEQ.NEXTVAL, #{questionNo}, #{answerContent}, SYSDATE)
+	</insert>
+	<!-- answer 삭제 -->
+	<delete id="deleteAnswer" parameterType="Long">
+		DELETE 
+		  FROM ANSWER
+		 WHERE QUESTION_NO = #{questionNo}
+	</delete>
 	
 
 </mapper>

@@ -1,9 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/> 
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -65,7 +63,7 @@
 							dataType: 'json',
 							success: function(obj){
 								console.log(obj.src);
-								$('#content').summernote('insertImage', '${contextPath}' + obj.src);
+								$('#content').summernote('insertImage', obj.src);
 							}
 						})
 					}
@@ -73,19 +71,18 @@
 			}
 		});
 	}
-	
 </script>
-
 </head>
 <body>
 
 	<h1>질문 작성화면</h1>
-	
+
 	<form id="f" action="${contextPath}/board/questionAdd" method="post">
-		<input type="text" name="writer" value="ID101"><br> <!-- 작성자 value는 세션에서 받아와야 한다. -->
+		<input type="text" name="writer" value="${loginMember.memberId}" readonly><br>
 		<input type="text" name="title" placeholder="제목"><br>
 		<textarea name="content" id="content"></textarea><br><br>
 		<button>작성완료</button>	
+		<input type="button" value="QnA 목록" onclick="location.href='${contextPath}/board/questionList'">
 	</form>
 	
 </body>

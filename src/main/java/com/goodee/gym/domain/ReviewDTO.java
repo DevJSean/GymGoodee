@@ -15,9 +15,11 @@ public class ReviewDTO {
 
 	private Long reviewNo;
 	private String classCode;
+	private String reviewSubject;
 	private String memberId;
 	private String reviewTitle;
 	private String reviewContent;
+	private Integer reviewHit;
 	private String reviewIp;
 	private Date reviewCreated;
 	private Integer reviewState;

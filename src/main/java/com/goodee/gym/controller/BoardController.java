@@ -92,7 +92,7 @@ public class BoardController {
 	@GetMapping(value="/board/removeNoticeFileAttach")
 	public String removeNoticeFileAttach(@RequestParam Long noticeFileAttachNo, @RequestParam Long noticeNo) {
 		boardService.removeNoticeFileAttach(noticeFileAttachNo);
-		return "redirect:/board/noticeDetail?noticeNo=" + noticeNo;
+		return "redirect:/board/noticeModifyPage?noticeNo=" + noticeNo;
 	}
 	
 	@ResponseBody
@@ -100,8 +100,6 @@ public class BoardController {
 	public Map<String, Object> noticeAutoComplete(HttpServletRequest request) {
 		return boardService.noticeAutoComplete(request);
 	}
-	
-	
 	
 	
 	
@@ -119,8 +117,8 @@ public class BoardController {
 	}
 	
 	@GetMapping(value="/board/questionDetail")
-	public String questionDetail(@RequestParam(value="questionNo", required=false, defaultValue="0") Long questionNo, Model model) {
-		model.addAttribute("question", boardService.getQuestionByNo(questionNo));
+	public String questionDetail(HttpServletRequest request, Model model) {
+		boardService.getQuestionByNo(request, model);
 		return "board/questionDetail";
 	}
 	
@@ -149,6 +147,18 @@ public class BoardController {
 	@PostMapping(value="/board/uploadSummernoteImage", produces="application/json")
 	public Map<String, Object> uploadSummernoteImage(MultipartHttpServletRequest multipartRequest) {
 		return boardService.uploadSummernoteImage(multipartRequest);
+	}
+	
+	@ResponseBody
+	@PostMapping(value="/board/answerAdd", produces="application/json; charset=UTF-8")
+	public Map<String, Object> answerAdd(HttpServletRequest request){
+		return boardService.answerAdd(request);
+	}
+	
+	@ResponseBody
+	@GetMapping(value="/board/answerRemove", produces="application/json; charset=UTF-8")
+	public Map<String, Object> answerRemove(Long questionNo){
+		return boardService.answerRemove(questionNo);
 	}
 	
 	/*** 리뷰 ***/
