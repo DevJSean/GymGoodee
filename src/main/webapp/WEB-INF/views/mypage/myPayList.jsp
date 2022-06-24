@@ -51,9 +51,9 @@
 		
 		<nav>
 			<ul class="myPageNav">
-				<li class="navItem"><a href="${contextPath}/mypage/myReserveList?memberNo=101">수강내역</a></li>
-				<li class="navItem nowPage?memberNo=101">결제내역</li>
-				<li class="navItem"><a href="${contextPath}/mypage/myInfo?memberNo=101">개인정보</a></li>
+				<li class="navItem"><a href="${contextPath}/mypage/myReserveList?memberNo=${loginMember.memberNo}&memberId=${loginMember.memberId}">수강내역</a></li>
+				<li class="navItem nowPage">결제내역</li>
+				<li class="navItem"><a href="${contextPath}/mypage/myInfo?memberNo=${loginMember.memberNo}">개인정보</a></li>
 			</ul>	
 		</nav>
 		

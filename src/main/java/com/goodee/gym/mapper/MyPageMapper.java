@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.goodee.gym.domain.MemberDTO;
 import com.goodee.gym.domain.PayListDTO;
+import com.goodee.gym.domain.RemainTicketDTO;
 import com.goodee.gym.domain.ReservationDTO;
 
 @Mapper
@@ -16,6 +18,10 @@ public interface MyPageMapper {
 	public List<ReservationDTO> selectCommingReservationsByNo(Long memberNo);
 	public int selectCommingCount(Long memberNo);
 	
+	// 예약 취소
+	public int updateReservation(String reservationCode);
+	public int updateRemainTicket(@Param(value="memberId") String memberId, @Param(value="remainTicketSubject") String remainTicketSubject);
+	
 	// 지난 수업 내역 조회
 	public List<ReservationDTO> selectOverReservationsByNo(Map<String, Object> map);
 	public int selectOverCount(Long memberNo);
@@ -24,11 +30,20 @@ public interface MyPageMapper {
 	public List<PayListDTO> selectPayList(Long memberNo);
 	
 	// 비밀번호 조회
-	public String selectPwByNo(Long memberNo);
-	
-	// 개인정보 조회
-	public MemberDTO selectMyInfoByNo(Long memberNo);
+	public String selectMemberPwByNo(Long memberNo);
 	
 	// 비밀번호 수정
-	public int updatePw(String memberPw);
+	public int updatePw(MemberDTO member);
+	
+	// 개인정보 수정 (이메일, 연락처)
+	public int updateMyInfo(MemberDTO member);
+	
+	// 개인정보 불러오기
+	public MemberDTO selectMemberById(Long memberNo);
+	
+	// 잔여수강권 조회
+	public List<RemainTicketDTO> selectTicketsById(String memberId);
+	
+	// 회원 탈퇴
+	public int deleteMember(Long memberNo);
 }
