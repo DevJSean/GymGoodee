@@ -1,9 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/> 
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,6 +14,7 @@
 		fnInit();
 		fnFileCheck();
 		fnAdd();
+		fnRemoveAttached();
 	})
 	
 	function fnInit() {
@@ -58,12 +57,20 @@
 	function fnAdd() {
 		$('#btnAdd').on('click', function(){
 			
+			if( $('#title').val() == '' || $('#content').val() == '' ){
+				alert('제목과 내용은 필수입니다.');
+				event.preventDefault();
+				return false;
+			}
+			
 			let formData = new FormData();
 			formData.append('title', $('#title').val());
 			formData.append('content', $('#content').val());
-			let files = $('#files')[0].files;
-			for(let i = 0; i < files.length; i++){
-				formData.append('files', files[i]);
+			if($('#files')[0].files.length > 0) {
+				let files = $('#files')[0].files;
+				for(let i = 0; i < files.length; i++){
+					formData.append('files', files[i]);
+				}
 			}
 			$.ajax({
 				url: '${contextPath}/board/noticeAdd',
@@ -75,28 +82,53 @@
 				success: function(obj){
 					if(obj.noticeResult) { 
 						alert('공지사항이 등록되었습니다.');
+						if(obj.noticeFileAttachResult > 0) {
+							alert('파일이 첨부되었습니다.');
+							//fnAttached(obj);
+							location.href="${contextPath}/board/noticeList";
+						} else {
+							alert('파일은 등록되지 않았습니다.');
+							location.href="${contextPath}/board/noticeList";
+						}
 					} else {
-						alert('공지사항 등록이 실패했습니다.');
+						alert('공지사항이 등록되지 않았습니다.');
 					}
-					if(obj.noticeFileAttachResult) {
-						alert('파일이 첨부되었습니다.');
-						fnAttached(obj);
-					} else {
-						alert('파일 등록이 실패했습니다.');
-					}
-					fnInit();
+					//fnInit();
 				}
 			})
 		})
 	}
 	
-	function fnAttached(obj) {
+/* 	function fnAttached(obj) {
 		$('#attached').empty();
 		let result = '';
 		for(let i = 0; i < obj.thumbnails.length; i++) { 
 			result += '<div><img src="${contextPath}/board/display/?path=' + encodeURIComponent(obj.path) + '&thumbnail=' + obj.thumbnails[i] + '"></div>';
 		}
 		$('#attached').append(result);
+	} */
+	
+	function fnImagePreview(event){
+		$('#attached').empty();
+		for(var image of event.target.files){
+			var reader = new FileReader();
+			
+			reader.onload = function(event){
+				var img = document.createElement("img");
+				img.setAttribute("src", event.target.result);
+				img.setAttribute("class", "col-lg-6");
+				document.querySelector("div#attached").appendChild(img);
+			};
+			console.log(image);
+			reader.readAsDataURL(image);
+		}
+	}
+
+	function fnRemoveAttached(){
+		$('#btnRemoveAttached').on('click', function(){
+			$('#attached').empty();
+			$('#files').val('');
+		})
 	}
 	
 </script>
@@ -104,12 +136,14 @@
 <body>
 	
 	<h1>공지사항 작성화면</h1>
-
 	<div>
 		제목 : <input type="text" name="title" id="title"><br>
-		내용<br><textarea rows="30" cols="50" name="content" id="content"></textarea><br>
-		첨부 : <input type="file" name="files" id="files" multiple="multiple"><br><br>
+		내용<br><textarea rows="30" cols="80" name="content" id="content" class="content"></textarea><br>
+		첨부 : <input type="file" name="files" id="files" multiple="multiple" onchange="fnImagePreview(event);">
+		<input type="button" value="첨부파일 제거" id="btnRemoveAttached">
+		<br><br>
 		<input type="button" value="등록" id="btnAdd">	
+		<input type="button" value="공지사항 목록" onclick="location.href='${contextPath}/board/noticeList'">
 	</div>
 	
 	<div>

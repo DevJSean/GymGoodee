@@ -1,9 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/> 
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,6 +17,10 @@
 		$('#f').on('submit', function(event){
 			if($('#title').val() == '${notice.noticeTitle}'&& $('#content').val() == '${notice.noticeContent}' && $('#files').val() == '') {
 				alert('변경된 내용이 없습니다.');
+				event.preventDefault();
+				return false;
+			} else if($('#title').val() == '' || $('#content').val() == '') {
+				alert('제목과 내용은 필수입니다.');
 				event.preventDefault();
 				return false;
 			}
@@ -65,23 +67,19 @@
 		수정일 ${notice.noticeModified}<br>
 		<input type="hidden" name="noticeNo" value="${notice.noticeNo}">
 		제목 <input type="text" name="title" id="title" value="${notice.noticeTitle}"><br>
-		내용 <input type="text" name="content" id="content" value="${notice.noticeContent}"><br>
-		첨부 추가 <input type="file" name="files" id="files" multiple="multiple"><br><br>
+		내용<br><textarea rows="30" cols="80" id="content" class="content">${notice.noticeContent}</textarea><br>
+		첨부파일 추가 <input type="file" name="files" id="files" multiple="multiple"><br><br>
 		<button>수정 완료</button>
 		<input type="button" value="목록" id="btnList">
 	</form>
 	
 	<hr>
 	
-	<div>첨부목록 삭제</div>
+	<div>첨부파일 삭제</div>
 	<c:forEach var="noticeFileAttach" items="${noticeFileAttaches}">
-		<div>${noticeFileAttach.noticeFileAttachOrigin}<a href="${contextPath}/board/removeNoticeFileAttach?noticeFileAttachNo=${noticeFileAttach.noticeFileAttachNo}&noticeNo=${noticeFileAttach.noticeNo}"><i class="fa-solid fa-x"></i></a></div>		
-	</c:forEach>
-	
-	<hr>
-	
-	<c:forEach var="noticeFileAttach" items="${noticeFileAttaches}">
-		<div><img alt="${noticeFileAttach.noticeFileAttachOrigin}" src="${contextPath}/board/noticeDisplay?noticeFileAttachNo=${noticeFileAttach.noticeFileAttachNo}"></div>
+		<span>${noticeFileAttach.noticeFileAttachOrigin}</span> 
+		<a href="${contextPath}/board/removeNoticeFileAttach?noticeFileAttachNo=${noticeFileAttach.noticeFileAttachNo}&noticeNo=${noticeFileAttach.noticeNo}"><i class="fa-solid fa-x"></i></a>	
+		<div><img alt="${noticeFileAttach.noticeFileAttachOrigin}" src="${contextPath}/board/noticeDisplay?noticeFileAttachNo=${noticeFileAttach.noticeFileAttachNo}" width="300px"></div>
 	</c:forEach>
 	
 </body>

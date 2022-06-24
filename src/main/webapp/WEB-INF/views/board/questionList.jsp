@@ -45,17 +45,18 @@
 		border-top: 0;
 	}
 </style>
-
 </head>
 <body>
 	
 	<h1>QnA 목록</h1>
-	<a href="${contextPath}/jsh">메인으로 돌아가기</a>
-	<a href="${contextPath}/board/noticeList">공지사항</a>
-	<a href="${contextPath}/board/questionList">QnA</a>
-	<a href="${contextPath}/board/reviewList">리뷰</a>
+	<input type="button" value="메인으로 돌아가기" onclick="location.href='${contextPath}/jsh'">
+	<input type="button" value="공지사항" onclick="location.href='${contextPath}/board/noticeList'">
+	<input type="button" value="QnA" onclick="location.href='${contextPath}/board/questionList'">
+	<input type="button" value="리뷰" onclick="location.href='${contextPath}/board/reviewList'">
 	<br><br>
-	<a href="${contextPath}/board/questionAddPage">글 작성</a>
+	<c:if test="${loginMember ne null}">
+		<input type="button" value="글 작성" onclick="location.href='${contextPath}/board/questionAddPage'">
+	</c:if>
 	<table>
 		<thead>
 			<tr>
@@ -75,7 +76,12 @@
 					<td>${question.memberId}</td>
 					<td>${question.questionCreated}</td>
 					<td>${question.questionHit}</td>
-					<td>작성상태</td>
+					<c:if test="${question.answerNo eq null}">
+						<td>답변 대기</td>
+					</c:if>
+					<c:if test="${question.answerNo ne null}">
+						<td>답변 완료</td>
+					</c:if>
 				</tr>
 			</c:forEach>
 		</tbody>
@@ -88,7 +94,5 @@
 		</tfoot>
 	</table>
 
-
-	
 </body>
 </html>

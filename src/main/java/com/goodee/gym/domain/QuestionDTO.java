@@ -20,6 +20,6 @@ public class QuestionDTO {
 	private Integer questionHit;
 	private String questionIp;
 	private Date questionCreated;
-	private Date questionModified;
+	private Long answerNo;
 	
 }

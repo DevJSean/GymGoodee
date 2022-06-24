@@ -13,9 +13,9 @@
 <body>
 	
 	
-		<a href="${contextPath}/board/noticeList">공지사항</a>
-		<a href="${contextPath}/board/questionList">QnA</a>
-		<a href="${contextPath}/board/reviewList">리뷰</a>
+	<input type="button" value="공지사항" onclick="location.href='${contextPath}/board/noticeList'">
+	<input type="button" value="QnA" onclick="location.href='${contextPath}/board/questionList'">
+	<input type="button" value="리뷰" onclick="location.href='${contextPath}/board/reviewList'">
 
 	
 </body>

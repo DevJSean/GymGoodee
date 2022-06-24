@@ -1,15 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/> 
-
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <style>
 	* {
 		box-sizing: border-box;
@@ -46,18 +43,19 @@
 		border-top: 0;
 	}
 </style>
-
 </head>
 <body>
 	
 	<h1>공지사항 목록</h1>
-	<a href="${contextPath}/jsh">메인으로 돌아가기</a>
-	<a href="${contextPath}/board/noticeList">공지사항</a>
-	<a href="${contextPath}/board/questionList">QnA</a>
-	<a href="${contextPath}/board/reviewList">리뷰</a>
+	<input type="button" value="메인으로 돌아가기" onclick="location.href='${contextPath}/jsh'">
+	<input type="button" value="공지사항" onclick="location.href='${contextPath}/board/noticeList'">
+	<input type="button" value="QnA" onclick="location.href='${contextPath}/board/questionList'">
+	<input type="button" value="리뷰" onclick="location.href='${contextPath}/board/reviewList'">
 	<br><br>
-	<a href="${contextPath}/board/noticeAddPage">글 작성</a>
-	
+	<c:if test="${loginMember.memberId eq 'admin'}">
+		<input type="button" value="글 작성" onclick="location.href='${contextPath}/board/noticeAddPage'">
+	</c:if>
+	  
 	<table>
 		<thead>
 			<tr>
