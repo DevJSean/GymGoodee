@@ -89,16 +89,13 @@ pageEncoding="UTF-8"%>
 					<th>상품명</th>
 					<td>
 						<input type="hidden" name="ticketName" id="ticketName" 
-							value="<c:if test="${ticket.ticketSubject == 'SWIM'}">수영</c:if>
-								<c:if test="${ticket.ticketSubject == 'SPINNING'}">스피닝</c:if>
-								<c:if test="${ticket.ticketSubject == 'PILATES'}">필라테스</c:if>
-								<c:if test="${ticket.ticketSubject == 'DANCE'}">스포츠댄스</c:if>
-								&nbsp;&nbsp;&nbsp;${ticket.ticketCount}회">
-									<c:if test="${ticket.ticketSubject == 'SWIM'}">수영</c:if>
-									<c:if test="${ticket.ticketSubject == 'SPINNING'}">스피닝</c:if>
-									<c:if test="${ticket.ticketSubject == 'PILATES'}">필라테스</c:if>
-									<c:if test="${ticket.ticketSubject == 'DANCE'}">스포츠댄스</c:if>
-									&nbsp;&nbsp;&nbsp;${ticket.ticketCount}회
+								value="<c:choose><c:when test="${ticket.ticketSubject == 'SWIM'}">수영</c:when><c:when test="${ticket.ticketSubject == 'SPINNING'}">스피닝</c:when><c:when test="${ticket.ticketSubject == 'PILATES'}">필라테스</c:when><c:when test="${ticket.ticketSubject == 'DANCE'}">스포츠댄스</c:when></c:choose>&nbsp;&nbsp;&nbsp;${ticket.ticketCount}회">
+										<c:choose>
+											<c:when test="${ticket.ticketSubject == 'SWIM'}">수영</c:when>
+											<c:when test="${ticket.ticketSubject == 'SPINNING'}">스피닝</c:when>
+											<c:when test="${ticket.ticketSubject == 'PILATES'}">필라테스</c:when>
+											<c:when test="${ticket.ticketSubject == 'DANCE'}">스포츠댄스</c:when>
+										</c:choose>&nbsp;&nbsp;&nbsp;${ticket.ticketCount}회
 						<input type="hidden" name="ticketSubject" value="${ticket.ticketSubject}">
 						<input type="hidden" name="ticketCount" value="${ticket.ticketCount}">
 					</td>
