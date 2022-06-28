@@ -60,7 +60,9 @@
 			dataType: 'json',
 			success: function(obj){ // obj = {"replyCount" : 개수, "replies" : [{댓글정보}, {댓글정보}, ...], "p" : ...}
 				fnPrintReplyList(obj);
-				fnPrintPaging(obj.p);
+				if(obj.replyCount > 0){
+					fnPrintPaging(obj.p);
+				}
 			}
 		})
 	}
@@ -104,7 +106,7 @@
 						tr += '<td>' + reply.reviewContent + '<a class="reply_link"><i class="fa-solid fa-reply"></i></a><td>';
 					}
 					tr += '<td>' + getDate(reply.reviewCreated) + '</td>';
-					if(reply.memberId == '${loginMember.memberId}'){  // 댓글 작성자와 로그인한 사람이 같으면
+					if(reply.memberId == '${loginMember.memberId}' || '${loginMember.memberId}' == 'admin'){  // 댓글 작성자와 로그인한 사람이 같으면
 						tr += '<td><a class="removeLink" data-review_no="' + reply.reviewNo + '"><i class="fa-solid fa-trash-can"></i></a></td>';
 					}
 					$('#replies').append($(tr));

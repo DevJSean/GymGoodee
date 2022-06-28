@@ -117,6 +117,7 @@
 				var img = document.createElement("img");
 				img.setAttribute("src", event.target.result);
 				img.setAttribute("class", "col-lg-6");
+				img.setAttribute("width", "500px");
 				document.querySelector("div#attached").appendChild(img);
 			};
 			console.log(image);

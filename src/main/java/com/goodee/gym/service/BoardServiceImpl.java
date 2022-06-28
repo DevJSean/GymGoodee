@@ -636,7 +636,7 @@ public class BoardServiceImpl implements BoardService {
 			PrintWriter out = response.getWriter();
 			if(res == 1) {
 				out.println("<script>");
-				out.println("alert('질문 추가 성공')");
+				out.println("alert('질문이 추가되었습니다.')");
 				out.println("location.href='" + request.getContextPath() + "/board/questionList'");
 				out.println("</script>");
 				out.close();
@@ -897,13 +897,13 @@ public class BoardServiceImpl implements BoardService {
 		String content = request.getParameter("content");
 		String subject = "";
 		if(classCode.substring(11, 13).equals("SW")) {
-			subject += "수영";
+			subject += "SWIM";
 		} else if(classCode.substring(11, 13).equals("DA")) {
-			subject += "댄스";
+			subject += "DANCE";
 		} else if(classCode.substring(11, 13).equals("PI")) {
-			subject += "필라테스";
+			subject += "PILATES";
 		} else {
-			subject += "스피닝";
+			subject += "SPINNING";
 		}
 
 		ReviewDTO review = ReviewDTO.builder()
