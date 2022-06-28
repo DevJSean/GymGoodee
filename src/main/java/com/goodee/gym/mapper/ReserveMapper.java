@@ -37,9 +37,15 @@ public interface ReserveMapper {
 	// 2-2) 처음 예약
 	public int insertReserveSwim(ReservationDTO reservation);
 	
+	// 예약 후 잔여 수강권 횟수 차감
+	public int updateMinusRemainTicket(Map<String, Object> map);
+	
+	
 	
 	// 3. 수영 예약 취소하기
 	public int updateCancelSwim(Map<String, Object> map);
 	
+	// 예약 취소 후 잔여 수강권 횟수 증감
+	public int updatePlusRemainTicket(Map<String, Object> map);
 	
 }

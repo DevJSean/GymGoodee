@@ -78,6 +78,23 @@ public class AdminServiceImpl implements AdminService {
 		//System.out.println("1. classCode =" + classCode);
 		registclass.setClassCode(classCode);
 		
+		// classTime A, B, C, D => 9:00 / 10: 00 / 19:30 / 20:30 으로 변경하기
+		String classTime = registclass.getClassTime();
+		switch(classTime) {
+		case "A":
+			registclass.setClassTime("9:00");
+			break;
+		case "B":
+			registclass.setClassTime("10:00");
+			break;
+		case "C":
+			registclass.setClassTime("19:30");
+			break;
+		case "D":
+			registclass.setClassTime("20:30");
+			break;
+		}
+		
 		int res = 0;
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {

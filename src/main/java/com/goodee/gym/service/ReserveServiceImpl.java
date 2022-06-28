@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.goodee.gym.domain.ClassDTO;
 import com.goodee.gym.domain.MemberDTO;
@@ -45,26 +46,29 @@ public class ReserveServiceImpl implements ReserveService {
 		// 2) 로그인 / 수강권 x => 수강권 구매 버튼
 		// 3) 로그인 / 수강권 o => 밑에 과정 진행
 		
-		/* 수정 필요 */
 		HttpSession session = request.getSession();
 		MemberDTO member = null;
 		if(session.getAttribute("loginMember")!=null) {
 			member = (MemberDTO)session.getAttribute("loginMember");
 		}
-		System.out.println("member : " + member);
+		//System.out.println("member : " + member);
 		
 		Map<String, Object> res = new HashMap<String, Object>();
-		res.put("classes", classes);
+		res.put("classes", classes);			// 강좌 목록
 		res.put("classCount", classCount);		// 총 강좌 갯수
 		if(member == null) {
-			res.put("state", -1);			// 비로그인 : -1
+			//System.out.println("비로그인 상태!!");
+			res.put("state", -1);				// 비로그인 : -1
+			return res;
 		} 
-		else if(member!=null){			// 회원인 경우
+		else if(member!=null){					// 회원인 경우
 			String memberId = member.getMemberId();
 			Map<String, Object> tmp1 = new HashMap<String, Object>();
 			tmp1.put("subject", subject);
 			tmp1.put("memberId", memberId);
-			Optional<String> opt = Optional.ofNullable(reserveMapper.getRemainTicketBySubject(tmp1));
+			String tmp_reaminTicket = reserveMapper.getRemainTicketBySubject(tmp1);
+			//System.out.println("남은 티켓 : " + tmp_reaminTicket);
+			Optional<String> opt = Optional.ofNullable(tmp_reaminTicket);
 			int remain = Integer.parseInt(opt.orElse("0"));
 			//REAMIN_TICKET 테이블에서 해당 종목의 잔여수강권이 있는지 가져오기
 			if(remain == 0) {				// 회원 -> 수강권 x
@@ -107,7 +111,8 @@ public class ReserveServiceImpl implements ReserveService {
 		return res;
 	}
 
-	// 2. 수영 예약하기
+	// 2. 수영 예약하기 (UPDATE/INSERT + UPDATE)
+	@Transactional
 	@Override
 	public Map<String, Object> reserveSwim(HttpServletRequest request) {
 		// request에서 파라미터들 받아와서 insert 할 reservationDTO 만들고
@@ -142,14 +147,20 @@ public class ReserveServiceImpl implements ReserveService {
 					.build();			
 			res = reserveMapper.insertReserveSwim(reservation);
 		}
+		
+		// 4) 위의 과정까지 예약이 완료되었으므로 잔여수강권 횟수를 -1 해야한다.
+		HttpSession session = request.getSession();
+		MemberDTO member = (MemberDTO)session.getAttribute("loginMember");
+		String memberId = member.getMemberId();
+		Map<String, Object> map2 = new HashMap<String, Object>();
+		map2.put("subject",subject);
+		map2.put("memberId", memberId);
+		int res2 = reserveMapper.updateMinusRemainTicket(map2);
 				
 		
-		// 4) 위의 결과를 받아 MAP으로 반환
+		// 5) 위의 결과를 받아 MAP으로 반환
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("res", res);
-		
-		
-		// 잔여수강권 횟수 차감하기
 		
 		
 		return map;
@@ -157,22 +168,38 @@ public class ReserveServiceImpl implements ReserveService {
 	}
 	
 	
-	// 3. 수영 예약 취소하기 (UPDATE)
+	// 3. 수영 예약 취소하기 (UPDATE + UPDATE)
+	@Transactional
 	@Override
 	public Map<String, Object> cancelSwim(HttpServletRequest request) {
 		
 		// 1) 파라미터 처리
+		String subject = request.getParameter("subject");
+		Long memberNo = Long.parseLong(request.getParameter("memberNo"));
+		String classCode = request.getParameter("classCode");
+		
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("memberNo", request.getParameter("memberNo"));
-		map.put("classCode", request.getParameter("classCode"));
+		map.put("memberNo", memberNo);
+		map.put("classCode", classCode);
+		int res = reserveMapper.updateCancelSwim(map);
+		System.out.println("수강 취소 : " +res);
 		
-		// 2) 결과 받아와 MAP으로 만들기
-		Map<String, Object> res = new HashMap<String, Object>();
-		res.put("res", reserveMapper.updateCancelSwim(map));
+		// 2) 잔여수강권 횟수 증가시키기
 		
+		HttpSession session = request.getSession();
+		MemberDTO member = (MemberDTO)session.getAttribute("loginMember");
+		String memberId = member.getMemberId();
+		Map<String, Object> map2 = new HashMap<String, Object>();
+		map2.put("subject",subject);
+		map2.put("memberId", memberId);
+		//System.out.println("subject : " + subject + " memberId : " + memberId);
+		int res2 = reserveMapper.updatePlusRemainTicket(map2);
+		//System.out.println("잔여수강권 증감 : " + res2);
 		
-		// 잔여수강권 횟수 증가시키기
+		// 3) 결과 받아와 MAP으로 만들기
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("res", res);
 		
-		return res;
+		return result;
 	}
 }

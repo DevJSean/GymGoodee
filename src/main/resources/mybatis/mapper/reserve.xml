@@ -17,6 +17,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
        		  ) A
 	</select>
 	
+	<!-- 종목, 날짜에 개설된 강좌의 갯수 -->
 	<select id="selectCountClassList" parameterType="Map" resultType="Integer">
 		SELECT COUNT(CLASS_CODE)
 		 FROM CLASS
@@ -67,15 +68,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			(#{subject} || SWIM_SEQ.NEXTVAL ,#{memberNo}, #{classCode}, SYSTIMESTAMP, 0)
 	</insert>
 	
+	<!-- 예약 후 잔여 수강권 횟수 차감하기(update) -->
+	<update id="updateMinusRemainTicket" parameterType="Map">
+		UPDATE REMAIN_TICKET
+		   SET REMAIN_TICKET_REMAIN_COUNT = REMAIN_TICKET_REMAIN_COUNT-1
+		 WHERE MEMBER_ID = #{memberId} AND REMAIN_TICKET_SUBJECT = #{subject}
+	</update>
 	
 
-	
 	
 	<!-- 수영 예약 취소하기(update) -->
 	<update id="updateCancelSwim" parameterType="Map">
 		UPDATE RESERVATION
 		SET RESERVATION_STATE = -1
 		WHERE MEMBER_NO = #{memberNo} AND CLASS_CODE = #{classCode}
+	</update>
+	
+	<!-- 예약 취소 후 수강권 횟수 증감하기(update) -->
+	<update id="updatePlusRemainTicket" parameterType="Map">
+		UPDATE REMAIN_TICKET
+		   SET REMAIN_TICKET_REMAIN_COUNT = REMAIN_TICKET_REMAIN_COUNT+1
+		 WHERE MEMBER_ID = #{memberId} AND REMAIN_TICKET_SUBJECT = #{subject}
 	</update>
 	
 	
