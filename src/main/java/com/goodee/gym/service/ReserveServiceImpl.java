@@ -1,5 +1,6 @@
 package com.goodee.gym.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -124,21 +125,50 @@ public class ReserveServiceImpl implements ReserveService {
 		String classCode = request.getParameter("classCode");
 		
 		
-		// 2) Reservation 테이블에서 해당 회원 정보 찾기
+		// 2) Reservation 테이블에서 해당 회원이 예약한 class_code 가져오기
 		Map<String, Object> tmp = new HashMap<String, Object>();
 		tmp.put("memberNo", memberNo);
 		tmp.put("classCode", classCode);
-		int flag = reserveMapper.selectMemberFromReservation(tmp);
+		List<String> classCodes = new ArrayList<String>();
+		classCodes = reserveMapper.selectCodesFromReservation(tmp);
+		if(classCodes == null) {
+			System.out.println("하나도 없음");
+		}
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		// 2-1)
+		// classCodes들을 가져와 '날짜_시간' 만 substring 하여 
+		// 파라미터로 받아온 classCode와 비교해본다.
+		// 일치하는 것이 있으면 같은 날짜, 같은 시간에 이미 예약했으므로 
+		// 예약불가!
+		String originCode = classCode.substring(0,classCode.lastIndexOf("_")-1);
+		for(int i = 0; i<classCodes.size();i++) {
+			int codeIndex = classCodes.get(i).lastIndexOf("_");
+			String tmpCode = classCodes.get(i).substring(0,codeIndex-1);	// '날짜_시간'
+			if(originCode.equals(tmpCode)) {
+				map.put("state", 501);		// 중복되는 강좌 예약하려고 시도
+				return map;
+			}
+		}
+		
 		
 		// 3)
-		// flag가 1이면 이미 예약을 했다가 취소를 했으므로 
+		// 2)의 과정을 통과하면 같은 날짜, 같은 시간대에 예약되어 있는 강좌가 없는 것이다.
+		// 이때, 파라미터로 받아온 classCode 와 일치하는 classCode를 가지는 행이
+		// RESERVATIO 테이블에 있는지 없는지 확인해야한다.
+		// 동일한 것이 존재한다면
+		// 이미 예약을 했다가 취소를 했으므로 
 		// RESERVATION 테이블에 insert을 해주는 것이 아니라
 		// RESERVATION_STATE 을 0으로 UPDATE 해줘야한다.
+		
 		int res = 0;
+		int flag = reserveMapper.selectMemberFromReservation(tmp);
+		
+		// 예약했다가 취소한 사람 (UPDATE 작업)
 		if(flag == 1) {
-			res = reserveMapper.updateAgainReserve(tmp);
-		}
-		// flag가 0이면 그냥 처음 예약하는 사람!			
+			res = reserveMapper.updateAgainReserve(tmp);	
+		}		
+		// flag가 0이면 그냥 처음 예약하는 사람! (INSERT 작업)		
 		else if(flag == 0) {
 			ReservationDTO reservation = ReservationDTO.builder()
 					.classCode(classCode)
@@ -148,7 +178,7 @@ public class ReserveServiceImpl implements ReserveService {
 			res = reserveMapper.insertReserveSwim(reservation);
 		}
 		
-		// 4) 위의 과정까지 예약이 완료되었으므로 잔여수강권 횟수를 -1 해야한다.
+		// 4) 위의 과정까지 예약이 완료되었으므로 잔여수강권 횟수를 -1 해야한다. (UPDATE)
 		HttpSession session = request.getSession();
 		MemberDTO member = (MemberDTO)session.getAttribute("loginMember");
 		String memberId = member.getMemberId();
@@ -159,7 +189,6 @@ public class ReserveServiceImpl implements ReserveService {
 				
 		
 		// 5) 위의 결과를 받아 MAP으로 반환
-		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("res", res);
 		
 		

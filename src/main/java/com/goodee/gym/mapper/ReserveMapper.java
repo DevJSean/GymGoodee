@@ -29,7 +29,9 @@ public interface ReserveMapper {
 	
 
 	// 2. 수영 강좌 예약하기
-	// 1) 예약 테이블에서 넘겨준 memberNo, classCode 에 일치하는 회원이 있는지 확인
+	// 1) 예약 테이블에서 일치하는 memberNo와 예약상태가 0인 회원의 classCode 값들 반환하기
+	public List<String> selectCodesFromReservation(Map<String, Object> map);
+	// 2) 예약 테이블에서 memberNo와 classCode가 일치하는 것이 있는지 확인
 	public int selectMemberFromReservation(Map<String, Object> map);
 	// 2-1) 예약 -> 취소 -> 다시 예약하는 상황
 	public int updateAgainReserve(Map<String, Object> map);

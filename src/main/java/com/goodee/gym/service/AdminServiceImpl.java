@@ -41,7 +41,8 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public Map<String, Object> getMembers() {
 		Map<String, Object> members = new HashMap<String, Object>();
-		List<TeacherDTO> teachers = adminMapper.selectTeachers();
+		List<TeacherDTO> teachers = null;
+		teachers = adminMapper.selectTeachers();
 		if(teachers == null) {
 			// 강사 정보가 없을 경우
 			members.put("teachers", null);
@@ -78,11 +79,11 @@ public class AdminServiceImpl implements AdminService {
 		//System.out.println("1. classCode =" + classCode);
 		registclass.setClassCode(classCode);
 		
-		// classTime A, B, C, D => 9:00 / 10: 00 / 19:30 / 20:30 으로 변경하기
+		// classTime A, B, C, D => 09:00 / 10: 00 / 19:30 / 20:30 으로 변경하기
 		String classTime = registclass.getClassTime();
 		switch(classTime) {
 		case "A":
-			registclass.setClassTime("9:00");
+			registclass.setClassTime("09:00");
 			break;
 		case "B":
 			registclass.setClassTime("10:00");
