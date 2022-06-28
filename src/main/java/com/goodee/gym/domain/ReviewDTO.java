@@ -27,4 +27,6 @@ public class ReviewDTO {
 	private Long reviewGroupNo;
 	private Integer reviewGroupOrd;
 	
+	private Integer replyCount;
+	
 }

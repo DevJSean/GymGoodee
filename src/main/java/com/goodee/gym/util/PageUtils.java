@@ -12,7 +12,7 @@ public class PageUtils {
 		- 레코드를 한 페이지에 3개씩 표시한다면
 		- 전체 페이지는 4개가 된다.   */
 	private int totalRecord;       // 전체 레코드 수          -> DB에서 구해온다.		SELECT COUNT(*) FROM EMPLOYEES;
-	private int recordPerPage = 5; // 한 페이지 당 5개 레코드 -> 여기서 임의로 정한다.
+	private int recordPerPage = 10; // 한 페이지 당 5개 레코드 -> 여기서 임의로 정한다.
 	private int totalPage;         // 전체 페이지 개수        -> totalRecord와 recordPerPage로 계산한다.
 	
 	

@@ -34,10 +34,12 @@
 	<form action="${contextPath}/board/reviewAdd" method="post" id="f">
 		작성자 <input type="text" name="writer" value="${loginMember.memberId}" readonly><br>
 		수강 내역
-		<!-- 작성자가 들은 수업 내용 리스트를 select문으로 들고와야 한다. -->
-		<select name="class" id="class" size="10">
-			<option value=""></option>
+		<select name="class" id="class">
+			<c:forEach items="${classCodes}" var="classCode">
+				<option value="${classCode.classCode}">${classCode.classCode}</option>
+			</c:forEach>
 		</select>
+		<br>
 		제목 <input type="text" name="title" id="title"><br>
 		내용 <br>
 		<textarea rows="30" cols="80" name="content"></textarea><br><br>

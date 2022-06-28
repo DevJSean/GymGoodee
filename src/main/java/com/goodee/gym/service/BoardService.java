@@ -39,7 +39,7 @@ public interface BoardService {
 	public void findQuestions(HttpServletRequest request, Model model);
 	// 질문 자동완성
 	public Map<String, Object> questionAutoComplete(HttpServletRequest request);
-	// 질문 검색 상세 보기
+	// 질문 상세 보기
 	public void getQuestionByNo(HttpServletRequest request, Model model);
 	// 질문 추가
 	public void addQuestion(HttpServletRequest request, HttpServletResponse response);
@@ -51,4 +51,26 @@ public interface BoardService {
 	public Map<String, Object> answerAdd(HttpServletRequest request);
 	// 답변 삭제
 	public Map<String, Object> answerRemove(Long questionNo);
+	
+	// 리뷰 전체조회
+	public void getAllReviews(HttpServletRequest request, Model model);
+	// 리뷰 검색 (noticeList)
+	public void findReviews(HttpServletRequest request, Model model);
+	// 리뷰 자동완성
+	public Map<String, Object> reviewAutoComplete(HttpServletRequest request);
+	// 리뷰 상세 보기
+	public void getReviewByNo(HttpServletRequest request, Model model);
+	// 회원이 들은 수업
+	public void getTookClassCode(HttpServletRequest request, Model model);
+	// 리뷰 추가
+	public void addReview(HttpServletRequest request, HttpServletResponse response);
+	// 리뷰 삭제
+	public void removeReview(HttpServletRequest request, HttpServletResponse response);
+	// 댓글 전체조회
+	public Map<String, Object> getAllReplies(HttpServletRequest request, Model model);
+	// 댓글 추가
+	public Map<String, Object> saveReply(HttpServletRequest request);
+	// 댓글 삭제
+	public Map<String, Object> removeReply(Long reviewNo);
+	
 }

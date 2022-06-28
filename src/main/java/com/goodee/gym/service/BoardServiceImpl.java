@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +31,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.goodee.gym.domain.AnswerDTO;
+import com.goodee.gym.domain.ClassDTO;
+import com.goodee.gym.domain.MemberDTO;
 import com.goodee.gym.domain.NoticeDTO;
 import com.goodee.gym.domain.NoticeFileAttachDTO;
 import com.goodee.gym.domain.QuestionDTO;
+import com.goodee.gym.domain.ReviewDTO;
 import com.goodee.gym.mapper.BoardMapper;
 import com.goodee.gym.util.MyFileUtils;
 import com.goodee.gym.util.PageUtils;
@@ -44,7 +49,9 @@ public class BoardServiceImpl implements BoardService {
 	@Autowired
 	private BoardMapper boardMapper;
 	
-	/*** 공지사항 ***/
+	/****************/
+	/**** notice ****/
+	/****************/
 	@Override
 	public void getAllNotices(HttpServletRequest request, Model model) {
 		HttpSession session = request.getSession();
@@ -488,7 +495,11 @@ public class BoardServiceImpl implements BoardService {
 		return result;
 	}
 	
+	
+	
+	/************************/
 	/*** Question/Answer  ***/
+	/************************/
 	@Override
 	public void getAllquestions(HttpServletRequest request, Model model) {
 		HttpSession session = request.getSession();
@@ -734,8 +745,291 @@ public class BoardServiceImpl implements BoardService {
 	
 	
 	
+	/****************/
+	/**** review ****/
+	/****************/
+	@Override
+	public void getAllReviews(HttpServletRequest request, Model model) {
+		HttpSession session = request.getSession();
+		if(session.getAttribute("updateHit") != null) {
+			session.removeAttribute("updateHit");
+		}
+		
+		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+		int page = Integer.parseInt(opt.orElse("1"));
+		
+		int totalRecord = boardMapper.selectAllReviewsCount();
+		
+		PageUtils pageUtils = new PageUtils();
+		pageUtils.setPageEntity(totalRecord, page);
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("beginRecord", pageUtils.getBeginRecord());
+		map.put("endRecord", pageUtils.getEndRecord());
+		
+		List<ReviewDTO> reviews = boardMapper.selectReviews(map);
+		
+		// 현재 날짜
+		Date date = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String nowDate = dateFormat.format(date);
+		
+		model.addAttribute("reviews", reviews);
+		model.addAttribute("now", nowDate);
+		model.addAttribute("beginNo", totalRecord - pageUtils.getRecordPerPage() * (page - 1));
+		model.addAttribute("paging", pageUtils.getPaging2(request.getContextPath() + "/board/reviewList"));
+	}
 	
+	@Override
+	public void findReviews(HttpServletRequest request, Model model) {
+		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+		int page = Integer.parseInt(opt.orElse("1"));
+		
+		String column = request.getParameter("column");
+		String query = request.getParameter("query");
+		String begin = request.getParameter("begin");
+		String end = request.getParameter("end");
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("column", column);
+		map.put("query", query);
+		map.put("begin", begin);
+		map.put("end", end);
+		
+		int findRecord = boardMapper.selectReviewsCount(map);
+		
+		PageUtils pageUtils = new PageUtils();
+		pageUtils.setPageEntity(findRecord, page);
+		
+		map.put("beginRecord", pageUtils.getBeginRecord());
+		map.put("endRecord", pageUtils.getEndRecord());
+		
+		List<ReviewDTO> reviews = boardMapper.selectReviewList(map);
+		
+		// 현재 날짜
+		Date date = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String nowDate = dateFormat.format(date);
+		
+		model.addAttribute("reviews", reviews);
+		model.addAttribute("now", nowDate);
+		model.addAttribute("beginNo", findRecord - pageUtils.getRecordPerPage() * (page - 1));
+		
+		switch(column) {
+		case "REVIEW_TITLE":
+		case "REVIEW_SUBJECT":
+		case "MEMBER_ID":
+		case "REVIEW_CONTENT":
+			model.addAttribute("paging", pageUtils.getPaging2(request.getContextPath() + "/board/reviewSearch?column=" + column + "&query=" + query));
+			break;
+		case "REVIEW_CREATED":
+			model.addAttribute("paging", pageUtils.getPaging2(request.getContextPath() + "/board/reviewSearch?column=" + column + "&begin=" + begin + "&end=" + end));
+			break;
+		}
+	}
 	
+	@Override
+	public Map<String, Object> reviewAutoComplete(HttpServletRequest request) {
+		String column = request.getParameter("column");
+		String query = request.getParameter("query");
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("column", column);
+		map.put("query", query);
+		
+		List<ReviewDTO> list = boardMapper.reviewAutoComplete(map);
+		
+		Map<String, Object> result = new HashMap<>();
+		if(list.size() == 0) {
+			result.put("status", 400);
+			result.put("list", null);
+		} else {
+			result.put("status", 200);
+			result.put("list", list);
+		}
+		if(column.equals("REVIEW_TITLE")) {
+			result.put("column", "reviewTitle");
+		} else if(column.equals("REVIEW_SUBJECT")) {
+			result.put("column", "reviewSubject");
+		} else if(column.equals("MEMBER_ID")) {
+			result.put("column", "memberId");
+		} else if(column.equals("REVIEW_CONTENT")) {
+			result.put("column", "reviewContent");
+		}
+		return result;
+	}
+	
+	@Override
+	public void getReviewByNo(HttpServletRequest request, Model model) {
+		
+		Long reviewNo = Long.parseLong(request.getParameter("reviewNo"));
+		
+		// 조회수 증가
+		String referer = request.getHeader("referer");
+		HttpSession session = request.getSession(); 
+		if(referer.endsWith("wList") && session.getAttribute("updateHit") == null) {
+			boardMapper.updateReviewHit(reviewNo);  
+			session.setAttribute("updateHit", "done");  
+		} else if(referer.endsWith("wSearch") && session.getAttribute("updateHit") == null) {
+			boardMapper.updateReviewHit(reviewNo);  
+			session.setAttribute("updateHit", "done");  
+		}
+		model.addAttribute("review", boardMapper.selectReviewByNo(reviewNo));
+	}
+	
+	@Override
+	public void getTookClassCode(HttpServletRequest request, Model model) {
+
+		MemberDTO member = (MemberDTO)request.getSession().getAttribute("loginMember");
+		String memberId = member.getMemberId();
+		
+		List<ClassDTO> classCodes = boardMapper.selectTookClassCode(memberId);  //memberId
+		
+		model.addAttribute("classCodes", classCodes);
+	}
+	
+	@Override
+	public void addReview(HttpServletRequest request, HttpServletResponse response) {
+
+		String writer = request.getParameter("writer");
+		String classCode = request.getParameter("class");
+		String title = request.getParameter("title");
+		String content = request.getParameter("content");
+		String subject = "";
+		if(classCode.substring(11, 13).equals("SW")) {
+			subject += "수영";
+		} else if(classCode.substring(11, 13).equals("DA")) {
+			subject += "댄스";
+		} else if(classCode.substring(11, 13).equals("PI")) {
+			subject += "필라테스";
+		} else {
+			subject += "스피닝";
+		}
+
+		ReviewDTO review = ReviewDTO.builder()
+				.classCode(classCode)
+				.reviewSubject(subject)
+				.memberId(writer)
+				.reviewTitle(title)
+				.reviewContent(content)
+				.reviewIp(request.getRemoteAddr())
+				.build();
+		
+		int res = boardMapper.insertReview(review);
+		
+		try {
+			response.setContentType("text/html");
+			PrintWriter out = response.getWriter();
+			if(res == 1) {
+				out.println("<script>");
+				out.println("alert('리뷰 추가 성공')");
+				out.println("location.href='" + request.getContextPath() + "/board/reviewList'");
+				out.println("</script>");
+				out.close();
+			} else {
+				out.println("<script>");
+				out.println("alert('리뷰 추가 실패')");
+				out.println("history.back()");
+				out.println("</script>");
+				out.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void removeReview(HttpServletRequest request, HttpServletResponse response) {
+		
+		Optional<String> opt = Optional.ofNullable(request.getParameter("reviewNo"));
+		Long reviewNo = Long.parseLong(opt.orElse("0"));
+		
+		int res = boardMapper.deleteReview(reviewNo);
+		
+		try {
+			response.setContentType("text/html");
+			PrintWriter out = response.getWriter();
+			if(res > 0) {
+				out.println("<script>");
+				out.println("alert('리뷰 삭제 성공')");
+				out.println("location.href='" + request.getContextPath() + "/board/reviewList'");
+				out.println("</script>");
+				out.close();
+			} else {
+				out.println("<script>");
+				out.println("alert('리뷰 삭제 실패')");
+				out.println("history.back()");
+				out.println("</script>");
+				out.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public Map<String, Object> getAllReplies(HttpServletRequest request, Model model) {
+		Optional<String> optReviewNo = Optional.ofNullable(request.getParameter("reviewNo"));
+		Long reviewNo = Long.parseLong(optReviewNo.orElse("0"));
+		
+		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+		int page = Integer.parseInt(opt.orElse("1"));
+		
+		int totalRecord = boardMapper.selectRepliesCount(reviewNo); // 해당 게시글에 해당하는 댓글만 세야 함
+		
+		PageUtils pageUtils = new PageUtils();
+		pageUtils.setPageEntity(totalRecord, page);
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("reviewNo", reviewNo);
+		map.put("beginRecord", pageUtils.getBeginRecord());
+		map.put("endRecord", pageUtils.getEndRecord());
+		
+		Map<String, Object> map2 = new HashMap<>();
+		map2.put("replies", boardMapper.selectReplies(map)); // 해당 게시글에 해당하는 댓글만 리스트 뽑아야 함
+		map2.put("replyCount", totalRecord);
+		map2.put("p", pageUtils);
+		return map2;
+	}
+	
+	@Transactional
+	@Override
+	public Map<String, Object> saveReply(HttpServletRequest request) {
+		
+		String writer = request.getParameter("writer");
+		String content = request.getParameter("content");
+		int depth = Integer.parseInt(request.getParameter("depth"));
+		Long groupNo = Long.parseLong(request.getParameter("groupNo"));
+		int groupOrd = Integer.parseInt(request.getParameter("groupOrd"));
+		Optional<String> opt = Optional.ofNullable(request.getHeader("X-Forwarded-For"));
+		String ip = opt.orElse(request.getRemoteAddr());
+		
+		ReviewDTO review = ReviewDTO.builder()
+				.reviewGroupNo(groupNo)
+				.reviewGroupOrd(groupOrd)
+				.build();
+		boardMapper.updatePreviousReply(review);
+		
+		ReviewDTO reply = ReviewDTO.builder()
+				.memberId(writer)
+				.reviewContent(content)
+				.reviewDepth(depth + 1)
+				.reviewGroupNo(groupNo)
+				.reviewGroupOrd(groupOrd + 1)
+				.reviewIp(ip)
+				.build();
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("res", boardMapper.insertReply(reply));
+		return map;
+	}
+	
+	@Override
+	public Map<String, Object> removeReply(Long reviewNo) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("res", boardMapper.deleteReply(reviewNo));
+		return map;
+	}
 	
 	
 }

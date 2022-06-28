@@ -43,6 +43,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				 	</choose>
 				</where>) A
          WHERE A.ROW_NUM BETWEEN #{beginRecord} AND #{endRecord}
+	</select>
+	<!-- 공지사항 자동완성 -->
+	<select id="noticeAutoComplete" parameterType="Map" resultType="NoticeDTO">
+		SELECT DISTINCT ${column}
+		  FROM NOTICE
+		 WHERE ${column} LIKE #{query} || '%'
 	</select>	
 	<!-- 공지사항 검색 noticeNo 이용 -->
 	<select id="selectNoticeByNo" parameterType="Long" resultType="NoticeDTO">
@@ -110,13 +116,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  FROM NOTICE_FILE_ATTACH
 		 WHERE NOTICE_FILE_ATTACH_PATH = 'C:\\upload\\' || TO_CHAR(SYSDATE - 1, 'yyyy\\mm\\dd')
 	</select>
-	
-	<!-- 공지사항 자동완성 -->
-	<select id="noticeAutoComplete" parameterType="Map" resultType="NoticeDTO">
-		SELECT DISTINCT ${column}
-		  FROM NOTICE
-		 WHERE ${column} LIKE #{query} || '%'
-	</select>
+
 	
 	
 	
@@ -163,7 +163,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				 	</choose>
 				</where>) A
          WHERE A.ROW_NUM BETWEEN #{beginRecord} AND #{endRecord}
-	</select>	
+	</select>
+	<!-- question 자동완성 -->
+	<select id="questionAutoComplete" parameterType="Map" resultType="QuestionDTO">
+		SELECT DISTINCT ${column}
+		  FROM QUESTION
+		 WHERE ${column} LIKE #{query} || '%'
+	</select>
 	<!-- question 검색 questionNo이용 -->
 	<select id="selectQuestionByNo" parameterType="Long" resultType="QuestionDTO">
 		SELECT QUESTION_NO, MEMBER_ID, QUESTION_TITLE, QUESTION_CONTENT, QUESTION_HIT, QUESTION_IP, QUESTION_CREATED
@@ -195,12 +201,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  FROM QUESTION
 		 WHERE QUESTION_NO = #{questionNo}
 	</delete>
-	<!-- question 자동완성 -->
-	<select id="questionAutoComplete" parameterType="Map" resultType="QuestionDTO">
-		SELECT DISTINCT ${column}
-		  FROM QUESTION
-		 WHERE ${column} LIKE #{query} || '%'
-	</select>
 	<!-- answer 삽입 -->
 	<insert id="insertAnswer" parameterType="AnswerDTO">
 		INSERT INTO ANSWER
@@ -215,5 +215,133 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 WHERE QUESTION_NO = #{questionNo}
 	</delete>
 	
+
+
+	<!-- review -->
+	<!-- review 전체레코드 개수 -->
+	<select id="selectAllReviewsCount" resultType="Integer">
+		SELECT COUNT(REVIEW_NO)
+		  FROM REVIEW
+		 WHERE REVIEW_DEPTH = 0
+	</select>
+	<!-- review BEGIN~END 사이 목록 반환 -->
+	<select id="selectReviews" parameterType="Map" resultType="ReviewDTO">
+		SELECT A.ROW_NUM, A.REVIEW_NO, A.CLASS_CODE, A.REVIEW_SUBJECT, A.MEMBER_ID, A.REVIEW_TITLE, A.REVIEW_CONTENT, A.REVIEW_HIT, A.REVIEW_IP, A.REVIEW_CREATED, A.REVIEW_STATE, A.REVIEW_DEPTH, A.REVIEW_GROUP_NO, A.REVIEW_GROUP_ORD, (SELECT COUNT(REVIEW_NO) FROM REVIEW WHERE REVIEW_GROUP_NO = A.REVIEW_NO AND REVIEW_DEPTH > 0) AS REPLY_COUNT
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY REVIEW_CREATED DESC) AS ROW_NUM, REVIEW_NO, CLASS_CODE, REVIEW_SUBJECT, MEMBER_ID, REVIEW_TITLE, REVIEW_CONTENT, REVIEW_HIT, REVIEW_IP, REVIEW_CREATED, REVIEW_STATE, REVIEW_DEPTH, REVIEW_GROUP_NO, REVIEW_GROUP_ORD
+		          FROM REVIEW
+		         WHERE REVIEW_DEPTH = 0) A
+         WHERE A.ROW_NUM BETWEEN #{beginRecord} AND #{endRecord}
+	</select>
+	<!-- review 검색된 레코드 갯수 -->
+	<select id="selectReviewsCount" parameterType="Map" resultType="Integer">
+		SELECT COUNT(REVIEW_NO)
+		  FROM REVIEW
+         WHERE REVIEW_DEPTH = 0
+		<choose>
+	 		<when test="column == 'REVIEW_TITLE'">AND UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+	 		<when test="column == 'REVIEW_SUBJECT'">AND UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+	 		<when test="column == 'MEMBER_ID'">AND UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+	 		<when test="column == 'REVIEW_CONTENT'">AND UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+	 		<when test="column == 'REVIEW_CREATED'">AND ${column} BETWEEN TO_DATE(#{begin}, 'YYYY-MM-DD') AND TO_DATE(#{end}, 'YYYY-MM-DD')</when>
+	 	</choose>
+	</select>
+	<!-- review 검색 -->
+	<select id="selectReviewList" parameterType="Map" resultType="ReviewDTO">
+		SELECT A.ROW_NUM, A.REVIEW_NO, A.CLASS_CODE, A.REVIEW_SUBJECT, A.MEMBER_ID, A.REVIEW_TITLE, A.REVIEW_CONTENT, A.REVIEW_HIT, A.REVIEW_IP, A.REVIEW_CREATED, A.REVIEW_STATE, A.REVIEW_DEPTH, A.REVIEW_GROUP_NO, A.REVIEW_GROUP_ORD, (SELECT COUNT(REVIEW_NO) FROM REVIEW WHERE REVIEW_GROUP_NO = A.REVIEW_NO AND REVIEW_DEPTH > 0) AS REPLY_COUNT
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY REVIEW_CREATED DESC) AS ROW_NUM, REVIEW_NO, CLASS_CODE, REVIEW_SUBJECT, MEMBER_ID, REVIEW_TITLE, REVIEW_CONTENT, REVIEW_HIT, REVIEW_IP, REVIEW_CREATED, REVIEW_STATE, REVIEW_DEPTH, REVIEW_GROUP_NO, REVIEW_GROUP_ORD
+		          FROM REVIEW
+		         WHERE REVIEW_DEPTH = 0
+				<choose>
+			 		<when test="column == 'REVIEW_TITLE'">AND UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+			 		<when test="column == 'REVIEW_SUBJECT'">AND UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+			 		<when test="column == 'MEMBER_ID'">AND UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+			 		<when test="column == 'REVIEW_CONTENT'">AND UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+			 		<when test="column == 'REVIEW_CREATED'">AND ${column} BETWEEN TO_DATE(#{begin}, 'YYYY-MM-DD') AND TO_DATE(#{end}, 'YYYY-MM-DD')</when>
+			 	</choose>) A
+         WHERE A.ROW_NUM BETWEEN #{beginRecord} AND #{endRecord}
+	</select>
+	<!-- review 자동완성 -->
+	<select id="reviewAutoComplete" parameterType="Map" resultType="ReviewDTO">
+		SELECT DISTINCT ${column}
+		  FROM REVIEW
+		 WHERE ${column} LIKE #{query} || '%'
+		   AND REVIEW_DEPTH = 0
+	</select>
+	<!-- review 검색 questionNo이용 -->
+	<select id="selectReviewByNo" parameterType="Long" resultType="ReviewDTO">
+		SELECT REVIEW_NO, CLASS_CODE, REVIEW_SUBJECT, MEMBER_ID, REVIEW_TITLE, REVIEW_CONTENT, REVIEW_HIT, REVIEW_IP, REVIEW_CREATED, REVIEW_STATE, REVIEW_DEPTH, REVIEW_GROUP_NO, REVIEW_GROUP_ORD
+		  FROM REVIEW
+		 WHERE REVIEW_NO = #{reviewNo}
+	</select>
+	<!-- reply 전체레코드 개수 -->
+	<select id="selectRepliesCount" parameterType="Long" resultType="Integer">
+		SELECT COUNT(REVIEW_NO)
+		  FROM REVIEW
+		 WHERE REVIEW_GROUP_NO = #{reviewNo}
+		   AND REVIEW_DEPTH > 0
+	</select>
+	<!-- reply BEGIN~END 사이 목록 반환 -->
+	<select id="selectReplies" parameterType="Map" resultType="ReviewDTO">
+		SELECT A.ROW_NUM, A.REVIEW_NO, A.CLASS_CODE, A.REVIEW_SUBJECT, A.MEMBER_ID, A.REVIEW_TITLE, A.REVIEW_CONTENT, A.REVIEW_HIT, A.REVIEW_IP, A.REVIEW_CREATED, A.REVIEW_STATE, A.REVIEW_DEPTH, A.REVIEW_GROUP_NO, A.REVIEW_GROUP_ORD
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY REVIEW_CREATED DESC) AS ROW_NUM, REVIEW_NO, CLASS_CODE, REVIEW_SUBJECT, MEMBER_ID, REVIEW_TITLE, REVIEW_CONTENT, REVIEW_HIT, REVIEW_IP, REVIEW_CREATED, REVIEW_STATE, REVIEW_DEPTH, REVIEW_GROUP_NO, REVIEW_GROUP_ORD
+		          FROM REVIEW
+		         WHERE REVIEW_GROUP_NO = #{reviewNo}
+		           AND REVIEW_DEPTH > 0) A
+         WHERE A.ROW_NUM BETWEEN #{beginRecord} AND #{endRecord}
+         ORDER BY A.REVIEW_GROUP_ORD ASC
+	</select>
+	<!-- review 조회수 늘리기 -->
+	<update id="updateReviewHit" parameterType="Long">
+		UPDATE REVIEW
+		   SET REVIEW_HIT = REVIEW_HIT + 1
+		 WHERE REVIEW_NO = #{reviewNo}
+	</update>
+	<!-- 리뷰 작성하려는 회원이 들은 수업 가져오기 -->
+	<select id="selectTookClassCode" parameterType="String" resultType="ClassDTO">
+		SELECT C.CLASS_CODE
+		  FROM MEMBER M LEFT OUTER JOIN RESERVATION R
+                                     ON M.MEMBER_NO = R.MEMBER_NO
+                       RIGHT OUTER JOIN CLASS C
+                                     ON R.CLASS_CODE = C.CLASS_CODE
+         WHERE M.MEMBER_ID = #{memberId}
+           AND R.RESERVATION_STATE = 1
+	</select>  
+	<!-- review 삽입 -->
+	<insert id="insertReview" parameterType="ReviewDTO">
+		INSERT INTO REVIEW
+			(REVIEW_NO, CLASS_CODE, REVIEW_SUBJECT, MEMBER_ID, REVIEW_TITLE, REVIEW_CONTENT, REVIEW_HIT, REVIEW_IP, REVIEW_CREATED, REVIEW_STATE, REVIEW_DEPTH, REVIEW_GROUP_NO, REVIEW_GROUP_ORD)
+		VALUES
+			(REVIEW_SEQ.NEXTVAL, #{classCode}, #{reviewSubject}, #{memberId}, #{reviewTitle}, #{reviewContent}, 0, #{reviewIp}, SYSDATE, 1, 0, REVIEW_SEQ.CURRVAL, 0)
+	</insert>
+	<!-- review 삭제 -->
+	<delete id="deleteReview" parameterType="Long">
+		DELETE
+		  FROM REVIEW
+		 WHERE REVIEW_GROUP_NO = #{reviewNo}
+	</delete>
+	<!-- 댓글 삽입 전에 처리 -->
+	<update id="updatePreviousReply" parameterType="ReviewDTO">
+		UPDATE REVIEW
+		   SET REVIEW_GROUP_ORD = REVIEW_GROUP_ORD + 1
+		 WHERE REVIEW_GROUP_NO  = #{reviewGroupNo}     <!-- 원글과 같은 그룹이다 -->
+		   AND REVIEW_GROUP_ORD > #{reviewGroupOrd}	  <!-- 다단 댓글용. 1단 댓글은 GROUP_ORD > 0 -->
+	</update>  
+	<!-- 댓글 삽입 -->
+	<insert id="insertReply" parameterType="ReviewDTO">
+		INSERT INTO REVIEW
+			(REVIEW_NO, MEMBER_ID, REVIEW_CONTENT, REVIEW_IP, REVIEW_CREATED, REVIEW_STATE, REVIEW_DEPTH, REVIEW_GROUP_NO, REVIEW_GROUP_ORD)
+		VALUES
+			(REVIEW_SEQ.NEXTVAL, #{memberId}, #{reviewContent}, #{reviewIp}, SYSDATE, 1, #{reviewDepth}, #{reviewGroupNo}, #{reviewGroupOrd})
+	</insert>
+	<!-- 삭제, 실제로 삭제시키지 않고 삭제된 것처럼 UPDATE한다. -->
+	<update id="deleteReply" parameterType="Long">
+		UPDATE REVIEW
+		   SET REVIEW_STATE = -1
+		 WHERE REVIEW_NO = #{reviewNo}
+	</update>
+
+
+
+
 
 </mapper>
