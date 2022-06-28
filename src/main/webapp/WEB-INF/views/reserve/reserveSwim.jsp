@@ -86,7 +86,11 @@
 						}
 						// 수강권이 있든, 없든 사전에 예약을 한 강좌에 대해 [예약 취소] 버튼
 						else if(swimclass.reservationState == 0){
+							// if (1) 당일 수업아 아닌 경우 [예약 취소] 버튼
 							tr.append($('<td>').html('<input type="button" class ="btnreserveCancel" data-classcode="'+ swimclass.classCode + '" value="예약취소">'));									
+							// 당일 수업 취소는 불가능 하므로, 당일수업인데 아직 수업 시간이 안지난 수업에 대해서는 
+							// [취소 불가] 버튼
+							// 오늘 날짜와 해당 강좌의 날짜를 비교해서!
 						}
 						// 수강인원이 다 찬 예약에 대해 [예약마감] 버튼
 						else if(swimclass.currentCount == swimclass.locationLimit){
