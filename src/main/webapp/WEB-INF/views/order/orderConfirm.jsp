@@ -24,28 +24,26 @@
 			
 			// callBack 함수 사용
 			var getResult = function(res) {
-
 				var url = "${contextPath}/order/orderResult";
-
 				var $form = $('<form></form>');
 				$form.attr('action', url);
 				$form.attr('method', 'post');
-
 				$.each(res, function(key, val) {
 					var input = $('<input type="text" name="' + key + '" value="' + val + '">');
-					var input2 = $('<input type="hidden" name="ticketNo" value="' + ${ticketNo} + '">');
 					$form.append(input);
-					$form.append(input2);
 				});
-
+				
+				var input2 = '<input type="hidden" name="ticketNo" value="${ticketNo}">';
+				input2 += '<input type="hidden" name="ticketSubject" value="${ticketSubject}">';
+				input2 += '<input type="hidden" name="ticketCount" value="${ticketCount}">';
+				input2 += '<input type="hidden" name="ticketPeriod" value="${ticketPeriod}">';
+				$form.append(input2);
+				
 				$form.appendTo('body');
 				$form.submit();
 			};
-
 			// 결제 요청
 			$("#payAction").on("click", function() {
-
-				var ticketNo = "${ticketNo}";
 				var pay_type = "${pay_type}";
 				var pay_work = "${pay_work}";
 				var memberId = "${memberId}";
@@ -55,27 +53,17 @@
 				var memberEmail = "${memberEmail}";
 				var ticketName = "${ticketName}";
 				var ticketPrice = Number("${ticketPrice}");
-				var simple_flag = "${simple_flag}";
 				var card_ver = "${card_ver}";
 				var pcd_rst_url = "";
-
-
 				var obj = new Object();
-
 				/* 결제연동 파라미터 */
-
 				//DEFAULT SET 1
 				obj.PCD_PAY_TYPE = pay_type; 	// (필수) 결제수단 (transfer|card)
 				obj.PCD_PAY_WORK = pay_work; 	// (필수) 결제요청 방식 (AUTH | PAY | CERT)
-
 				// 카드결제 시 필수 (카드 세부 결제방식)
 				obj.PCD_CARD_VER = card_ver; 	// Default: 01 (01: 간편/정기결제, 02: 앱카드)
-
-
-
 				// 2.1 첫결제 및 단건(일반,비회원)결제
-				if (pay_work != 'AUTH' && simple_flag != 'Y') {
-
+				if (pay_work != 'AUTH') {
 					obj.PCD_PAY_GOODS = ticketName; 			// (필수) 상품명
 					obj.PCD_PAY_TOTAL = ticketPrice; 			// (필수) 결제요청금액
 					obj.PCD_PAYER_NO = memberNo; 				// (선택) 결제자 고유번호 (파트너사 회원 회원번호) (결과전송 시 입력값 그대로 RETURN)
@@ -83,66 +71,68 @@
 					obj.PCD_PAYER_HP = memberPhone; 			// (선택) 결제자 휴대전화번호
 					obj.PCD_PAYER_EMAIL = memberEmail; 			// (선택) 결제자 이메일
 				}
-
-
-
 				// DEFAULT SET 2
 				obj.PCD_RST_URL = pcd_rst_url; 				// (필수) 결제(요청)결과 RETURN URL
 				obj.callbackFunction = getResult; 		// (선택) 결과를 받고자 하는 callback 함수명 (callback함수를 설정할 경우 PCD_RST_URL 이 작동하지 않음)
-
 				// 파트너 인증시 받은 AuthKey 값 입력
 				obj.PCD_AUTH_KEY = "${authKey}";
-
 				// 파트너 인증시 받은 return_url 값 입력
 				obj.PCD_PAY_URL = "${payReqURL}";
-
 				PaypleCpayAuthCheck(obj);
-
 			});
 		});
-
 </script>
 </head>
 
 <body>
+	<h2>| 결제 정보 확인</h2>
 	<table border="1">
-		<h2>| 결제 정보 확인</h2>
-		<tr>
-			<th>항목</th>
-			<th>요청변수</th>
-		</tr>
-		<tr>
-			<th>결제자 이름</th>
-			<td>${memberName}</td>
-		</tr>
-		<tr>
-			<th>결제자 연락처</th>
-			<td>${memberPhone}</td>
-		</tr>
-		<tr>
-			<th>결제자 이메일</th>
-			<td>${memberEmail}</td>
-		</tr>
-		<tr>
-			<th>구매상품</th>
-			<td>${ticketName}</td>
-		</tr>
-		<tr>
-			<th>결제금액</th>
-			<td>${ticketPrice}</td>
-		</tr>
-		<tr>
-			<th>회원아이디</th>
-			<td>${memberId}</td>
-		</tr>
-		<tr>
-			<th>회원번호</th>
-			<td>${memberNo}</td>
-		</tr>
-		<tr>
-			<th>수강권번호</th>
-			<td>${ticketNo}</td>
-		</tr>
+		<thead>
+			<tr>
+				<th>항목</th>
+				<th>요청변수</th>
+			</tr>
+		<thead>
+		<tbody>
+			<tr>
+				<th>결제자 이름</th>
+				<td>${memberName}</td>
+			</tr>
+			<tr>
+				<th>결제자 연락처</th>
+				<td>${memberPhone}</td>
+			</tr>
+			<tr>
+				<th>결제자 이메일</th>
+				<td>${memberEmail}</td>
+			</tr>
+			<tr>
+				<th>회원아이디</th>
+				<td>${memberId}</td>
+			</tr>
+			<tr>
+				<th>구매상품</th>
+				<td>${ticketName}</td>
+			</tr>
+			<tr>
+				<th>결제금액</th>
+				<td>${ticketPrice}</td>
+			</tr>
+			<tr>
+				<th>결제 수단</th>
+				<td>
+					<c:if test="${pay_type == 'transfer' and card_ver == '01'}">
+						계좌이체 결제
+					</c:if>
+					<c:if test="${pay_type == 'card' and card_ver == '01'}">
+						신용카드 간편결제
+					</c:if>
+					<c:if test="${pay_type == 'card' and card_ver == '02'}">
+						앱카드 결제
+					</c:if>
+				</td>
+			</tr>
+		</tbody>
 	</table>
 	<br>
 	<button id="payAction">결제하기</button>
