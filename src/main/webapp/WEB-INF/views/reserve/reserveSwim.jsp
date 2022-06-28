@@ -20,6 +20,7 @@
 		fngetClasses();
 		fnReserve();
 		fnCancelReserve();
+		fnBuyTicket();
 	})
 	
 	// 함수
@@ -56,6 +57,12 @@
 				// 2-1) 수강권이 없는 경우
 				// 2-2) 수강권이 있는 경우 아래와 같이
 				else{
+					if(obj.classCount == 0){
+						var tr = $('<tr>');
+						tr.append($('<td colspan="5">').text('개설된 강좌가 없습니다.'));
+						tr.appendTo($('#classList'));
+						return;
+					}
 					if(obj.state == 0){
 						$('#table_caption').html('잔여 횟수가 0회입니다.<br><a id="btnPaySwim">수강권 구매하기</a>');	
 						$('body').on('click','#btnPaySwim',function(){
@@ -63,26 +70,31 @@
 							window.close();
 						})
 					}
-					if(obj.classCount == 0){
-						var tr = $('<tr>');
-						tr.append($('<td colspan="5">').text('개설된 강좌가 없습니다.'));
-						tr.appendTo($('#classList'));
-						return;
-					}
 					$.each(obj.classes, function(i,swimclass){
 						var tr = $('<tr>');
 						tr.append($('<td>').text(swimclass.teacherName));
 						tr.append($('<td>').text(swimclass.classTime));
 						tr.append($('<td>').text(swimclass.locationCode));
 						tr.append($('<td>').text(swimclass.currentCount + "/" + swimclass.locationLimit)); 
-						if(swimclass.currentCount < swimclass.locationLimit && (swimclass.reservationState == 500 || swimclass.reservationState == -1)){		// 아직 예약을 안한 사람, 예약을 취소 했던 사람
+						// 수강권이 있고, 예약을 안한 강좌에 대해 [예약하기] 버튼
+						if(swimclass.currentCount < swimclass.locationLimit && (swimclass.reservationState == 500 || swimclass.reservationState == -1) && obj.state==1){		
 							tr.append($('<td>').html('<input type="button" class ="btnreserve" data-classcode="'+ swimclass.classCode + '" value="예약하기">'));			
 						}
+						// 수강권이 없고, 예약을 안한 강좌에 대해 [수강권 구매] 버튼
+						else if(swimclass.currentCount < swimclass.locationLimit && (swimclass.reservationState == 500 || swimclass.reservationState == -1) && obj.state==0){	
+							tr.append($('<td>').html('<input type="button" class ="btnBuyTicket" value="수강권 구매">'));			
+						}
+						// 수강권이 있든, 없든 사전에 예약을 한 강좌에 대해 [예약 취소] 버튼
 						else if(swimclass.reservationState == 0){
 							tr.append($('<td>').html('<input type="button" class ="btnreserveCancel" data-classcode="'+ swimclass.classCode + '" value="예약취소">'));									
 						}
+						// 수강인원이 다 찬 예약에 대해 [예약마감] 버튼
 						else if(swimclass.currentCount == swimclass.locationLimit){
 							tr.append($('<td>').html('<input type="button" class ="btnreserveEnd" value="예약마감">'));												
+						}
+						// 수강을 완료한 강좌에 대해서
+						else if(swimclass.reservationState == 1){
+							tr.append($('<td>').html('<input type="button" class ="btnClassEnd" value="수강완료">'));
 						}
 						tr.appendTo($('#classList'));						
 	
@@ -108,6 +120,11 @@
 				type: 'post',
 				data : 'subject=SWIM&memberNo=${loginMember.memberNo}&classCode='+ classCode,	// memberNo는 로그인 시 session에 들어있는 정보를 가져온다.
 				success : function(obj){
+					console.log('버튼 ',obj);
+					if(obj.state == 501){
+						alert('동일 날짜, 동일 시간대 강좌가 이미 예약되어 있습니다.');
+						return false;
+					}
 					if(obj.res == 1){
 						fngetClasses();		// 예약 완료 후 fngetClasses() 를 실행해야 현재 페이지에 바로 반영이 된다.
 						if(confirm('예약이 완료되었습니다. 마이페이지로 이동하시겠습니까?')){
@@ -172,6 +189,16 @@
 			
 		}) // click
 	} // fnCancelReserve
+	
+	
+	// 4. 수강권 구매 버튼 누르기
+	function fnBuyTicket(){
+		$('body').on('click','.btnBuyTicket',function(){
+			window.opener.location.href='${contextPath}/pay/paySwim';	// 부모창에서 새로운 경로로 이동
+			window.close();
+			
+		}) // click
+	}
 	
 	
 	

@@ -86,7 +86,7 @@
 			success: function(obj){
 				$('#teachers').empty();
 				// obj에 res 와 members 둘다 담자
-				//console.log(obj);
+				console.log(obj);
 				if(obj.res == 1){
 					$.each(obj.teachers, function(i,teacher){
 						//console.log(teacher);

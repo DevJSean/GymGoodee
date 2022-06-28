@@ -46,7 +46,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE MEMBER_NO = #{memberNo} AND CLASS_CODE = #{classCode}
 	</select>
 	
-	<!-- 예약 테이블에서 memberNo, classCode 일치하는 회원 찾기 -->
+	<!-- 예약 테이블에서 일치하는 memberNo와 예약상태가 0인 회원의 classCode 값들 반환하기 -->
+	<select id="selectCodesFromReservation" parameterType="Map" resultType="String">
+		SELECT CLASS_CODE
+		FROM RESERVATION
+		WHERE MEMBER_NO = #{memberNo} AND RESERVATION_STATE = 0
+	</select>
+	
+	<!-- 예약 테이블에서 memberNo와 classCode가 일치하는 것이 있는지 확인 -->
 	<select id="selectMemberFromReservation" parameterType="Map" resultType="Integer">
 		SELECT COUNT(MEMBER_NO)
 		FROM RESERVATION
