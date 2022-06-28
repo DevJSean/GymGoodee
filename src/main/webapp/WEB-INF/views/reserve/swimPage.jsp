@@ -12,12 +12,26 @@
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<script src='../resources/fullcalendar-5.11.0/lib/main.js'></script>
+<link href='../resources/fullcalendar-5.11.0/lib/main.css' rel='stylesheet' />
 <script>
 
 	/* 페이지 로드 이벤트 */
 	$(function(){
 		fnGetClassList();
 	})
+	/* calendar */
+	document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth',
+          locale: 'ko'
+        });
+        calendar.render();
+     });
 	
 	
 	
@@ -25,14 +39,27 @@
 	
 	// 1. 날짜 선택시 해당 날짜에 개설된 강좌 목록과 실시간 예약 현황 불러오기
 	function fnGetClassList(){
-		$('#test').on('click',function(){
+		$('body').on('click', '.fc-day', function(ev){
+			
+			// yyyy-mm-dd 까지만 나오게 하기!
+			var today = new Date().toISOString().substring(0,10);
+			var date = new Date($(this).data('date')).toISOString().substring(0,10);	// 선택한 날짜
+			
+			if(date < today){
+				alert('지난 날짜는 선택할 수 없습니다.');
+				ev.preventDefault();
+				return false;
+			}
+			
+			var strDate = date.replace(/-/gi,"");
+			
 			var popupX = (window.screen.width / 2) - (600 / 2);
 			// 만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
 
 			var popupY= (window.screen.height /2) - (300 / 2);
 			// 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
 
-			window.open("${contextPath}/reserve/reserveSwim?subject=SWIM&classDate=" + $(this).text(), '', 'status=no, height=300, width=600, left='+ popupX + ', top='+ popupY + ', scrollbars=yes,resizable=yes');
+			window.open("${contextPath}/reserve/reserveSwim?subject=SWIM&classDate=" + strDate, '', 'status=no, height=300, width=600, left='+ popupX + ', top='+ popupY + ', scrollbars=yes,resizable=yes');
 		})
 
 	} // fnGetClassList
@@ -41,66 +68,29 @@
 </script>
 <style>
 
-	.wrapper1{
-		text-align:center;
-		border : 2px solid grey;
-	}
-	.title{
-		text-align: center;
-		font-weight : 400;
-		font-size: 40px;
-	}
-	.Day{
-		display : inline-block;
-		border: 7px solid lightgreen;
-		width: 80px;
-		height: 30px;
-		text-align : center;
-	}
-	
-	.test{
-		display : inline-block;
-		border: 3px solid lightgrey;
-		width: 80px;
-		height: 80px;
-		text-align : center;
-		
-	}
+	#calendar {
+	    max-width: 800px;
+	    margin: 0 auto;
+  	}
+  	
+  	#swimImage{
+  		width : 150px;
+  		height: 150px;
+  		display : block;
+  		margin: auto;
+  	}
 
 </style>
 </head>
 <body>
 
-	<h1>수영 예약 페이지</h1>
-	
-	<img alt="수영이미지">
-	
-	<hr>
 	
 	
-	<!-- div로 달력 만들기... -->
-	<div class="wrapper1">
-		<div class="wrapper2">
-			<div class="title">2022-06</div>
-			<div class="Day">SUN</div>
-			<div class="Day">MON</div>
-			<div class="Day">TUE</div>
-			<div class="Day">WED</div>
-			<div class="Day">THU</div>
-			<div class="Day">FRI</div>
-			<div class="Day">SAT</div>		
-		</div>
-		<div class="wrapper3">
-			<div class="week1"></div>
-				<div class="test" name="classDate" id="test">20220623</div>
-			<div class="week2"></div>
-			<div class="week3"></div>
-			<div class="week4"></div>
-			<div class="week5"></div>
-		</div>
+	<div><img id="swimImage" alt="수영" src="../resources/images/swim.png"></div>
 	
 	
-	</div>
+	
+	<div id="calendar"></div>
 	
 	
 	

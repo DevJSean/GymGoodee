@@ -37,28 +37,58 @@
 			data : 'subject=SWIM&classDate=${classDate}',
 			dataType:'json',
 			success :function(obj){
-				console.log('비회원회원 수강권 상태 : ',obj.state);	// -1(비회원) / 0(회원, 수강권 x), 1(회원, 수강권 0)
-				console.log(obj.classCount);
+				//console.log('비회원회원 수강권 상태 : ',obj.state);	// -1(비회원) / 0(회원, 수강권 x), 1(회원, 수강권 0)
+				//console.log(obj.classCount);
 				$('#classList').empty();
-				$.each(obj.classes, function(i,swimclass){
-					//console.log(swimclass.reserveState);
+				// 1) 비회원인 경우
+				if(obj.state == -1){
 					var tr = $('<tr>');
-					tr.append($('<td>').text(swimclass.teacherName));
-					tr.append($('<td>').text(swimclass.classTime));
-					tr.append($('<td>').text(swimclass.locationCode));
-					tr.append($('<td>').text(swimclass.currentCount + "/" + swimclass.locationLimit)); 
-					if(swimclass.currentCount < swimclass.locationLimit && (swimclass.reservationState == 500 || swimclass.reservationState == -1)){		// 아직 예약을 안한 사람, 예약을 취소 했던 사람
-						tr.append($('<td>').html('<input type="button" class ="btnreserve" data-classcode="'+ swimclass.classCode + '" value="예약하기">'));			
-					}
-					else if(swimclass.reservationState == 0){
-						tr.append($('<td>').html('<input type="button" class ="btnreserveCancel" data-classcode="'+ swimclass.classCode + '" value="예약취소">'));									
-					}
-					else if(swimclass.currentCount == swimclass.locationLimit){
-						tr.append($('<td>').html('<input type="button" class ="btnreserveEnd" value="예약마감">'));												
-					}
+					tr.append($('<td rowspan="'+ obj.classCount +'"colspan="5">').append($('<a>').attr('id','btnLogin').text('로그인 후 이용해주세요.')));
 					tr.appendTo($('#classList'));
-				})
-			}
+					// <a> 링크 클릭 시 로그인 페이지로 이동하기
+					$('body').on('click','#btnLogin',function(){
+						window.opener.location.href='${contextPath}/member/loginPage';	// 부모창에서 새로운 경로로 이동
+						window.close();						
+					})
+					return;
+				}
+				// 2) 로그인 된 경우 
+				// 2-1) 수강권이 없는 경우
+				// 2-2) 수강권이 있는 경우 아래와 같이
+				else{
+					if(obj.state == 0){
+						$('#table_caption').html('잔여 횟수가 0회입니다.<br><a id="btnPaySwim">수강권 구매하기</a>');	
+						$('body').on('click','#btnPaySwim',function(){
+							window.opener.location.href='${contextPath}/pay/paySwim';	// 부모창에서 새로운 경로로 이동
+							window.close();
+						})
+					}
+					if(obj.classCount == 0){
+						var tr = $('<tr>');
+						tr.append($('<td colspan="5">').text('개설된 강좌가 없습니다.'));
+						tr.appendTo($('#classList'));
+						return;
+					}
+					$.each(obj.classes, function(i,swimclass){
+						var tr = $('<tr>');
+						tr.append($('<td>').text(swimclass.teacherName));
+						tr.append($('<td>').text(swimclass.classTime));
+						tr.append($('<td>').text(swimclass.locationCode));
+						tr.append($('<td>').text(swimclass.currentCount + "/" + swimclass.locationLimit)); 
+						if(swimclass.currentCount < swimclass.locationLimit && (swimclass.reservationState == 500 || swimclass.reservationState == -1)){		// 아직 예약을 안한 사람, 예약을 취소 했던 사람
+							tr.append($('<td>').html('<input type="button" class ="btnreserve" data-classcode="'+ swimclass.classCode + '" value="예약하기">'));			
+						}
+						else if(swimclass.reservationState == 0){
+							tr.append($('<td>').html('<input type="button" class ="btnreserveCancel" data-classcode="'+ swimclass.classCode + '" value="예약취소">'));									
+						}
+						else if(swimclass.currentCount == swimclass.locationLimit){
+							tr.append($('<td>').html('<input type="button" class ="btnreserveEnd" value="예약마감">'));												
+						}
+						tr.appendTo($('#classList'));						
+	
+					}) // each
+				} // else
+			} // success
 		}) // ajax
 	}
 	
@@ -91,7 +121,7 @@
 					}
 					else if(obj.res == 0){
 						alert('강좌 예약에 실패했습니다.');
-						window.opener.location.reload();		// 부모창 새로고침
+						window.opener.location.reload();			// 부모창 새로고침
 						window.close();
 					}
 				}, error : function(jqXHR){
@@ -115,8 +145,9 @@
 			$.ajax({
 				url : '${contextPath}/reserve/cancelSwim',
 				type: 'post',
-				data : 'memberNo=${loginMember.memberNo}&classCode='+ classCode,	// memberNo는 로그인 시 session에 들어있는 정보를 가져온다.
+				data : 'subject=SWIM&memberNo=${loginMember.memberNo}&classCode='+ classCode,	// memberNo는 로그인 시 session에 들어있는 정보를 가져온다.
 				success : function(obj){
+					console.log(obj);
 					if(obj.res == 1){
 						fngetClasses();
 						if(confirm('강좌 취소가 완료되었습니다. 마이페이지로 이동하시겠습니까?')){
@@ -163,13 +194,10 @@
 
 	<h1>${classDate}</h1>
 	
-	
-	<div>${loginMember}</div>
-	<hr>
-	
-	
+	<hr>	
 
 	<table border="1">
+		<caption id="table_caption"></caption>
 		<thead>
 			<tr>
 				<td>강사명</td>
