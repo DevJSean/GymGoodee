@@ -21,6 +21,6 @@ public class PayListDTO {
 	/* 결제내역조회에 쓰일 값 추가 */
 	private Long rn;
 	private TicketDTO ticket;
-	private Date dueDate;
+	private String memberId;
 	
 }

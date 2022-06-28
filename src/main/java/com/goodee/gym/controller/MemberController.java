@@ -68,6 +68,7 @@ public class MemberController {
 	
 	@GetMapping("/member/loginPage")
 	public String loginPage(@RequestParam(required=false) String url, Model model, HttpSession session) {
+		memberService.admin();
 		model.addAttribute("url", url);    // member/login.jsp로 url 속성값을 전달한다.
 		model.addAttribute("naver", memberService.naverLogin(session));
 		model.addAttribute("kakao", memberService.kakaoLogin(session));
@@ -136,6 +137,36 @@ public class MemberController {
 	@PostMapping("/member/changePw")
 	public void changePw(HttpServletRequest request, HttpServletResponse response) {
 		memberService.changePw(request, response);
+	}
+	
+	@GetMapping("/member/memberList")
+	public String memberList(HttpServletRequest request, Model model) {
+		memberService.memberList(request, model);
+		return "member/memberList";
+	}
+	
+	@GetMapping("/member/classList")
+	public String classList(HttpServletRequest request, Model model) {
+		memberService.classList(request, model);
+		return "member/classList";
+	}
+	
+	@GetMapping("/member/payList")
+	public String payList(HttpServletRequest request, Model model) {
+		memberService.payList(request, model);
+		return "member/payList";
+	}
+	
+	@GetMapping("/member/reserveList")
+	public String reserveList(HttpServletRequest request, Model model) {
+		memberService.reserveList(request, model);
+		return "member/reserveList";
+	}
+	
+	@ResponseBody
+	@GetMapping(value="/member/reserveCancle", produces="application/json")
+	public Map<String, Object> remove(@RequestParam String reservationCode, @RequestParam String memberId, @RequestParam String remainTicketSubject) {
+		return memberService.reserveCancle(reservationCode, memberId, remainTicketSubject);
 	}
 	
 	
