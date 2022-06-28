@@ -15,15 +15,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 결제내역 추가 -->
 	<insert id="insertPayList" parameterType="PayListDTO">
-		INSERT INTO PayList
+		INSERT INTO PAYLIST
 			(PAYLIST_NO, MEMBER_NO, TICKET_NO, PAYLIST_DATE)
 		VALUES
 			(PAYLIST_SEQ.NEXTVAL, #{memberNo}, #{ticketNo}, #{payListDate})
 	</insert>
-	
 
 	
-	
+	<!-- 잔여수강권 추가 -->
+	<insert id="insertRemainTicket" parameterType="RemainTicketDTO">
+		INSERT INTO REMAIN_TICKET
+			(REMAIN_TICKET_NO, MEMBER_ID, REMAIN_TICKET_SUBJECT, REMAIN_TICKET_END_DATE, REMAIN_TICKET_REMAIN_COUNT)
+		VALUES
+			(REMAIN_TICKET_SEQ.NEXTVAL, #{memberId}, #{remainTicketSubject}, #{remainTicketEndDate}, #{remainTicketRemainCount})
+	</insert>
 	
 	
 	

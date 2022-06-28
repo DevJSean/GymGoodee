@@ -1,7 +1,6 @@
 package com.goodee.gym.service;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.ui.Model;
 
@@ -13,7 +12,4 @@ public interface TicketService {
 
 	public void orderResult(HttpServletRequest request, Model model) throws Exception;
 
-	public void updatePayList(HttpServletRequest request, HttpServletResponse response);
-	
-	
 }
