@@ -91,9 +91,10 @@
 					</td> 
 					<td>
 						${review.classCode}
-<%-- 						${fn:substring(review.classCode,0,8)}&nbsp;
-						${fn:substring(review.classCode,9,10)}&nbsp;
-						${fn:substring(review.classCode,11,length(review.classCode))}반 --%>
+						<c:set var="class" value="${review.classCode}"/>
+			<%-- 			<c:out value="${fn:substring(class,0,8)}&nbsp;" />
+						<c:out value="${fn:substring(class,9,10)}&nbsp;" />
+						<c:out value="${fn:substring(class,11,length(class))}반" /> --%>
 					</td> <!-- 20220630_D_SPINNING02반 -->
 					<td>${review.memberId}</td>
 					<td>${review.reviewCreated}</td>
