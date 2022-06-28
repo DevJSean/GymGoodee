@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.goodee.gym.path.Payple;
+import com.goodee.gym.service.MyPageService;
 import com.goodee.gym.service.TicketService;
 
 @Controller
@@ -17,6 +18,9 @@ public class OrderController extends Payple {
 
 	@Autowired
 	private TicketService ticketService;
+	
+	@Autowired
+	private MyPageService myPageService;
 	
 	
 	@GetMapping("/pay/paySwim")
@@ -67,6 +71,7 @@ public class OrderController extends Payple {
 	@PostMapping(value = "/order/orderResult")
 	public String orderResult(HttpServletRequest request, Model model) throws Exception {
 		ticketService.orderResult(request, model);
+		myPageService.changeTicketInfo(request);
 		return "order/orderResult";
 	}
 	

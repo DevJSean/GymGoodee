@@ -13,6 +13,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		         WHERE RESERVATION_STATE = 0) R JOIN CLASS C
 		    ON R.CLASS_CODE = C.CLASS_CODE
 		 WHERE R.MEMBER_NO = #{memberNo}
+		 ORDER BY R.RN
 	</select>
 
 	<!-- 다가올 수업 갯수 -->
@@ -47,7 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		    ON R.CLASS_CODE = C.CLASS_CODE
 		 WHERE R.MEMBER_NO = #{memberNo}
 		   AND R.RN BETWEEN #{beginRecord} AND #{endRecord}
-		 ORDER BY CLASS_CODE DESC
+		 ORDER BY R.RN
 	</select>
 	
 	<!-- 지난 수업 갯수 -->
@@ -71,19 +72,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result column="TICKET_NO" property="ticketNo" />
 		<result column="PAYLIST_DATE" property="payListDate" />
 		<result column="RN" property="rn" />
-		<result column="TICKET_DUEDATE" property="dueDate" />
 		<collection resultMap="TicketMap" property="ticket" />
 	</resultMap>
 	
 	<!-- 마이페이지 - 결제내역조회 -->
 	<select id="selectPayList" parameterType="Map" resultMap="PayListMap">
-		SELECT P.RN, P.PAYLIST_NO, P.MEMBER_NO, P.TICKET_NO, P.PAYLIST_DATE, T.TICKET_SUBJECT, T.TICKET_PERIOD, T.TICKET_COUNT, T.TICKET_PRICE, (P.PAYLIST_DATE + T.TICKET_PERIOD) AS TICKET_DUEDATE
+		SELECT P.RN, P.PAYLIST_NO, P.MEMBER_NO, P.TICKET_NO, P.PAYLIST_DATE, T.TICKET_SUBJECT, T.TICKET_PERIOD, T.TICKET_COUNT, T.TICKET_PRICE
 		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY PAYLIST_DATE DESC) AS RN, PAYLIST_NO, MEMBER_NO, TICKET_NO, PAYLIST_DATE
 		  	      FROM PAYLIST
 		  	     WHERE MEMBER_NO = #{memberNo}) P JOIN TICKET T
 		  	ON P.TICKET_NO = T.TICKET_NO
-		 ORDER BY PAYLIST_DATE DESC
+		 ORDER BY P.RN
 	</select>
+	
+	<!-- 동일 종목 추가 결제시 만료일, 잔여횟수 증가 -->
+	<update id="updateTicket" parameterType="TicketDTO">
+		UPDATE REMAIN_TICKET 
+		   SET REMAIN_TICKET_END_DATE = REMAIN_TICKET_END_DATE + #{ticketPeriod},
+		       REMAIN_TICKET_REMAIN_COUNT = REMAIN_TICKET_REMAIN_COUNT + #{ticketCount}
+		 WHERE MEMBER_ID = (SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_NO = #{memberNo}) AND REMAIN_TICKET_SUBJECT = #{ticketSubject}
+		   AND REMAIN_TICKET_END_DATE >= SYSDATE
+	</update>
 
 	<!-- 비밀번호 일치하는지 조회 -->
 	<select id="selectMemberPwByNo" parameterType="Long" resultType="String">
@@ -95,7 +104,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 비밀번호 수정 -->
 	<update id="updatePw" parameterType="memberDTO">
 		UPDATE MEMBER
-		   SET MEMBER_PW = #{memberPw}
+		   SET MEMBER_PW = #{memberPw}, MEMBER_PW_MODIFIED = SYSDATE
 		 WHERE MEMBER_NO = #{memberNo}
 	</update>
 	
@@ -128,5 +137,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  FROM MEMBER
 		 WHERE MEMBER_NO = #{memberNo}
 	</delete>
+	
+	<!-- 비밀번호 변경일 -->
+	<select id="selectPwModified" parameterType="String" resultType="Long">
+		SELECT MONTHS_BETWEEN(SYSDATE, MEMBER_PW_MODIFIED)
+		  FROM MEMBER 
+		 WHERE MEMBER_ID = #{memberId}
+	</select>
+	
+	<!-- 수업시간이 지나면 예약상태 1로 업데이트 -->
+	<update id="updateReservationState">
+		UPDATE RESERVATION R
+		   SET RESERVATION_STATE = 1
+		 WHERE EXISTS(
+		 		SELECT 1
+		 		  FROM CLASS C
+				 WHERE R.CLASS_CODE = C.CLASS_CODE 
+				   AND RESERVATION_STATE = 0 
+				   AND TO_CHAR(SYSDATE, 'YY/MM/DDHH:MM') >= CLASS_DATE || CLASS_TIME
+		)
+	</update>
+	
 	
 </mapper>

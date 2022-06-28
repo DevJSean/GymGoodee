@@ -19,6 +19,15 @@
 		fnReserveCancle();
 	})
 	
+	// 오늘 날짜 추출
+	var now = Date.now();
+	var today = new Date(now);
+	var year = today.getFullYear().toString().slice(-2);
+	var month = ('0' + (today.getMonth() + 1)).slice(-2);
+	var day = ('0' + today.getDate()).slice(-2);
+	var todayDate = year + '/' + month + '/' + day;
+	
+	
 	// 다가올 수업 내역
 	function fnCommingReserveList() {
 		$.ajax({
@@ -34,17 +43,8 @@
 				$.each(obj.commingReservations, function(i, comming) {
 					var tr = $('<tr>')
 					.append($('<td>').text(comming.rn))
-					.append($('<td>').text(comming.classDate));
-					switch(comming.classTime) {
-					case 'A': $(tr).append($('<td>').text('9:00'));
-						break;
-					case 'B': $(tr).append($('<td>').text('10:00'));
-						break;
-					case 'C': $(tr).append($('<td>').text('19:30'));
-						break;
-					case 'D': $(tr).append($('<td>').text('20:30'));
-						break;
-					}
+					.append($('<td>').text(comming.classDate))
+					.append($('<td>').text(comming.classTime));
 					if(comming.reservationCode.startsWith('SWIM')) {
 						$(tr).append($('<td>').text('수영'))
 						.append($('<input type="hidden" name="remainTicketSubject" value="SWIM">'));
@@ -58,8 +58,12 @@
 						$(tr).append($('<td>').text('필라테스'))
 						.append($('<input type="hidden" name="remainTicketSubject" value="PILATES">'));
 					}
-					$(tr).append($('<td>').text(comming.reservationDate))
-					.append(($('<td>').html('<input type="button" value="예약취소" class="btnReserveCancle" data-reservation_code="' + comming.reservationCode + '">')));
+					$(tr).append($('<td>').text(comming.reservationDate));
+					if(comming.classDate == todayDate) {
+						$(tr).append($('<td>').text('취소불가'));
+					} else {
+						$(tr).append($('<td>').html('<input type="button" value="예약취소" class="btnReserveCancle" data-reservation_code="' + comming.reservationCode + '">'));
+					}
 					
 					$(tr).appendTo('#commingReservationsList');
 				})
@@ -92,7 +96,6 @@
 				}
 			})	
 		}
-	
 	
 	
 </script>
@@ -178,20 +181,7 @@
 					<tr>
 						<td>${over.rn}</td>
 						<td>${over.classDate}</td>
-						<c:choose>
-							<c:when test="${over.classTime eq 'A'}">
-								<td>9:00</td>
-							</c:when>
-							<c:when test="${over.classTime eq 'B'}">
-								<td>10:00</td>
-							</c:when>
-							<c:when test="${over.classTime eq 'C'}">
-								<td>19:30</td>
-							</c:when>
-							<c:when test="${over.classTime eq 'D'}">
-								<td>20:30</td>
-							</c:when>
-						</c:choose>
+						<td>${over.classTime}</td>
 						<c:choose>
 							<c:when test="${fn:startsWith(over.reservationCode, 'SWIM')}" >
 			         			<td>수영</td>

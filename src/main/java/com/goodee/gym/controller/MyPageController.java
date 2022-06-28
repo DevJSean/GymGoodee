@@ -91,4 +91,10 @@ public class MyPageController {
 		myPageService.signOut(request, response);
 	}
 	
+	@ResponseBody
+	@GetMapping(value="/mypage/pwModifiedCheck", produces="application/json")
+	public Map<String, Object> pwModifiedCheck(HttpServletRequest request) {
+		return myPageService.getPwModified(request);
+	}
+	
 }

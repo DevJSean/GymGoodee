@@ -14,7 +14,9 @@ public interface MyPageService {
 	public Map<String, Object> reserveCancle(String reservationCode, String memberId, String remainTicketSubject);
 	public void getOverReservationsByNo(HttpServletRequest request, Model model);
 	public void getMyPayListByNo(Long memberNo, Model model);
+	public void changeTicketInfo(HttpServletRequest request);
 	public void changePw(HttpServletRequest request, HttpServletResponse response);
 	public void changeMyInfo(HttpServletRequest request, HttpServletResponse response);
 	public void signOut(HttpServletRequest request, HttpServletResponse response);
+	public Map<String, Object> getPwModified(HttpServletRequest request);
 }

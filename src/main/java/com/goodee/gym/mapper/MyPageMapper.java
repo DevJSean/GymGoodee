@@ -10,6 +10,7 @@ import com.goodee.gym.domain.MemberDTO;
 import com.goodee.gym.domain.PayListDTO;
 import com.goodee.gym.domain.RemainTicketDTO;
 import com.goodee.gym.domain.ReservationDTO;
+import com.goodee.gym.domain.TicketDTO;
 
 @Mapper
 public interface MyPageMapper {
@@ -29,6 +30,9 @@ public interface MyPageMapper {
 	// 결제 내역 조회
 	public List<PayListDTO> selectPayList(Long memberNo);
 	
+	// 동일 종목 추가 결제시
+	public int updateTicket(TicketDTO ticket);
+	
 	// 비밀번호 조회
 	public String selectMemberPwByNo(Long memberNo);
 	
@@ -46,4 +50,11 @@ public interface MyPageMapper {
 	
 	// 회원 탈퇴
 	public int deleteMember(Long memberNo);
+	
+	// 비밀번호 변경일 
+	public Long selectPwModified(String memberId);
+	
+	// 예약확정 처리
+	public void updateReservationState();
+	
 }

@@ -231,7 +231,7 @@
 	}
 	#btnEmailChange, #btnPhoneChange {
 		background-color: green;
-		 width: 50px;
+		width: 50px;
 		height: 32px;
 		color: white;
 		border: none;
@@ -243,7 +243,7 @@
 	}
 	#btnGetAuthCodeEmail, #btnGetAuthCodeSMS, #btnVerifyAuthCodeEmail, #btnVerifyAuthCodeSMS {
 		background-color: green;
-		 width: 70px;
+		width: 70px;
 		height: 32px;
 		color: white;
 		border: none;

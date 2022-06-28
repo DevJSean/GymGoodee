@@ -2,6 +2,7 @@ package com.goodee.gym.service;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.goodee.gym.domain.MemberDTO;
+import com.goodee.gym.domain.PayListDTO;
+import com.goodee.gym.domain.TicketDTO;
 import com.goodee.gym.mapper.MyPageMapper;
 import com.goodee.gym.util.PageUtils;
 import com.goodee.gym.util.SecurityUtils;
@@ -29,7 +32,6 @@ public class MyPageServiceImpl implements MyPageService {
 	public Map<String, Object> getRemainTicketsById(String memberId) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("remainTickets", myPageMapper.selectTicketsById(memberId));
-		System.out.println(map);
 		return map;
 	}
 
@@ -82,6 +84,43 @@ public class MyPageServiceImpl implements MyPageService {
 	@Override
 	public void getMyPayListByNo(Long memberNo, Model model) {
 		model.addAttribute("payList", myPageMapper.selectPayList(memberNo));
+	}
+	
+	// 동일 종목 추가 결제시
+	@Override
+	public void changeTicketInfo(HttpServletRequest request) {
+		
+		Optional<String> optNo = Optional.ofNullable(request.getParameter("PCD_PAYER_NO"));
+		Long memberNo = Long.parseLong(optNo.orElse("0"));
+		
+		List<PayListDTO> payList = myPageMapper.selectPayList(memberNo);
+		int i = 0;
+		for(int j = 1, size = payList.size(); j <= size; j++) {
+			if(payList.get(i).getTicket().getTicketSubject().equals(payList.get(j).getTicket().getTicketSubject())) {
+				Integer ticketPeriod = payList.get(i).getTicket().getTicketPeriod();
+				Integer ticketCount = payList.get(i).getTicket().getTicketCount();
+				String ticketSubject = null;
+				if(payList.get(i).getTicket().getTicketSubject().equals("수영")) {
+					ticketSubject = "SWIM";
+				} else if(payList.get(i).getTicket().getTicketSubject().equals("스포츠댄스")) {
+					ticketSubject = "DANCE";
+				} else if(payList.get(i).getTicket().getTicketSubject().equals("필라테스")) {
+					ticketSubject = "PILATES";
+				} else if(payList.get(i).getTicket().getTicketSubject().equals("스피닝")) {
+					ticketSubject = "SPINNING";
+				}
+				
+				TicketDTO ticket = TicketDTO.builder()
+						.memberNo(memberNo)
+						.ticketPeriod(ticketPeriod)
+						.ticketCount(ticketCount)
+						.ticketSubject(ticketSubject)
+						.build();
+				
+				myPageMapper.updateTicket(ticket);
+				return;
+			} 
+		}
 	}
 	
 	// 비밀번호 변경
@@ -177,6 +216,7 @@ public class MyPageServiceImpl implements MyPageService {
 		}
 	}
 	
+	// 회원탈퇴
 	@Override
 	public void signOut(HttpServletRequest request, HttpServletResponse response) {
 		int res = 0;
@@ -225,5 +265,14 @@ public class MyPageServiceImpl implements MyPageService {
 			e.printStackTrace();
 		}
 			
+	}
+	
+	// 비밀번호 변경일
+	@Override
+	public Map<String, Object> getPwModified(HttpServletRequest request) {
+		String memberId = SecurityUtils.xss(request.getParameter("memberId"));
+		Map<String, Object> map = new HashMap<>();
+		map.put("postDays", myPageMapper.selectPwModified(memberId));
+		return map;
 	}
 }

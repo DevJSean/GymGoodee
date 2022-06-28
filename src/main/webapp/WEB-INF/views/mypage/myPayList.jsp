@@ -9,6 +9,42 @@
 <head>
 <meta charset="UTF-8">
 <title>마이페이지</title>
+<script src="../resources/js/jquery-3.6.0.js"></script>
+<script>
+	$(function() {
+		fnRemainTickets();
+	})
+
+	// 보유수강권 정보
+	function fnRemainTickets() {
+		$.ajax({
+			// 요청
+			url: '${contextPath}/remainTickets',
+			data: 'memberId=${loginMember.memberId}',
+			type: 'get',
+			// 응답
+			dataType: 'json',
+			success: function(obj) {
+				$('#myTickets').empty();
+				$.each(obj.remainTickets, function(i, remainTicket) {
+					let subject = null;
+					switch(remainTicket.remainTicketSubject) {
+					case 'SWIM': subject = '수영';
+						break;
+					case 'DANCE': subject = '스포츠댄스';
+						break;
+					case 'SPINNING': subject = '스피닝';
+						break;
+					case 'PILATES': subject = '필라테스';
+						break;
+					}
+					$('#myTickets')
+					.append($('<div>').text(subject + '\t' + remainTicket.remainTicketEndDate));
+				})
+			}
+		})
+	}
+</script>
 <style>
 	.myPageNav {
 		display: flex;
@@ -57,6 +93,11 @@
 			</ul>	
 		</nav>
 		
+		
+    	수강권 만료일
+	    <div id="myTickets">
+	    </div>
+		
 		<table>
 			<thead>
 				<tr>
@@ -67,7 +108,6 @@
 					<td>결제번호</td>
 					<td>결제금액</td>
 					<td>결제일</td>
-					<td>이용기간</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -80,7 +120,6 @@
 						<td>${pay.payListNo}</td>
 						<td>${pay.ticket.ticketPrice}원</td>
 						<td>${pay.payListDate}</td>
-						<td>${pay.payListDate} ~ ${pay.dueDate}</td>
 					</tr>
 				</c:forEach>			
 			</tbody>

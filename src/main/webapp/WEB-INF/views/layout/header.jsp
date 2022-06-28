@@ -44,6 +44,19 @@
 			}
 		})
 	}
+	
+	function fnLogOut() {
+		location.href='${contextPath}/member/logout';
+	}
+
+	function fnMyPage() {
+		location.href='${contextPath}/mypage/myReserveList?memberNo=${loginMember.memberNo}&memberId=${loginMember.memberId}';
+	}
+	
+	function fnAdminPage() {
+		location.href='${contextPath}/member/memberList';
+	}
+	
 </script>
 <style>
 	.indexNav {
@@ -78,9 +91,15 @@
 	<!-- 로그인 이후에 보여줄 링크 -->
 	<c:if test="${loginMember ne null}">
 		${loginMember.memberName}님 반갑습니다.&nbsp;&nbsp;&nbsp;
-		<a href="${contextPath}/member/logout">로그아웃</a>
-		<br>
-		<div id="remainTickets"></div>
+		<input type="button" value="로그아웃" id="btnLogOut" onclick="fnLogOut()">
+		<c:if test="${loginMember.memberId eq 'admin'}">
+			<input type="button" value="관리자페이지" id="btnAdminPage" onclick="fnAdminPage()">
+		</c:if>
+		<c:if test="${loginMember.memberId ne 'admin'}">
+			<input type="button" value="마이페이지" id="btnMyPage" onclick="fnMyPage()">
+			<br>
+			<div id="remainTickets"></div>
+		</c:if>	
 	</c:if>
 	
 	<hr>
@@ -89,8 +108,7 @@
 		<ul class="indexNav">
 			<li class="indexItem"><a href="">센터소개</a></li>
 			<li class="indexItem"><a href="">운동소개</a></li>
-			<li class="indexItem"><a href="">게시판</a></li>
-			<li class="indexItem"><a href="${contextPath}/mypage/myReserveList?memberNo=${loginMember.memberNo}&memberId=${loginMember.memberId}">마이페이지</a></li>
+			<li class="indexItem"><a href="${contextPath}/board/noticeList">게시판</a></li>
 		</ul>
 	</nav>
 	

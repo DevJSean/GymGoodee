@@ -17,4 +17,6 @@ public class TicketDTO {
 	private Integer ticketPeriod;
 	private String ticketPrice;
 	
+	private Long memberNo;
+	
 }
