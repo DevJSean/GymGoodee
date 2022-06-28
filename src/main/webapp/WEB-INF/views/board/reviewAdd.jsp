@@ -17,6 +17,10 @@
 				alert('제목과 내용은 필수입니다.');
 				event.preventDefault();
 				return false;
+			} else if (!$('#class > option:selected').val()) {
+				alert('수강 이력이 있어야 리뷰를 작성할 수 있습니다.');
+				event.preventDefault();
+				return false;
 			}
 		})		
 		

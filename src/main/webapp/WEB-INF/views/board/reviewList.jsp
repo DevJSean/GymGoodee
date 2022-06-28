@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%> 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -88,7 +89,12 @@
 							<i class="fa-solid fa-circle-check"></i>
 						</c:if>
 					</td> 
-					<td>${review.classCode}반</td> <!-- 20220630_D_SPINNING02반 -->
+					<td>
+						${review.classCode}
+<%-- 						${fn:substring(review.classCode,0,8)}&nbsp;
+						${fn:substring(review.classCode,9,10)}&nbsp;
+						${fn:substring(review.classCode,11,length(review.classCode))}반 --%>
+					</td> <!-- 20220630_D_SPINNING02반 -->
 					<td>${review.memberId}</td>
 					<td>${review.reviewCreated}</td>
 					<td>${review.reviewHit}</td>
