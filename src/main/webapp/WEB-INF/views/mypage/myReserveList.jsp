@@ -22,10 +22,10 @@
 	// 오늘 날짜 추출
 	var now = Date.now();
 	var today = new Date(now);
-	var year = today.getFullYear().toString().slice(-2);
+	var year = today.getFullYear().toString();
 	var month = ('0' + (today.getMonth() + 1)).slice(-2);
 	var day = ('0' + today.getDate()).slice(-2);
-	var todayDate = year + '/' + month + '/' + day;
+	var todayDate = year + month + day;
 	
 	
 	// 다가올 수업 내역

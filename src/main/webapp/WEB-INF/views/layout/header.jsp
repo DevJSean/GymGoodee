@@ -57,6 +57,10 @@
 		location.href='${contextPath}/member/memberList';
 	}
 	
+	function fnMainPage() {
+		location.href='${contextPath}';
+	}
+	
 </script>
 <style>
 	.indexNav {
@@ -92,6 +96,7 @@
 	<c:if test="${loginMember ne null}">
 		${loginMember.memberName}님 반갑습니다.&nbsp;&nbsp;&nbsp;
 		<input type="button" value="로그아웃" id="btnLogOut" onclick="fnLogOut()">
+		<input type="button" value="메인페이지" id="btnMainPage" onclick="fnMainPage()">
 		<c:if test="${loginMember.memberId eq 'admin'}">
 			<input type="button" value="관리자페이지" id="btnAdminPage" onclick="fnAdminPage()">
 		</c:if>

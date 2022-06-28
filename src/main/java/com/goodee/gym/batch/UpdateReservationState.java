@@ -13,7 +13,7 @@ public class UpdateReservationState {
 	@Autowired
 	private MyPageMapper myPageMapper;
 	
-	// 실시간으로 예약시간이 지났으면 확정처리
+	// 실시간으로 수업시간이 지났으면 확정처리
 	@Scheduled(cron = "0/1 * * * * ?")  
 	public void execute() throws Exception {
 		
