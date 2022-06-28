@@ -24,6 +24,7 @@ public interface MemberService {
 	/* 네이버 */
 	public String naverLogin(HttpSession session);
 	public void naverCallback(HttpServletRequest request, HttpServletResponse response);
+	public void naverLogout(HttpServletRequest request);
 	
 	/* 카카오 */
 	public String kakaoLogin(HttpSession session);
