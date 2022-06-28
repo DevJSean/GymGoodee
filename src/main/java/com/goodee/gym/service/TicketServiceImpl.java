@@ -1,12 +1,13 @@
 package com.goodee.gym.service;
 
+import java.io.PrintWriter;
 import java.sql.Date;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +27,28 @@ public class TicketServiceImpl implements TicketService {
 	private TicketMapper ticketMapper;
 	
 	@Override
-	public void findTicketByNo(HttpServletRequest request, Model model) {
+	public void findTicketByNo(HttpServletRequest request, HttpServletResponse response, Model model) {
 	
+		try {
+			if(request.getSession().getAttribute("loginMember") == null) {
+				response.setContentType("text/html");
+				PrintWriter out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('로그인 후 구매해주세요.')");
+				out.println("location.href='" + request.getContextPath() + "/lsh'");
+				out.println("</script>");
+				out.close();
+				return;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		Optional<String> opt = Optional.ofNullable(request.getParameter("ticketNo"));
 		Long ticketNo = Long.parseLong(opt.orElse("0"));
 		
 		model.addAttribute("ticket", ticketMapper.selectTicketByNo(ticketNo));		
 
-		
 	}
 	
 	@Override
@@ -52,6 +67,7 @@ public class TicketServiceImpl implements TicketService {
 		model.addAttribute("ticketSubject", request.getParameter("ticketSubject")); 	// 종목
 		model.addAttribute("ticketCount", request.getParameter("ticketCount")); 		// 횟수
 		model.addAttribute("ticketPeriod", request.getParameter("ticketPeriod")); 		// 기간
+		System.out.println(request.getParameter("ticketName"));
 		
 	}
 	

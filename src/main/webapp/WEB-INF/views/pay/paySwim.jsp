@@ -9,6 +9,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ce1eb18e13a39e414dcad60a6592533c"></script>
+
 </head>
 <body>
 	
