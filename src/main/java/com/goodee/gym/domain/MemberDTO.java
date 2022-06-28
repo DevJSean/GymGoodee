@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MemberDTO {
 
+	private Long rn;
 	private Long memberNo;
 	private String memberId;
 	private String memberPw;

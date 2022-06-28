@@ -17,6 +17,8 @@ public class ClassDTO {
 	private String classDate;
 	private String classTime;
 	
+	private Long rn;
+	
 	// 강사명에 대한 정보 추가
 	private String teacherName;
 	
@@ -28,4 +30,6 @@ public class ClassDTO {
 	
 	// 이미 예약을 한 강좌인지 아닌 구분
 	private Integer reservationState;
+	
+	
 }

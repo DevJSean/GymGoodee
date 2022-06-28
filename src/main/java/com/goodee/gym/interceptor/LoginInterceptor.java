@@ -1,5 +1,6 @@
 package com.goodee.gym.interceptor;
 
+import java.io.PrintWriter;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,13 +60,18 @@ public class LoginInterceptor implements HandlerInterceptor {
 		}
 		// loginMember가 없다면 (로그인 실패) 로그인 페이지로 돌려보내기
 		else {
-			if(url.toString().isEmpty()) {
-				response.sendRedirect(request.getContextPath() + "/member/loginPage");
-			} else {
-				// 로그인 이전 화면 정보가 있는데 로그인 실패 시, 로그인 이전 화면 정보를 싣고 다시 로그인 페이지로 돌려보내기
-				response.sendRedirect(request.getContextPath() + "/member/loginPage?url=" + url.toString()); 
+				try {
+					response.setContentType("text/html");
+					PrintWriter out = response.getWriter();
+						out.println("<script>");
+						out.println("alert('아이디 또는 비밀번호를 잘못 입력했습니다. 입력하신 내용을 다시 확인해주세요.')");
+						out.println("location.href='" + request.getContextPath() + "/member/loginPage'");
+						out.println("</script>");
+						out.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
-		}
 		
 	}
 	

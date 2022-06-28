@@ -31,6 +31,11 @@
 		${loginMember.memberName} 님 반갑습니다. &nbsp;&nbsp;&nbsp;
 		<a href="${contextPath}/member/logout">로그아웃</a>
 		<a href="${contextPath}/member/signOut?memberNo=${loginMember.memberNo}">회원탈퇴하기</a>
+		<a href="${contextPath}/mypage/myReserveList?memberNo=${loginMember.memberNo}&memberId=${loginMember.memberId}">마이페이지</a>
+		<a href="${contextPath}">메인</a>
+		<c:if test="${loginMember.memberId eq 'admin'}">
+			<a href="${contextPath}/member/memberList">관리자페이지</a>			
+		</c:if>
 	</c:if>	
 	
 </body>

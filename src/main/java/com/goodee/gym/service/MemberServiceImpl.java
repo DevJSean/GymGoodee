@@ -13,7 +13,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 
 import javax.mail.Authenticator;
@@ -30,9 +32,14 @@ import javax.servlet.http.HttpSession;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
+import com.goodee.gym.domain.ClassDTO;
 import com.goodee.gym.domain.MemberDTO;
+import com.goodee.gym.domain.PayListDTO;
+import com.goodee.gym.domain.ReservationDTO;
 import com.goodee.gym.mapper.MemberMapper;
+import com.goodee.gym.util.PageUtils;
 import com.goodee.gym.util.SecurityUtils;
 
 import net.nurigo.java_sdk.exceptions.CoolsmsException;
@@ -42,6 +49,34 @@ public class MemberServiceImpl implements MemberService {
 
 	@Autowired
 	private MemberMapper memberMapper;
+	
+	@Override
+	public void admin() {
+		if(memberMapper.selectMemberById("admin") == null) {
+			String memberId = "admin";
+			String memberPw = SecurityUtils.sha256("1111");
+			String memberName = "관리자";
+			String memberBirth = "0000-00-00";
+			String memberGender = "A";
+			String memberPhone = "000-0000-0000";
+			String memberEmail = "aa@aa.aa";
+			Integer memberAgreeState = 1;
+			
+			MemberDTO member = MemberDTO.builder()
+					.memberId(memberId)
+					.memberPw(memberPw)
+					.memberName(memberName)
+					.memberBirth(memberBirth)
+					.memberGender(memberGender)
+					.memberPhone(memberPhone)
+					.memberEmail(memberEmail)
+					.memberAgreeState(memberAgreeState)
+					.build();
+			
+			memberMapper.insertMember(member);
+			
+		}
+	}
 	
 	@Override
 	public Map<String, Object> idCheck(String memberId) {
@@ -284,12 +319,12 @@ public class MemberServiceImpl implements MemberService {
 	      org.json.JSONObject obj2 = new org.json.JSONObject(responseBody.toString());
 	      
 	      org.json.JSONObject obj3 = obj2.getJSONObject("response");
-	      String memberId = obj3.getString("id");
-	      String memberName = obj3.getString("name");
-	      String memberBirth = obj3.getString("birthyear") + "-" + obj3.getString("birthday");
-	      String memberGender = obj3.getString("gender");
-	      String memberPhone = obj3.getString("mobile");
-	      String memberEmail = obj3.getString("email");
+	      String memberId = SecurityUtils.xss(obj3.getString("id"));
+	      String memberName = SecurityUtils.xss(obj3.getString("name"));
+	      String memberBirth = SecurityUtils.xss(obj3.getString("birthyear") + "-" + obj3.getString("birthday"));
+	      String memberGender = SecurityUtils.xss(obj3.getString("gender"));
+	      String memberPhone = SecurityUtils.xss(obj3.getString("mobile"));
+	      String memberEmail = SecurityUtils.xss(obj3.getString("email"));
 	      
 		  MemberDTO naver = MemberDTO.builder()
 				  .memberId(memberId)
@@ -411,14 +446,14 @@ public class MemberServiceImpl implements MemberService {
 	      
 	      org.json.JSONObject obj3 = obj2.getJSONObject("kakao_account");
 	      org.json.JSONObject obj4 = obj3.getJSONObject("profile");
-	      String memberId = String.valueOf(obj2.getLong("id"));
-	      String memberName = obj4.getString("nickname");
-	      String memberEmail = obj3.getString("email");
+	      String memberId = SecurityUtils.xss(String.valueOf(obj2.getLong("id")));
+	      String memberName = SecurityUtils.xss(obj4.getString("nickname"));
+	      String memberEmail = SecurityUtils.xss(obj3.getString("email"));
 	      
 	      String gender2 = obj3.getString("gender");
 	      char memberGender = gender2.charAt(0);
 	      
-	      String memberBirth = obj3.getString("birthday");
+	      String memberBirth = SecurityUtils.xss(obj3.getString("birthday"));
 	      String memberPhone = "카카오가입";
 	      
 		  MemberDTO kakao = MemberDTO.builder()
@@ -565,5 +600,118 @@ public class MemberServiceImpl implements MemberService {
 		
 	}
 	
+	@Override
+	public void memberList(HttpServletRequest request, Model model) {
+		int totalRecord = memberMapper.selectMemberCount();
+		
+		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+		int page = Integer.parseInt(opt.orElse("1"));
+		
+		// PageEntity
+		PageUtils pageUtils = new PageUtils();
+		pageUtils.setPageEntity(totalRecord, page);
+		
+		// Map
+		Map<String, Object> map = new HashMap<>();
+		map.put("beginRecord", pageUtils.getBeginRecord());
+		map.put("endRecord", pageUtils.getEndRecord());
+		
+		// 목록 가져오기
+		List<MemberDTO> members = memberMapper.selectMemberList(map);
+		
+		model.addAttribute("members", members);
+		model.addAttribute("totalRecord", totalRecord);
+		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/member/memberList"));
+	}
+	
+	@Override
+	public void classList(HttpServletRequest request, Model model) {
+		int totalRecord = memberMapper.selectClassCount();
+		
+		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+		int page = Integer.parseInt(opt.orElse("1"));
+		
+		// PageEntity
+		PageUtils pageUtils = new PageUtils();
+		pageUtils.setPageEntity(totalRecord, page);
+		
+		// Map
+		Map<String, Object> map = new HashMap<>();
+		map.put("beginRecord", pageUtils.getBeginRecord());
+		map.put("endRecord", pageUtils.getEndRecord());
+		
+		// 목록 가져오기
+		
+		List<ClassDTO> classes = memberMapper.selectClassList(map);
+		for(int i = 0; i<classes.size();i++) {
+			
+			// 2-1) 해당 강좌에 예약한 사람 수
+			String classCode = classes.get(i).getClassCode();
+			classes.get(i).setCurrentCount(memberMapper.selectCountByClassCode(classCode));
+		}
+
+		model.addAttribute("classes", classes);
+		model.addAttribute("totalRecord", totalRecord);
+		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/member/classList"));
+	}
+	
+	@Override
+	public void payList(HttpServletRequest request, Model model) {
+		int totalRecord = memberMapper.selectPayCount();
+		
+		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+		int page = Integer.parseInt(opt.orElse("1"));
+		
+		// PageEntity
+		PageUtils pageUtils = new PageUtils();
+		pageUtils.setPageEntity(totalRecord, page);
+		
+		// Map
+		Map<String, Object> map = new HashMap<>();
+		map.put("beginRecord", pageUtils.getBeginRecord());
+		map.put("endRecord", pageUtils.getEndRecord());
+		
+		// 목록 가져오기
+		List<PayListDTO> pays = memberMapper.selectPayList(map);
+
+		model.addAttribute("pays", pays);
+		model.addAttribute("totalRecord", totalRecord);
+		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/member/payList"));
+	}
+	
+	@Override
+	public void reserveList(HttpServletRequest request, Model model) {
+		int totalRecord = memberMapper.selectReserveCount();
+		
+		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+		int page = Integer.parseInt(opt.orElse("1"));
+		
+		// PageEntity
+		PageUtils pageUtils = new PageUtils();
+		pageUtils.setPageEntity(totalRecord, page);
+		
+		// Map
+		Map<String, Object> map = new HashMap<>();
+		map.put("beginRecord", pageUtils.getBeginRecord());
+		map.put("endRecord", pageUtils.getEndRecord());
+		
+		// 목록 가져오기
+		List<ReservationDTO> reservations = memberMapper.selectReserveList(map);
+		
+		model.addAttribute("reservations", reservations);
+		model.addAttribute("totalRecord", totalRecord);
+		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/member/reserveList"));
+	}
+	
+	@Override
+	public Map<String, Object> reserveCancle(String reservationCode, String memberId, String remainTicketSubject) {
+		Map<String, Object> map = new HashMap<>();
+		// 예약내역 : 예약상태 -1로 업데이트
+		map.put("resState", memberMapper.updateReservation(reservationCode));
+		// 잔여수강권 : 잔여횟수 +1 
+		map.put("resRemain", memberMapper.updateRemainTicket(memberId, remainTicketSubject));
+
+		return map;
+	}
 	
 }
