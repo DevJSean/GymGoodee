@@ -76,6 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 아이디 찾기 -->
 	<select id="selectMemberByNameEmail" parameterType="MemberDTO" resultType="MemberDTO">
 		SELECT MEMBER_NO, MEMBER_ID, MEMBER_PW, MEMBER_NAME, MEMBER_BIRTH, MEMBER_GENDER, MEMBER_PHONE, MEMBER_EMAIL, MEMBER_AGREE_STATE, MEMBER_SIGN_UP, MEMBER_PW_MODIFIED
+		  FROM MEMBER
 		 WHERE MEMBER_NAME = #{memberName}
 		   AND MEMBER_EMAIL = #{memberEmail}
 	</select>

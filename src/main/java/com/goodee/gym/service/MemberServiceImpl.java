@@ -250,7 +250,7 @@ public class MemberServiceImpl implements MemberService {
 		String clientId = "XYULZHj0e4wadrMeNhvI";
 		String redirectURI = null;
 		try {
-			redirectURI = URLEncoder.encode("http://localhost:9090/gym/member/callback", "UTF-8");
+			redirectURI = URLEncoder.encode("http://localhost:9090/gym/member/naverCallback", "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}	
@@ -274,7 +274,7 @@ public class MemberServiceImpl implements MemberService {
 	    String state = request.getParameter("state");
 	    String redirectURI = null;
 		try {
-			redirectURI = URLEncoder.encode("http://localhost:9090/gym/member/callback", "UTF-8");
+			redirectURI = URLEncoder.encode("http://localhost:9090/gym/member/naverCallback", "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}	    
@@ -306,6 +306,8 @@ public class MemberServiceImpl implements MemberService {
 	      org.json.JSONObject obj = new org.json.JSONObject(res.toString());
 	      
 		  String access_token = obj.getString("access_token"); 
+		  
+		  System.out.println(access_token);
 	      
 		  String header = "Bearer " + access_token; 
 
@@ -344,7 +346,7 @@ public class MemberServiceImpl implements MemberService {
 			    	PrintWriter out = response.getWriter();
 			    		out.println("<script>");
 			    		out.println("alert('등록된 아이디가 있습니다.')");
-						out.println("location.href='" + request.getContextPath() + "/login'");
+						out.println("location.href='" + request.getContextPath() + "/member/loginPage'");
 			    		out.println("</script>");
 			    		out.close();
 			    	  
@@ -433,6 +435,9 @@ public class MemberServiceImpl implements MemberService {
 	      
 		  access_token = obj.getString("access_token");
 	      
+		  System.out.println(access_token);
+
+		  
 		  header = "Bearer " + access_token; 
 
 	      String apiURL2 = "https://kapi.kakao.com/v2/user/me";
@@ -490,6 +495,41 @@ public class MemberServiceImpl implements MemberService {
 	      session.setAttribute("loginMember", loginMember);
 	      session.setMaxInactiveInterval(60*60);
 	      
+	    } catch (Exception e) {
+	    	e.printStackTrace();
+	    }
+	    
+	}
+	
+	@Override
+	public void naverLogout(HttpServletRequest request) {
+		
+		String clientId = "XYULZHj0e4wadrMeNhvI";
+	    String clientSecret = "4gVLsa0no9";
+	    String accesstoken = request.getParameter("accesstoken");
+	    
+		String apiURL;
+	    apiURL = "https://nid.naver.com/oauth2.0/token?grant_type=delete";
+	    apiURL += "&client_id=" + clientId;
+	    apiURL += "&client_secret=" + clientSecret;
+	    apiURL += "&access_token=" + accesstoken;
+	    apiURL += "&service_provider=" + "NAVER";
+	    
+	    System.out.println(apiURL);
+	    
+	    try {
+		      URL url = new URL(apiURL);
+		      HttpURLConnection con = (HttpURLConnection)url.openConnection();
+		      con.setRequestMethod("POST");
+		      int responseCode = con.getResponseCode();
+		      BufferedReader br;
+		      System.out.println("responseCode="+responseCode);
+		      if(responseCode==200) { 
+		        br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		      } else {  
+		        br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+		      }
+		      br.close();
 	    } catch (Exception e) {
 	    	e.printStackTrace();
 	    }

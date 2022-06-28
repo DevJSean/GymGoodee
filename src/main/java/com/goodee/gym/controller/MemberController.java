@@ -106,7 +106,8 @@ public class MemberController {
 	}
 	
 	@GetMapping("/member/logout")
-	public String logout(HttpSession session, HttpServletResponse response) {
+	public String logout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+		memberService.naverLogout(request);
 		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
 		if(loginMember != null) {
 			session.invalidate();
