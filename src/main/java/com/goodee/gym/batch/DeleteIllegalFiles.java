@@ -17,7 +17,7 @@ import com.goodee.gym.util.MyFileUtils;
 
 @Component  
 public class DeleteIllegalFiles {
-	
+
 	@Autowired
 	private BoardMapper boardMapper;
 	

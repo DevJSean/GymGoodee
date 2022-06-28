@@ -12,12 +12,215 @@
 <script>
 
 	$(function(){
-		$('.reply_link').on('click', function(){
+		$('body').on('click', '.reply_link', function(){ 
 			$('.reply_form').addClass('blind');
 	    	$(this).parent().parent().next().removeClass('blind');
 		})
+		
+		$('#btnRemove').on('click', function(){
+			if(confirm('삭제할까요?')){
+				location.href="${contextPath}/board/reviewRemove?reviewNo=${review.reviewNo}";
+			}
+		})
+		
+		$('#btnListPage').on('click', function(){
+			location.href="${contextPath}/board/reviewList";
+		})
+		// 댓글 개수 + 리스트
+		fnList();
+		// 페이징 링크 처리
+		fnPagingLink();
+		// 댓글 달기
+		fnReplyAdd();
+		// 댓글 삭제
+		fnReplyRemove();
+		// 댓글창 초기화
+		fnInit();
+		
 	})
+	function getDate(a){
+	    var date = new Date(a);
+	    return date.getFullYear() + "년 " + (date.getMonth()+1) + "월 " + date.getDate() + "일 " + date.getHours() + "시 " + date.getMinutes() + "분 " + date.getSeconds() + "초 " +  '일월화수목금토'.charAt(date.getUTCDay())+'요일';
+	}
+	
+	// 페이징 링크 처리(page 전역변수 값을 링크의 data-page 값으로 바꾸고 fnList() 호출)
+	function fnPagingLink() {
+		$(document).on('click', '.enable_link', function(){ // 동적 요소 클릭 이벤트
+			page = $(this).data('page');
+			fnList();
+		})
+	}
+	// 회원목록 + page 전역변수
+	var page = 1; // 최초 한 번 초기화
+	function fnList(){
+		$.ajax({
+			url: '${contextPath}/board/replyList',
+			type: 'GET',
+			data: 'page=' + page + '&reviewNo=${review.reviewNo}',
+			dataType: 'json',
+			success: function(obj){ // obj = {"replyCount" : 개수, "replies" : [{댓글정보}, {댓글정보}, ...], "p" : ...}
+				fnPrintReplyList(obj);
+				fnPrintPaging(obj.p);
+			}
+		})
+	}
+	// 댓글 목록 출력
+	function fnPrintReplyList(obj){
+		$('#replies').empty();
+		$('#replyCount').text(obj.replyCount); // 개수 달아주기
+		
+		let tr = '<tr><td colspan="4">'
+			if('${loginMember.memberId}') {
+				tr += '<form>';
+				tr += '<input type="text" name="writer" value="${loginMember.memberId}" readonly>';
+				tr += '<input type="text" name="content" class="replyContent" placeholder="내용" size="100">';
+				tr += '<input type="button" value="작성" class="btnReplySave">';
+				<!-- 원글의  Depth, GroupNo, GroupOrd -->
+				tr += '<input type="hidden" name="depth" value="${review.reviewDepth}">';
+				tr += '<input type="hidden" name="groupNo" value="${review.reviewGroupNo}">';
+				tr += '<input type="hidden" name="groupOrd" value="${review.reviewGroupOrd}">';
+				tr += '</form>';
+				tr += '</td></tr>';
+			} else {
+				tr += '댓글을 작성하시려면 로그인을 하셔야 합니다.</td></tr>';
+			}
+			$('#replies').append($(tr));
+			
+			$.each(obj.replies, function(i, reply){
+				if(reply.reviewState == -1) {
+					let tr = $('<tr>');
+					$(tr).append('<td colspan="4">삭제된 게시글입니다.</td>');
+					$('#replies').append($(tr));
+				} else {
+					let tr = '<tr>';
+					tr += '<td>' + reply.memberId + '</td>';
+					if(reply.reviewDepth > 1) {
+						tr += '<td>';
+						for(let i = 0; i < reply.reviewDepth; i++){
+							tr += '&nbsp;&nbsp;';
+						}
+						tr += '<i class="fa-brands fa-replyd"></i>' + reply.reviewContent + '<a class="reply_link"><i class="fa-solid fa-reply"></i></a><td>';
+					} else {
+						tr += '<td>' + reply.reviewContent + '<a class="reply_link"><i class="fa-solid fa-reply"></i></a><td>';
+					}
+					tr += '<td>' + getDate(reply.reviewCreated) + '</td>';
+					if(reply.memberId == '${loginMember.memberId}'){  // 댓글 작성자와 로그인한 사람이 같으면
+						tr += '<td><a class="removeLink" data-review_no="' + reply.reviewNo + '"><i class="fa-solid fa-trash-can"></i></a></td>';
+					}
+					$('#replies').append($(tr));
+					
+					let tr2 = '<tr class="reply_form blind"><td colspan="4">';
+					if('${loginMember.memberId}') {
+						tr2 += '<form>';
+						tr2 += '<input type="text" name="writer" value="${loginMember.memberId}" readonly>';
+						tr2 += '<input type="text" name="content" class="replyContent" placeholder="내용" size="100">';
+						tr2 += '<input type="button" value="작성" class="btnReplySave">';
+						<!-- 누른 댓글의 depth, GroupNo, GroupOrd -->
+							tr2 += '<input type="hidden" name="depth" value="' + reply.reviewDepth + '">';
+						tr2 += '<input type="hidden" name="groupNo" value="' + reply.reviewGroupNo + '">';
+						tr2 += '<input type="hidden" name="groupOrd" value="' + reply.reviewGroupOrd + '">';
+						tr2 += '</form>';
+						tr2 += '</td></tr>';
+					} else {
+						tr2 += '댓글을 작성하시려면 로그인을 하셔야 합니다.</td></tr>';
+					}
+					$('#replies').append($(tr2));
+				}
+			})
+	}
+	// 페이징 정보 출력
+	function fnPrintPaging(p){
+		$('#paging').empty();
+		var paging = '';
+		// ◀◀ : 이전 블록으로 이동
+		if(page <= p.pagePerBlock){
+			paging += '<div class="disable_link">◀◀</div>'
+		} else {
+			paging += '<div class="enable_link" data-page="' + (p.beginPage - 1) + '">◀◀</div>'
+		}
+		// ◀  : 이전 페이지로 이동
+		if(page == 1){
+			paging += '<div class="disable_link">◀</div>'
+		} else {
+			paging += '<div class="enable_link" data-page="' + (p.page - 1) + '">◀</div>'
+		}
+		// 1 2 3 4 5 : 페이지 번호
+		for(let i = p.beginPage; i <= p.endPage; i++) {
+			if(i == page){
+				paging += '<div class="disable_link now_page">' + i + '</div>'			
+			} else {
+				paging += '<div class="enable_link" data-page="' + i + '">' + i + '</div>'
+			}
+		}
+		// ▶  : 다음 페이지로 이동
+		if(page == p.totalPage){
+			paging += '<div class="disable_link">▶</div>'
+		} else {
+			paging += '<div class="enable_link" data-page="' + (p.page + 1) + '">▶</div>'
+		}
+		// ▶▶ : 다음 블록으로 이동
+		if(p.endPage == p.totalPage){
+			paging += '<div class="disable_link">▶▶</div>'
+		} else {
+			paging += '<div class="enable_link" data-page="' + (p.endPage + 1) + '">▶▶</div>'
+		}
+			
+		$('#paging').append(paging);
+	}
+	
 
+	
+	function fnReplyAdd() {
+		$('body').on('click', '.btnReplySave', function(){
+			$.ajax({
+				url: '${contextPath}/board/replyAdd',
+				type: 'post',
+				data: 'writer=' + $(this).prev().prev().val() + '&content=' + $(this).prev().val() +
+				      '&depth=' + $(this).next().val() + '&groupNo=' + $(this).next().next().val() + '&groupOrd=' + $(this).next().next().next().val(),
+				
+				dataType: 'json',
+				success: function(obj) {
+					if(obj.res > 0) {
+						alert('댓글이 등록되었습니다.');
+						fnList();
+						fnInit();
+					}
+				},
+				error: function(jqXHR) {
+					alert(jqXHR.status);
+					alert(jqXHR.responseText);
+				}
+			})
+		})
+	}
+	
+	function fnReplyRemove() {
+		$('body').on('click', '.removeLink', function(){ 
+			if(confirm('삭제할까요?')){
+				$.ajax({
+					url: '${contextPath}/board/replyRemove',
+					type: 'get',
+					data: 'reviewNo=' + $(this).data('review_no'),
+					dataType: 'json',
+					success: function(obj){
+						if(obj.res > 0){
+							alert('댓글이 삭제되었습니다.');
+							fnList();
+							fnInit();
+						}
+					},
+					error: function(jqXHR){
+						alert(jqXHR.status);
+						alert(jqXHR.responseText);
+					}
+				})
+			}
+		})
+	}
+	
+	function fnInit(){
+		$('.replyContent').val('');
+	}
 </script>
 <style>
 	* {
@@ -36,14 +239,16 @@
 		border: 1px solid orange;
 		color: limegreen;
 	}
+ 	.removeLink:hover {
+		cursor: pointer;
+	}
 	table {
 		border-collapse: collapse;
 	}
-	td:nth-of-type(1) { width: 80px; }
-	td:nth-of-type(2) { width: 160px; }
-	td:nth-of-type(3) { width: 240px; }
-	td:nth-of-type(4) { width: 240px; }
-	td:nth-of-type(5) { width: 120px; }
+/* 	td:nth-of-type(1) { width: 200px; }
+	td:nth-of-type(2) { width: 300px; }
+	td:nth-of-type(3) { width: 100px; }
+	td:nth-of-type(4) { width: 50px; } */
 	td {
 		padding: 5px;
 		border-top: 1px solid silver;
@@ -58,12 +263,43 @@
 	.blind {
 		display: none;
 	}
+	#paging {
+		display: flex;
+		justify-content: center;
+	}
+	#paging div {
+		width: 32px;
+		height: 20px;
+		text-align: center;
+		letter-spacing: -4px;
+	}
+	.disable_link {
+		color: lightgray;
+	}
+	.enable_link {
+		cursor: pointer;
+	}
+	.now_page {
+		border: 1px solid gray;
+		color: limegreen;
+		font-weight: 900;
+	}
 </style>
 </head>
 <body>
 	
 	
 	<h1>게시글 구역</h1>
+	번호 ${review.reviewNo}<br>
+	반정보 ${review.classCode}<br>
+	제목 ${review.reviewTitle}<br>
+	조회수 ${review.reviewHit}<br>
+	작성일 ${review.reviewCreated}<br>
+	내용<br><textarea rows="30" cols="80" class="content" readonly>${review.reviewContent}</textarea><br>
+	<c:if test="${loginMember.memberId eq review.memberId || loginMember.memberId eq 'admin'}">
+		<input type="button" value="삭제" id="btnRemove">
+	</c:if>
+	<input type="button" value="목록" id="btnListPage">
 
 	<hr>
 	
@@ -76,99 +312,18 @@
 	
 	 요런 식으로 구현
 	 -->
+	 <div>전체댓글 <span id="replyCount">0</span>개</div>
 	 <table>
-		<caption>전체댓글 ${totalRecord}개</caption>
-<!-- 	<thead>
+	 	<tbody id="replies">
+	 	</tbody>
+	 	<tfoot>
 			<tr>
-				<td>번호</td>
-				<td>작성자</td>
-				<td>내용</td>
-				<td>작성일</td>
-				<td></td>
-			</tr>
-		</thead> -->
-		<tbody>
-			<c:if test="${empty freeBoards}">
-				<tr>
-					<td colspan="5">첫 게시글을 작성해 주세요.</td>
-				</tr>
-			</c:if>
-			<c:if test="${not empty freeBoards}">
-				<c:forEach items="${freeBoards}" var="fb">
-					<c:if test="${fb.state == -1}">
-						<tr>
-							<td>${totalRecord - fb.rowNum + 1}</td>
-							<td colspan="4">삭제된 게시글입니다.</td>
-						</tr>
-					</c:if>
-					<c:if test="${fb.state == 1}">
-						<tr>
-							<td>${totalRecord - fb.rowNum + 1}</td> <!-- 큰 번호가 위로 오도록 만들기 -->
-							<td>${fb.writer}</td>
-							<td>
-								<!-- Depth만큼 들여쓰기(Depth 1 == Space 2)-->
-								<c:forEach begin="1" end="${fb.depth}" step="1">&nbsp;&nbsp;</c:forEach><!-- begin="1" 1부터, end까지 반복 -->
-								<!-- 댓글은 re 표시 -->
-								<c:if test="${fb.depth > 0}"><i class="fa-brands fa-replyd"></i></c:if> 
-								<!-- 댓글 내용, 20자까지 줄여서 표시해봤다.-->
-								<c:if test="${fb.content.length() > 20}">
-									${fb.content.substring(0, 20)} 
-								</c:if>
-								<c:if test="${fb.content.length() le 20}">
-									${fb.content} 
-								</c:if>
-								<!-- 답글 달기 (if 있으면 1단 댓글만 허용, if 없으면 다단 댓글 허용)-->
-		 						<%-- <c:if test="${fb.depth eq 0}"> --%>
-									<a class="reply_link">[답글]</a>
-								<%-- </c:if> --%>
-							</td>
-							<td>${fb.created}</td>
-							<td>
-								<c:if test="${member.id eq fb.writer}">
-									<a data-free_board_no="${fb.freeBoardNo}" onclick="fnRemove(this)">
-										<i class="fa-solid fa-trash-can"></i>
-									</a>
-								</c:if>
-							</td>
-						</tr>
-						<tr class="reply_form blind">
-							<td colspan="5">
-								<c:if test="${member ne null}">
-									<form action="${contextPath}/freeBoard/saveReply" method="post">
-										<input type="text" name="writer" value="${member.id}" size="4" readonly>
-										<input type="text" name="content" placeholder="내용" size="40">
-										<!-- 원글의 Depth, GroupNo, GroupOrd -->
-										<input type="hidden" name="depth" value="${fb.depth}">
-										<input type="hidden" name="groupNo" value="${fb.groupNo}">
-										<input type="hidden" name="groupOrd" value="${fb.groupOrd}">
-										<button>답글달기</button>
-									</form>
-								</c:if>
-								<c:if test="${member eq null}">
-									댓글을 작성하시려면 로그인을 하셔야 해용~
-								</c:if>
-							</td>
-						</tr>
-					</c:if>
-				</c:forEach>
-			</c:if>
-		</tbody>
-		<tfoot>
-			<tr>
-				<td colspan="5">
-					${paging}
+				<td colspan="4">
+					<div id="paging"></div>
 				</td>
 			</tr>
 		</tfoot>
-	</table>
-	
-		<script>
-		function fnRemove(a) {
-			if(confirm('삭제할까요?')){
-				a.href='${contextPath}/freeBoard/remove?freeBoardNo=' + $(a).data('free_board_no');
-			}
-		}
-	</script>
-	
+	 </table>
+	 
 </body>
 </html>

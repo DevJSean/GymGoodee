@@ -1,12 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="contextPath" value="${pageContext.request.contextPath}"/> 
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%> 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <style>
 	* {
 		box-sizing: border-box;
@@ -73,8 +75,20 @@
 			<c:forEach items="${reviews}" var="review" varStatus="vs">
 				<tr>
 					<td>${beginNo - vs.index}</td>
-					<td><a href="${contextPath}/board/reviewDetail?reviewNo=${review.reviewNo}">${review.reviewTitle}</a></td>
-					<td>{review.classCode}반</td> <!-- 20220630_D_SPINNING02반 -->
+					<td>
+						<a href="${contextPath}/board/reviewDetail?reviewNo=${review.reviewNo}">${review.reviewTitle}</a>
+						<!-- (댓글 수 표시) -->
+						(${review.replyCount})
+						<!-- 올린지 하루 이내의 글이면 아이콘 표시 -->
+						<fmt:parseDate var="startDate"  value="${review.reviewCreated}" pattern="yyyy-MM-dd"/>
+						<fmt:parseDate var="endDate" value="${now}" pattern="yyyy-MM-dd"/>
+						<fmt:parseNumber var="createdDate" value="${startDate.time / (1000*60*60*24)}" integerOnly="true" />
+						<fmt:parseNumber var="todayDate" value="${endDate.time / (1000*60*60*24)}" integerOnly="true" /> 
+						<c:if test="${todayDate - createdDate le 1}">
+							<i class="fa-solid fa-circle-check"></i>
+						</c:if>
+					</td> 
+					<td>${review.classCode}반</td> <!-- 20220630_D_SPINNING02반 -->
 					<td>${review.memberId}</td>
 					<td>${review.reviewCreated}</td>
 					<td>${review.reviewHit}</td>
