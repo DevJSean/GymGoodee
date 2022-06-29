@@ -62,9 +62,11 @@
 			<nav>
 				<ul class="myPageNav">
 					<li class="navItem"><a href="${contextPath}/member/memberList">회원목록</a></li>
-					<li class="navItem nowPage">결제내역</li>
+					<li class="navItem"><a href="">강사등록</a></li>
+					<li class="navItem"><a href="">강좌개설</a></li>
 					<li class="navItem"><a href="${contextPath}/member/classList">개설강좌</a></li>
 					<li class="navItem"><a href="${contextPath}/member/reserveList">예약내역</a></li>
+					<li class="navItem nowPage">결제내역</li>
 				</ul>	
 			</nav>
 		

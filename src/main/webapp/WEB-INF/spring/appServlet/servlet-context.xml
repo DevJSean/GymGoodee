@@ -24,17 +24,12 @@
 	<context:component-scan base-package="com.goodee.gym" />
 	
 	<!-- 로그인 관련  인터셉터 -->
-	<beans:bean class="com.goodee.gym.interceptor.KakaoLoginInterceptor" id="kakaoLoginInterceptor" />
 	<beans:bean class="com.goodee.gym.interceptor.LoginInterceptor" id="loginInterceptor" />
 	<beans:bean class="com.goodee.gym.interceptor.PreventLoginInterceptor" id="preventLoginInterceptor" />
-	<beans:bean class="com.goodee.gym.interceptor.RequiredLoginInterceptor" id="requiredLoginInterceptor" />
-	<beans:bean class="com.goodee.gym.interceptor.KeepLoginInterceptor" id="keepLoginInterceptor" />
+	<beans:bean class="com.goodee.gym.interceptor.PreventMyPageInterceptor" id="preventMyPageInterceptor" />
+	
 	
 	<interceptors>
-		<interceptor>
-			<mapping path="/member/kakaoCallback"/>
-			<beans:ref bean="kakaoLoginInterceptor"/>
-		</interceptor>
 		<interceptor>
 			<mapping path="/member/login"/>
 			<beans:ref bean="loginInterceptor"/>
@@ -46,12 +41,8 @@
 			<beans:ref bean="preventLoginInterceptor"/>
 		</interceptor>
 		<interceptor>
-			<mapping path="/board/savePage"/>
-			<beans:ref bean="requiredLoginInterceptor"/>
-		</interceptor>
-		<interceptor>
-			<mapping path="/**"/>
-			<beans:ref bean="keepLoginInterceptor"/>
+		   <mapping path="/mypage/**"/>
+		   <beans:ref bean="preventMyPageInterceptor"/>
 		</interceptor>
 	</interceptors>	
 	

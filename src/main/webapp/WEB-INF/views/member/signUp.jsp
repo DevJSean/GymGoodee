@@ -279,7 +279,7 @@
 		
 		<label for="memberBirth">
 			생년월일<br>
-			<input type="text" name="memberBirth" id="memberBirth"><br>
+			<input type="text" name="memberBirth" id="memberBirth" placeholder="YYYY-MM-dd"><br>
 		</label><br><br>
 		
 		성별

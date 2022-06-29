@@ -76,13 +76,15 @@
 	<div id="naver_id_login">
 		<a href="${naver}">			
 			<img width="200" src="https://developers.naver.com/doc/review_201802/CK_bEFnWMeEBjXpQ5o8N_20180202_7aot50.png"/>
-		</a></div>			
+		</a>
+	</div>			
 	<br>
 	<!-- 카카오 로그인 창으로 이동 -->			
 	<div id="kakao_id_login">
 		<a href="${kakao}">			
 			<img width="200" src="../resources/images/kakao_login_medium_narrow.png"/>
-		</a></div>			
+		</a>
+	</div>			
 	<br><br>
 	
 	<div>

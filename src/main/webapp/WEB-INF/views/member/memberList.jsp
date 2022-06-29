@@ -64,9 +64,11 @@
 			<nav>
 				<ul class="myPageNav">
 					<li class="navItem nowPage">회원목록</li>
-					<li class="navItem"><a href="${contextPath}/member/payList">결제내역</a></li>
+					<li class="navItem"><a href="">강사등록</a></li>
+					<li class="navItem"><a href="">강좌개설</a></li>
 					<li class="navItem"><a href="${contextPath}/member/classList">개설강좌</a></li>
 					<li class="navItem"><a href="${contextPath}/member/reserveList">예약내역</a></li>
+					<li class="navItem"><a href="${contextPath}/member/payList">결제내역</a></li>
 				</ul>	
 			</nav>
 		
@@ -87,7 +89,7 @@
 					<c:forEach var="member" items="${members}">
 						<c:if test="${member.memberId ne 'admin'}">
 							<tr>
-								<td>${totalRecord - member.rn}</td>
+								<td>${member.rn}</td>
 								<td>${member.memberNo}</td>
 								<td>${member.memberId}</td>
 								<td>${member.memberName}</td>
