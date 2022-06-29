@@ -38,6 +38,8 @@
 		fnInit();
 		
 	})
+	
+	// 년 월 일 시 분 초 요일 나타내기
 	function getDate(a){
 	    var date = new Date(a);
 	    return date.getFullYear() + "년 " + (date.getMonth()+1) + "월 " + date.getDate() + "일 " + date.getHours() + "시 " + date.getMinutes() + "분 " + date.getSeconds() + "초 " +  '일월화수목금토'.charAt(date.getUTCDay())+'요일';
@@ -101,9 +103,9 @@
 						for(let i = 0; i < reply.reviewDepth; i++){
 							tr += '&nbsp;&nbsp;';
 						}
-						tr += '<i class="fa-brands fa-replyd"></i>' + reply.reviewContent + '<a class="reply_link"><i class="fa-solid fa-reply"></i></a><td>';
+						tr += '<i class="fa-brands fa-replyd"></i>' + decodeURIComponent(reply.reviewContent) + '<a class="reply_link"><i class="fa-solid fa-reply"></i></a><td>';
 					} else {
-						tr += '<td>' + reply.reviewContent + '<a class="reply_link"><i class="fa-solid fa-reply"></i></a><td>';
+						tr += '<td>' + decodeURIComponent(reply.reviewContent) + '<a class="reply_link"><i class="fa-solid fa-reply"></i></a><td>';
 					}
 					tr += '<td>' + getDate(reply.reviewCreated) + '</td>';
 					if(reply.memberId == '${loginMember.memberId}' || '${loginMember.memberId}' == 'admin'){  // 댓글 작성자와 로그인한 사람이 같으면
@@ -174,10 +176,17 @@
 	
 	function fnReplyAdd() {
 		$('body').on('click', '.btnReplySave', function(){
+
+/* 			if( $(this).prev().val().startsWith('?') ){
+				alert('댓글은 ?로 시작할 수 없습니다.');
+				event.preventDefault();
+				return false;
+			} */
+		
 			$.ajax({
 				url: '${contextPath}/board/replyAdd',
 				type: 'post',
-				data: 'writer=' + $(this).prev().prev().val() + '&content=' + $(this).prev().val() +
+				data: 'writer=' + $(this).prev().prev().val() + '&content=' + encodeURIComponent($(this).prev().val()) +
 				      '&depth=' + $(this).next().val() + '&groupNo=' + $(this).next().next().val() + '&groupOrd=' + $(this).next().next().next().val(),
 				
 				dataType: 'json',
@@ -189,7 +198,7 @@
 					}
 				},
 				error: function(jqXHR) {
-					alert(jqXHR.status);
+ 					alert(jqXHR.status);
 					alert(jqXHR.responseText);
 				}
 			})
@@ -242,6 +251,9 @@
 		color: limegreen;
 	}
  	.removeLink:hover {
+		cursor: pointer;
+	}
+	.reply_link:hover {
 		cursor: pointer;
 	}
 	table {
@@ -305,7 +317,7 @@
 
 	<hr>
 	
-	<h1>댓글 구역</h1>
+	<h3>댓글</h3>
 	<!-- 
 		전체댓글 OO개  [  등록순 최신순 답글순  ]
 		---------------------------------------------------

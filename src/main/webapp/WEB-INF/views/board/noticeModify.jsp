@@ -50,37 +50,62 @@
 			location.href='${contextPath}/board/noticeList';
 		})
 	})
+	
+	function fnImagePreview(event){
+		$('#attached').empty();
+		for(var image of event.target.files){
+			var reader = new FileReader();
+			
+			reader.onload = function(event){
+				var img = document.createElement("img");
+				img.setAttribute("src", event.target.result);
+				img.setAttribute("class", "col-lg-6");
+				img.setAttribute("width", "500px");
+				document.querySelector("div#attached").appendChild(img);
+			};
+			reader.readAsDataURL(image);
+		}
+	}
+	
 </script>
 <style>
 	img {
-		width: 300px;
+		width: 500px;
+	}
+	.blind {
+		display: none;
 	}
 </style>
 </head>
 <body>
 	
 	<h1>공지사항 수정 화면</h1>
-
 	<form id="f" action="${contextPath}/board/noticeModify" method="post" enctype="multipart/form-data">
 		번호 ${notice.noticeNo}<br>
 		작성일 ${notice.noticeCreated}<br>
 		수정일 ${notice.noticeModified}<br>
 		<input type="hidden" name="noticeNo" value="${notice.noticeNo}">
 		제목 <input type="text" name="title" id="title" value="${notice.noticeTitle}"><br>
-		내용<br><textarea rows="30" cols="80" id="content" class="content">${notice.noticeContent}</textarea><br>
-		첨부파일 추가 <input type="file" name="files" id="files" multiple="multiple"><br><br>
+		내용<br><textarea rows="30" cols="80" id="content" name="content">${notice.noticeContent}</textarea><br>
+		첨부파일 <input type="file" name="files" id="files" multiple="multiple" onchange="fnImagePreview(event);"><br><br>
 		<button>수정 완료</button>
 		<input type="button" value="목록" id="btnList">
 	</form>
 	
 	<hr>
 	
-	<div>첨부파일 삭제</div>
-	<c:forEach var="noticeFileAttach" items="${noticeFileAttaches}">
-		<span>${noticeFileAttach.noticeFileAttachOrigin}</span> 
-		<a href="${contextPath}/board/removeNoticeFileAttach?noticeFileAttachNo=${noticeFileAttach.noticeFileAttachNo}&noticeNo=${noticeFileAttach.noticeNo}"><i class="fa-solid fa-x"></i></a>	
-		<div><img alt="${noticeFileAttach.noticeFileAttachOrigin}" src="${contextPath}/board/noticeDisplay?noticeFileAttachNo=${noticeFileAttach.noticeFileAttachNo}" width="300px"></div>
-	</c:forEach>
+	<c:if test="${not empty noticeFileAttaches}">
+		<h3>첨부파일 삭제</h3>
+		<c:forEach var="noticeFileAttach" items="${noticeFileAttaches}">
+			<span>${noticeFileAttach.noticeFileAttachOrigin}</span> 
+			<a href="${contextPath}/board/removeNoticeFileAttach?noticeFileAttachNo=${noticeFileAttach.noticeFileAttachNo}&noticeNo=${noticeFileAttach.noticeNo}"><i class="fa-solid fa-x"></i></a>	
+			<div><img alt="${noticeFileAttach.noticeFileAttachOrigin}" src="${contextPath}/board/noticeDisplay?noticeFileAttachNo=${noticeFileAttach.noticeFileAttachNo}" width="300px"></div>
+		</c:forEach>
+	</c:if>	
+	<c:if test="${not empty noticeFileAttaches}">
+		<h3>새로 첨부된 파일</h3>
+		<div id="attached"></div>
+	</c:if>	
 	
 </body>
 </html>

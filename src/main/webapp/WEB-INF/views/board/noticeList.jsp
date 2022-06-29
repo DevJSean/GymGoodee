@@ -48,7 +48,7 @@
 <body>
 	
 	<h1>공지사항 목록</h1>
-	<input type="button" value="메인으로 돌아가기" onclick="location.href='${contextPath}/jsh'">
+	<input type="button" value="메인으로 돌아가기" onclick="location.href='${contextPath}'">
 	<input type="button" value="공지사항" onclick="location.href='${contextPath}/board/noticeList'">
 	<input type="button" value="QnA" onclick="location.href='${contextPath}/board/questionList'">
 	<input type="button" value="리뷰" onclick="location.href='${contextPath}/board/reviewList'">
