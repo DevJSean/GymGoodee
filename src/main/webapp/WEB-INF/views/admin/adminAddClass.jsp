@@ -17,7 +17,8 @@
 	/* 페이지 로드 이벤트 */
 	$(function(){
 		
-		fnClassList();
+		
+		//fnClassList();
 		
 		// 개설 날짜 선택하기
 		$('#classDate').datepicker({	// 달력 나타나서 날짜 선택하기!
@@ -35,11 +36,24 @@
 		}) // change
 		
 		fnRegistClass();
+		
+		// 테스트
+		
+		fnPagingLink();
+		fnList();
 	})
 	
 	
 	
 	/* 함수 */
+	
+	// 0. 선택 사항들 초기화하기
+	function fnInit(){
+		$('input[name="subject"]').prop('checked',false);
+		$("select#teachers option").remove();
+		$("select#locations option").remove();
+		$("#classDate").remove();
+	}
 	
 	// 1. subject 담당인 강사 목록 가져오기
 	function fnGetTeacher(subject){
@@ -89,6 +103,7 @@
 	
 	// 3. 강좌 개설하기 (POST 방식으로 INSERT 하기)
 	function fnRegistClass(){
+		
 		$('#btnAdd').on('click',function(ev){
 			// 강좌 코드, 강사번호, 장소코드, 날짜, 시간 정보를 CLASS 테이블에 INSERT 해야한다.
 			// 강좌 코드 (날짜_시간_장소 형태로 생성)
@@ -105,20 +120,34 @@
 				ev.preventDefault();
 				return false;
 			}
-
+			
 			$.ajax({
 				url : '${contextPath}/admin/addClass',
+				data: JSON.stringify(
+					{
+						'teacherNo': $('#teachers option:selected').val(),
+						'locationCode':$('#locations option:selected').val(),
+						'classDate': $('#classDate').val(),
+						'classTime': $('#classTime option:selected').val()
+					}
+				),
 				type: 'POST',
-				data: $('#f').serialize(),
-				dataTye:'json',
+				contentType: 'application/json',
+				dataType:'json',
 				success : function(obj){
-					//console.log(obj);
-					if(obj.res == 1){
-						alert('강좌 개설에 성공했습니다.');
-						fnClassList();
+					if(obj.state == 501){
+						alert('해당 강사는 이미 해당 시간대 강좌가 있습니다.');
+						fnInit();
 					}
 					else{
-						alert('강좌 개설에 실패했습니다.');
+						if(obj.res == 1){
+							alert('강좌 개설에 성공했습니다.');
+							//fnClassList();
+							fnList();
+						}
+						else{
+							alert('강좌 개설에 실패했습니다.');
+						}						
 					}
 				},
 				error: function(jqXHR){
@@ -131,8 +160,109 @@
 		
 	} // fnRegistClass
 	
+	///// 테스트 /////////////
 	
-	// 4. 개설강좌 목록 가져오기 => paging 처리 x
+	// 5. 페이징 링크 처리(page 전역변수 값을 링크의 data-page 값으로 바꾸고, fnList() 호출)
+	function fnPagingLink(){
+		$(document).on('click','.enable_link',function(){
+			page = $(this).data('page');
+			fnList();
+		})
+	} // fnPagingLink
+	
+	// 4. 개설강좌 목록 + page 전역변수
+	var page = 1;
+	function fnList(){
+		$.ajax({
+			/* 요청 */
+			url : '${contextPath}/classes?page=' + page,
+			type : 'GET',
+			/* 응답 */
+			dataType : 'json',
+			success : function(obj){
+				console.log(obj,classes);
+				fnPrintClassList(obj.classes);
+				fnPrintPaging(obj.p);
+			},
+			error : function(jqXHR){
+				
+			}
+			
+		}) // ajax
+		
+	} // fnList
+	
+	// 4-1) 강좌 목록 출력
+	function fnPrintClassList(classes){
+		$('#classes').empty();
+		$.each(classes,function(i,registclass){
+			var tr = $('<tr>');
+			tr.append($('<td>').text(registclass.locationCode));
+			tr.append($('<td>').text(registclass.teacherName));
+			tr.append($('<td>').text(registclass.classDate));
+			tr.append($('<td>').text(registclass.classTime));
+			tr.appendTo($('#classes'));
+			
+		}) // each
+		
+		
+	} // fnPrintClassList
+	
+	// 4-2) 페이징 정보 출력
+	function fnPrintPaging(p){
+		
+		$('#paging').empty();
+		
+		var paging ='';
+		
+		// ◀◀ : 이전 블록으로 이동
+		if(page <= p.pagePerBlock){
+			paging += '<div class="disable_link">◀◀</div>';
+		} else{			
+			paging += '<div class="enable_link" data-page="'+ (p.beginPage - 1) +'">◀◀</div>';
+		}
+		
+		// ◀  : 이전 페이지로 이동
+		if(page == 1){
+			paging += '<div class="disable_link">◀</div>';
+		} else{			
+			paging += '<div class="enable_link" data-page="'+ (page - 1) +'">◀</div>';
+		}
+		
+		// 1 2 3 4 5 : 페이지 번호
+		for(let i = p.beginPage; i<=p.endPage; i++){
+			if(i == page){
+				paging += '<div class="disable_link now_page">'+ i +'</div>';
+			} else{
+				paging += '<div class="enable_link" data-page="'+ i +'">'+ i +'</div>';				
+			}
+		}
+		
+		
+		// ▶  : 다음 페이지로 이동
+		if(page == p.totalPage){
+			paging += '<div class="disable_link">▶</div>';
+		} else{			
+			paging += '<div class="enable_link" data-page="'+ (page + 1) +'">▶</div>';
+		}
+		
+		// ▶▶ : 다음 블록으로 이동
+		if(p.endPage == p.totalPage){
+			paging += '<div class="disable_link">▶▶</div>';
+		} else{			
+			paging += '<div class="enable_link" data-page="'+ (p.endPage + 1) +'">▶▶</div>';
+		}
+		
+		$('#paging').append(paging);
+		
+	} // fnPrintPaging
+	
+	
+	
+	///////////////// 테스트 끝 /////////////
+	
+	
+	// 4) 개설강좌 목록 출력 
 	function fnClassList(){
 		$.ajax({
 			url : '${contextPath}/admin/ClassList',
@@ -161,7 +291,25 @@
 	} // fnClassList
 	
 </script>
+<style>
+	#paging{
+		display : flex;
+		justify-content: center;
+		
+	}
+	#paging div{
+		width : 32px;
+		height : 20px;
+		text-align: center;
+	}
+	.disable_link{
+		color: lightgray;
+	}
+	.enable_link{
+		cursor: pointer;
+	}
 
+</style>
 </head>
 <body>
 
@@ -209,14 +357,14 @@
 		<br>
 		
 		시간 선택
-		<select name="classTime">
+		<select id="classTime" name="classTime">
 			<option value="A">A</option>
 			<option value="B">B</option>
 			<option value="C">C</option>
 			<option value="D">D</option>
 		</select>
 		<br><br>
-		<button id="btnAdd">강좌 개설하기</button>
+		<input type="button" value="강좌 개설하기" id="btnAdd">
 	</form>
 	
 	<hr>
@@ -234,6 +382,14 @@
 		<tbody id="classes">
 			
 		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="4">
+					<div id="paging"></div>
+				</td>
+			</tr>
+			
+		</tfoot>
 	</table>
 	
 	

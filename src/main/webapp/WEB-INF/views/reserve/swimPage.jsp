@@ -49,7 +49,7 @@
 				alert('지난 날짜는 선택할 수 없습니다.');
 				ev.preventDefault();
 				return false;
-			}
+			} 
 			
 			var strDate = date.replace(/-/gi,"");
 			
@@ -59,7 +59,7 @@
 			var popupY= (window.screen.height /2) - (300 / 2);
 			// 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
 
-			window.open("${contextPath}/reserve/reserveSwim?subject=SWIM&classDate=" + strDate, '', 'status=no, height=300, width=600, left='+ popupX + ', top='+ popupY + ', scrollbars=yes,resizable=yes');
+			window.open("${contextPath}/reserve/reserveSwimPage?subject=SWIM&classDate=" + strDate, '', 'status=no, height=300, width=600, left='+ popupX + ', top='+ popupY + ', scrollbars=yes,resizable=yes');
 		})
 
 	} // fnGetClassList
