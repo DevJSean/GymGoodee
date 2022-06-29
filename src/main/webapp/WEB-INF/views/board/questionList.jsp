@@ -50,12 +50,12 @@
 <body>
 	
 	<h1>QnA 목록</h1>
-	<input type="button" value="메인으로 돌아가기" onclick="location.href='${contextPath}/jsh'">
+	<input type="button" value="메인으로 돌아가기" onclick="location.href='${contextPath}'">
 	<input type="button" value="공지사항" onclick="location.href='${contextPath}/board/noticeList'">
 	<input type="button" value="QnA" onclick="location.href='${contextPath}/board/questionList'">
 	<input type="button" value="리뷰" onclick="location.href='${contextPath}/board/reviewList'">
 	<br><br>
-	<c:if test="${loginMember ne null}">
+	<c:if test="${loginMember ne null && loginMember.memberId ne 'admin'}">
 		<input type="button" value="글 작성" onclick="location.href='${contextPath}/board/questionAddPage'">
 	</c:if>
 	<table>
@@ -72,7 +72,7 @@
 		<tbody>
 			<c:forEach items="${questions}" var="question" varStatus="vs">
 				<tr>
-					<td>${beginNo - vs.index}</td>
+					<td>${beginNo - vs.index}<span> ${beginNo}</span><span> ${vs.index}</span><span> ${vs.count}</span></td>
 					<td><a href="${contextPath}/board/questionDetail?questionNo=${question.questionNo}">${question.questionTitle}</a></td>
 					<td>${question.memberId}</td>
 					<td>${question.questionCreated}</td>

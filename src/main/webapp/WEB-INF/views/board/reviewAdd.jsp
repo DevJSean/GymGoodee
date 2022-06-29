@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="contextPath" value="${pageContext.request.contextPath}"/> 
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -40,7 +41,21 @@
 		수강 내역
 		<select name="class" id="class">
 			<c:forEach items="${classCodes}" var="classCode">
-				<option value="${classCode.classCode}">${classCode.classCode}</option>
+				<c:set var="code" value="${classCode.classCode}"/>
+				<c:set var="classLength" value="${fn:length(code)}"/>
+				<c:set var="classSubject" value="${fn:substring(code,11,classLength)}"/>
+					<c:if test="${fn:startsWith(classSubject, 'SWIM')}">
+						<option value="${classCode.classCode}">${fn:replace(code, 'SWIM', '수영')}반</option>
+					</c:if>
+					<c:if test="${fn:startsWith(classSubject, 'DANCE')}">
+						<option value="${classCode.classCode}">${fn:replace(code, 'DANCE', '댄스')}반</option>
+					</c:if>
+					<c:if test="${fn:startsWith(classSubject, 'PILATES')}">
+						<option value="${classCode.classCode}">${fn:replace(code, 'PILATES', '필라테스')}반</option>
+					</c:if>
+					<c:if test="${fn:startsWith(classSubject, 'SPINNING')}">
+						<option value="${classCode.classCode}">${fn:replace(code, 'SPINNING', '스피닝')}반</option>
+					</c:if>
 			</c:forEach>
 		</select>
 		<br>

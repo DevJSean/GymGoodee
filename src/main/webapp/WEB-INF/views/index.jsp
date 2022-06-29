@@ -17,7 +17,6 @@
 	
 	<jsp:include page="./layout/header.jsp"></jsp:include>
 	
-	<a href="${contextPath}/jsh">지시현 구현</a>
 	<a href="${contextPath}/ljm">이정민 구현</a>
 	<a href="${contextPath}/phg">박현규 구현</a>
 	<a href="${contextPath}/lsh">이상호 구현</a>

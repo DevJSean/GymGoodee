@@ -1,7 +1,12 @@
 package com.goodee.gym.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.goodee.gym.service.ForecastService;
 
 @Controller
 public class IndexController {
@@ -13,10 +18,6 @@ public class IndexController {
 		return "index";              
 	}
 	
-	@GetMapping(value={"/jsh"}) 
-	public String jsh() {
-		return "jsh_index";              
-	}
 	@GetMapping(value={"/lsh"}) 
 	public String lsh() {
 		return "lsh_index";              
@@ -37,6 +38,12 @@ public class IndexController {
 	@GetMapping(value="/member/login")    
 	public String member() {
 		return "member/login";         
+	}
+	
+	@ResponseBody
+	@GetMapping(value = "/forecast", produces="application/json")
+	public String forecast(HttpServletRequest request) {
+		return ForecastService.forecast(request);
 	}
 	
 

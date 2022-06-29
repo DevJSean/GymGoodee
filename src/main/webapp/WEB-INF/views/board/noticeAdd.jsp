@@ -15,6 +15,10 @@
 		fnFileCheck();
 		fnAdd();
 		fnRemoveAttached();
+		
+		if($('#files').val() == '') {
+			$('.attached').addClass('blind');
+		}
 	})
 	
 	function fnInit() {
@@ -109,6 +113,7 @@
 	} */
 	
 	function fnImagePreview(event){
+		$('.attached').removeClass('blind');
 		$('#attached').empty();
 		for(var image of event.target.files){
 			var reader = new FileReader();
@@ -120,7 +125,6 @@
 				img.setAttribute("width", "500px");
 				document.querySelector("div#attached").appendChild(img);
 			};
-			console.log(image);
 			reader.readAsDataURL(image);
 		}
 	}
@@ -129,10 +133,16 @@
 		$('#btnRemoveAttached').on('click', function(){
 			$('#attached').empty();
 			$('#files').val('');
+			$('.attached').addClass('blind');
 		})
 	}
 	
 </script>
+<style>
+	.blind {
+		display: none;
+	}
+</style>
 </head>
 <body>
 	
@@ -147,7 +157,7 @@
 		<input type="button" value="공지사항 목록" onclick="location.href='${contextPath}/board/noticeList'">
 	</div>
 	
-	<div>
+	<div class="attached">
 		<h3>첨부된 파일 확인</h3>
 		<div id="attached"></div>
 	</div>

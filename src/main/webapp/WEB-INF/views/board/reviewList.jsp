@@ -52,12 +52,12 @@
 <body>
 
 	<h1>리뷰 목록</h1>
-	<input type="button" value="메인으로 돌아가기" onclick="location.href='${contextPath}/jsh'">
+	<input type="button" value="메인으로 돌아가기" onclick="location.href='${contextPath}'">
 	<input type="button" value="공지사항" onclick="location.href='${contextPath}/board/noticeList'">
 	<input type="button" value="QnA" onclick="location.href='${contextPath}/board/questionList'">
 	<input type="button" value="리뷰" onclick="location.href='${contextPath}/board/reviewList'">
 	<br><br>
-	<c:if test="${not empty loginMember}">
+	<c:if test="${loginMember ne null && loginMember.memberId ne 'admin'}">
 		<input type="button" value="글 작성" onclick="location.href='${contextPath}/board/reviewAddPage'">
 	</c:if>
 	
@@ -90,12 +90,26 @@
 						</c:if>
 					</td> 
 					<td>
-						${review.classCode}
-						<c:set var="class" value="${review.classCode}"/>
-			<%-- 			<c:out value="${fn:substring(class,0,8)}&nbsp;" />
-						<c:out value="${fn:substring(class,9,10)}&nbsp;" />
-						<c:out value="${fn:substring(class,11,length(class))}반" /> --%>
-					</td> <!-- 20220630_D_SPINNING02반 -->
+						<c:set var="classCode" value="${review.classCode}"/>
+						<c:set var="classLength" value="${fn:length(classCode)}"/>
+						<c:set var="classSubject" value="${fn:substring(classCode,11,classLength)}"/>
+						<c:set var="classLocation" value="${fn:substring(classCode,classLength-2,classLength)}"/>
+						${fn:substring(classCode,0,8)}
+						${fn:substring(classCode,9,10)}
+						<c:if test="${fn:startsWith(classSubject, 'SWIM')}">
+							수영
+						</c:if>
+						<c:if test="${fn:startsWith(classSubject, 'DANCE')}">
+							댄스
+						</c:if>
+						<c:if test="${fn:startsWith(classSubject, 'PILATES')}">
+							필라테스
+						</c:if>
+						<c:if test="${fn:startsWith(classSubject, 'SPINNING')}">
+							스피닝
+						</c:if>
+						${classLocation}
+					</td>
 					<td>${review.memberId}</td>
 					<td>${review.reviewCreated}</td>
 					<td>${review.reviewHit}</td>
