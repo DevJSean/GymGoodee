@@ -32,5 +32,8 @@ public interface AdminService {
 	// 개설 강좌 목록 가져오기
 	public Map<String, Object> getClasses();
 	
+	
+	// 테스트
+	public Map<String, Object> getClasses1(int page);
 
 }

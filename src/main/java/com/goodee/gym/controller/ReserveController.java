@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.goodee.gym.service.ReserveService;
@@ -27,7 +28,7 @@ public class ReserveController {
 	
 	// swimPage.jsp에서 넘겨준 선택한 날짜, 종목 정보를
 	// model 에 실어서 reserve/reserveSwim 로 넘겨주기
-	@GetMapping(value="/reserve/reserveSwim")
+	@GetMapping(value="/reserve/reserveSwimPage")
 	public String reserveSwim(HttpServletRequest request, Model model) {
 		model.addAttribute("subject", request.getParameter("subject"));
 		model.addAttribute("classDate", request.getParameter("classDate"));

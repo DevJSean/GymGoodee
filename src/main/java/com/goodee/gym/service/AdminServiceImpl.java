@@ -2,6 +2,7 @@ package com.goodee.gym.service;
 
 import java.io.PrintWriter;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.goodee.gym.domain.ClassDTO;
 import com.goodee.gym.domain.TeacherDTO;
 import com.goodee.gym.mapper.AdminMapper;
+import com.goodee.gym.util.PageUtils;
 import com.goodee.gym.util.SecurityUtils;
 
 @Service
@@ -79,6 +81,28 @@ public class AdminServiceImpl implements AdminService {
 		//System.out.println("1. classCode =" + classCode);
 		registclass.setClassCode(classCode);
 		
+		// 추가하려는 강좌의 강사번호와 일치하는 수업 목록들을 class 테이블에서 가져온다.
+		// 가져온 목록들의 class_code를 substring 하여 '날짜_시간'이 일치하는 것이 있는면
+		// 추가하면 x
+		Long teacherNo = registclass.getTeacherNo();
+		List<String> classCodes = new ArrayList<String>();
+		classCodes = adminMapper.selectCodesFromReservationByTeacherNo(teacherNo);
+		if(classCodes == null) {
+			//System.out.println("하나도 없음");
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		String originCode = registclass.getClassDate() + "_" + registclass.getClassTime(); // '날짜_시간' 정보
+		for(int i = 0; i<classCodes.size();i++) {
+			int codeIndex = classCodes.get(i).lastIndexOf("_");
+			String tmpCode = classCodes.get(i).substring(0,codeIndex);	// '날짜_시간'
+			//System.out.println("tmpCode : " + tmpCode);
+			if(originCode.equals(tmpCode)) {
+				map.put("state", 501);		// 중복되는 강좌 개설하려고 시도!
+				return map;
+			}
+		}
+		
+		// 위에 for문에서 if에 걸리지 않으면 여기로 넘어온다.
 		// classTime A, B, C, D => 09:00 / 10: 00 / 19:30 / 20:30 으로 변경하기
 		String classTime = registclass.getClassTime();
 		switch(classTime) {
@@ -97,7 +121,6 @@ public class AdminServiceImpl implements AdminService {
 		}
 		
 		int res = 0;
-		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			res = adminMapper.insertClass(registclass);
 			map.put("res", res);
@@ -134,5 +157,26 @@ public class AdminServiceImpl implements AdminService {
 	}
 	
 	
+	
+	// 테스트
+	@Override
+	public Map<String, Object> getClasses1(int page) {
+		
+		int totalRecord = adminMapper.selectClassCount();
+		PageUtils p = new PageUtils();
+		p.setPageEntity(totalRecord, page);
+		
+		// 목록은 beginRecord ~ endRecord 사이값을 가져온다.
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("beginRecord", p.getBeginRecord());
+		m.put("endRecord", p.getEndRecord());
+		
+		// 목록과 페이징 정보를 반환한다.
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("classes", adminMapper.selectClassList(m));
+		map.put("p", p);
+				
+		return map;
+	}
 
 }

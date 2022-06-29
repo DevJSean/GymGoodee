@@ -36,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectCountByClassCode" parameterType="String" resultType="Integer">
 		SELECT COUNT(MEMBER_NO)
 		  FROM RESERVATION
-		 WHERE CLASS_CODE = #{classCode} AND RESERVATION_STATE = 0
+		 WHERE CLASS_CODE = #{classCode} AND RESERVATION_STATE != -1
 	</select>
 	
 	<!-- 예약 테이블에서 예약 내역이 있는지 없는지 가져오기 -->

@@ -121,9 +121,11 @@ public class ReserveServiceImpl implements ReserveService {
 		
 		// 1) 파라미터 처리
 		String subject = request.getParameter("subject");
-		Long memberNo = Long.parseLong(request.getParameter("memberNo"));
 		String classCode = request.getParameter("classCode");
 		
+		HttpSession session = request.getSession();
+		MemberDTO member = (MemberDTO)session.getAttribute("loginMember");
+		Long memberNo = member.getMemberNo();
 		
 		// 2) Reservation 테이블에서 해당 회원이 예약한 class_code 가져오기
 		Map<String, Object> tmp = new HashMap<String, Object>();
@@ -132,22 +134,24 @@ public class ReserveServiceImpl implements ReserveService {
 		List<String> classCodes = new ArrayList<String>();
 		classCodes = reserveMapper.selectCodesFromReservation(tmp);
 		if(classCodes == null) {
-			System.out.println("하나도 없음");
+			//System.out.println("하나도 없음");
 		}
 		
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> result = new HashMap<String, Object>();
 		// 2-1)
 		// classCodes들을 가져와 '날짜_시간' 만 substring 하여 
 		// 파라미터로 받아온 classCode와 비교해본다.
 		// 일치하는 것이 있으면 같은 날짜, 같은 시간에 이미 예약했으므로 
 		// 예약불가!
-		String originCode = classCode.substring(0,classCode.lastIndexOf("_")-1);
+		String originCode = classCode.substring(0,classCode.lastIndexOf("_"));
+		System.out.println("originCode : " + originCode);
 		for(int i = 0; i<classCodes.size();i++) {
 			int codeIndex = classCodes.get(i).lastIndexOf("_");
-			String tmpCode = classCodes.get(i).substring(0,codeIndex-1);	// '날짜_시간'
+			String tmpCode = classCodes.get(i).substring(0,codeIndex);	// '날짜_시간'
+			//System.out.println("tmpCode : " + tmpCode);
 			if(originCode.equals(tmpCode)) {
-				map.put("state", 501);		// 중복되는 강좌 예약하려고 시도
-				return map;
+				result.put("state", 501);		// 중복되는 강좌 예약하려고 시도
+				return result;
 			}
 		}
 		
@@ -179,8 +183,8 @@ public class ReserveServiceImpl implements ReserveService {
 		}
 		
 		// 4) 위의 과정까지 예약이 완료되었으므로 잔여수강권 횟수를 -1 해야한다. (UPDATE)
-		HttpSession session = request.getSession();
-		MemberDTO member = (MemberDTO)session.getAttribute("loginMember");
+		
+		
 		String memberId = member.getMemberId();
 		Map<String, Object> map2 = new HashMap<String, Object>();
 		map2.put("subject",subject);
@@ -189,10 +193,10 @@ public class ReserveServiceImpl implements ReserveService {
 				
 		
 		// 5) 위의 결과를 받아 MAP으로 반환
-		map.put("res", res);
+		result.put("res", res);
 		
 		
-		return map;
+		return result;
 		
 	}
 	
@@ -202,21 +206,22 @@ public class ReserveServiceImpl implements ReserveService {
 	@Override
 	public Map<String, Object> cancelSwim(HttpServletRequest request) {
 		
+		
 		// 1) 파라미터 처리
 		String subject = request.getParameter("subject");
-		Long memberNo = Long.parseLong(request.getParameter("memberNo"));
 		String classCode = request.getParameter("classCode");
+		
+		HttpSession session = request.getSession();
+		MemberDTO member = (MemberDTO)session.getAttribute("loginMember");
+		Long memberNo = member.getMemberNo();
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("memberNo", memberNo);
 		map.put("classCode", classCode);
 		int res = reserveMapper.updateCancelSwim(map);
-		System.out.println("수강 취소 : " +res);
+		//System.out.println("수강 취소 : " +res);
 		
 		// 2) 잔여수강권 횟수 증가시키기
-		
-		HttpSession session = request.getSession();
-		MemberDTO member = (MemberDTO)session.getAttribute("loginMember");
 		String memberId = member.getMemberId();
 		Map<String, Object> map2 = new HashMap<String, Object>();
 		map2.put("subject",subject);

@@ -64,10 +64,10 @@ public class AdminController {
 		return adminService.getLocationsBySubject(subject);
 	}
 	
-	// 강좌 개설하기 (INSERT)
+	// 강좌 개설하기 (INSERT) ( json <-> json )
 	@ResponseBody
 	@PostMapping(value="/admin/addClass", produces="application/json")
-	public Map<String, Object> addClass(ClassDTO registclass, HttpServletResponse response) {
+	public Map<String, Object> addClass(@RequestBody ClassDTO registclass, HttpServletResponse response) {
 		return adminService.addClass(registclass, response);
 	}
 	
@@ -76,6 +76,15 @@ public class AdminController {
 	@GetMapping(value="/admin/ClassList", produces="application/json")
 	public Map<String, Object> ClassList(){
 		return adminService.getClasses();
+	}
+	
+	
+	// 테스트
+	// 강좌 목록 + 페이징 처리
+	@ResponseBody
+	@GetMapping(value="/classes", produces="application/json")
+	public Map<String, Object> getClasses(int page){
+		return adminService.getClasses1(page);
 	}
 	
 }
