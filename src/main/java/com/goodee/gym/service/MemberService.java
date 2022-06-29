@@ -20,15 +20,17 @@ public interface MemberService {
 
 	public void signUp(HttpServletRequest request, HttpServletResponse response);
 	public MemberDTO login(HttpServletRequest request);
+	public void logout(HttpSession session, HttpServletRequest request, HttpServletResponse response);
 	
 	/* 네이버 */
 	public String naverLogin(HttpSession session);
 	public void naverCallback(HttpServletRequest request, HttpServletResponse response);
-	public void naverLogout(HttpServletRequest request);
+
 	
 	/* 카카오 */
 	public String kakaoLogin(HttpSession session);
 	public void kakaoCallback(HttpServletRequest request, HttpServletResponse response);
+
 	
 	/* 아이디 찾기 */
 	public Map<String, Object> findId(MemberDTO member);

@@ -72,7 +72,6 @@ public class MemberController {
 		model.addAttribute("url", url);    // member/login.jsp로 url 속성값을 전달한다.
 		model.addAttribute("naver", memberService.naverLogin(session));
 		model.addAttribute("kakao", memberService.kakaoLogin(session));
-
 		return "member/login";
 	}
 	
@@ -80,20 +79,13 @@ public class MemberController {
 	public void login(HttpServletRequest request, Model model) {
 		
 		MemberDTO loginMember = memberService.login(request);
-		
 		if(loginMember != null) {
 			model.addAttribute("loginMember", loginMember);  
 		}
-		
 		model.addAttribute("url", request.getParameter("url"));
 		
 	}
 	
-	@GetMapping("/member/naverLogin")
-	public String login(Model model, HttpSession session) {
-		model.addAttribute("naver", memberService.naverLogin(session));
-		return "login";
-	}
 	@GetMapping("/member/naverCallback")
 	public String naverCallback(HttpServletRequest request, HttpServletResponse response) {
 		memberService.naverCallback(request, response);
@@ -101,18 +93,14 @@ public class MemberController {
 	}
 	
 	@GetMapping("/member/kakaoCallback")
-	public void kakaoCallback(HttpServletRequest request, HttpServletResponse response) {
+	public String kakaoCallback(Model model, HttpServletRequest request, HttpServletResponse response) {
 		memberService.kakaoCallback(request, response);
+		return "lsh_index";
 	}
 	
 	@GetMapping("/member/logout")
-	public String logout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
-		memberService.naverLogout(request);
-		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
-		if(loginMember != null) {
-			session.invalidate();
-		}
-		return "redirect:/lsh";
+	public void logout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+		memberService.logout(session, request, response);
 	}
 	
 	@GetMapping("/member/findIdPage")

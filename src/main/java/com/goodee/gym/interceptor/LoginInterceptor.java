@@ -53,7 +53,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 			
 			// 로그인 이후 이동
 			if(url.toString().isEmpty()) { // 로그인 이전 화면 정보가 없으면 contextPath  이동
-				response.sendRedirect(request.getContextPath() + "/lsh");
+				response.sendRedirect(request.getContextPath());
 			} else { // 로그인 이전 화면 정보가 있으면 해당 화면으로 이동하기
 				response.sendRedirect(url.toString());
 			}

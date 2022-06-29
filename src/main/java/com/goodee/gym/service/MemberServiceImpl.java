@@ -47,6 +47,8 @@ import net.nurigo.java_sdk.exceptions.CoolsmsException;
 @Service
 public class MemberServiceImpl implements MemberService {
 
+	String access_token_naver = "";
+	
 	@Autowired
 	private MemberMapper memberMapper;
 	
@@ -61,6 +63,7 @@ public class MemberServiceImpl implements MemberService {
 			String memberPhone = "000-0000-0000";
 			String memberEmail = "aa@aa.aa";
 			Integer memberAgreeState = 1;
+			Integer memberState = 3;
 			
 			MemberDTO member = MemberDTO.builder()
 					.memberId(memberId)
@@ -71,6 +74,7 @@ public class MemberServiceImpl implements MemberService {
 					.memberPhone(memberPhone)
 					.memberEmail(memberEmail)
 					.memberAgreeState(memberAgreeState)
+					.memberState(memberState)
 					.build();
 			
 			memberMapper.insertMember(member);
@@ -178,7 +182,7 @@ public class MemberServiceImpl implements MemberService {
 		String memberEmail = SecurityUtils.xss(request.getParameter("memberEmail")); 
 		String location = request.getParameter("location");
 		String promotion = request.getParameter("promotion");
-		int memberAgreeState = 1;  // 필수 동의
+		Integer memberAgreeState = 1;  // 필수 동의
 		if(location.equals("location") && promotion.equals("promotion")) {
 			memberAgreeState = 4;  // 필수 + 위치 + 프로모션 동의
 		} else if(location.equals("location") && promotion.isEmpty()) {
@@ -186,6 +190,7 @@ public class MemberServiceImpl implements MemberService {
 		} else if(location.isEmpty() && promotion.equals("promotion")) {
 			memberAgreeState = 3;  // 필수 + 프로모션 동의
 		}
+		Integer memberState = 3;
 		
 		MemberDTO member = MemberDTO.builder()
 				.memberId(memberId)
@@ -196,9 +201,10 @@ public class MemberServiceImpl implements MemberService {
 				.memberPhone(memberPhone)
 				.memberEmail(memberEmail)
 				.memberAgreeState(memberAgreeState)
+				.memberState(memberState)
 				.build();
 		
-		int res = memberMapper.insertMember(member);
+		Integer res = memberMapper.insertMember(member);
 		
 		try {
 			response.setContentType("text/html");
@@ -273,6 +279,7 @@ public class MemberServiceImpl implements MemberService {
 	    String code = request.getParameter("code");
 	    String state = request.getParameter("state");
 	    String redirectURI = null;
+	    
 		try {
 			redirectURI = URLEncoder.encode("http://localhost:9090/gym/member/naverCallback", "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -305,11 +312,9 @@ public class MemberServiceImpl implements MemberService {
 	      br.close();
 	      org.json.JSONObject obj = new org.json.JSONObject(res.toString());
 	      
-		  String access_token = obj.getString("access_token"); 
+		  access_token_naver = obj.getString("access_token"); 
 		  
-		  System.out.println(access_token);
-	      
-		  String header = "Bearer " + access_token; 
+		  String header = "Bearer " + access_token_naver; 
 
 	      String apiURL2 = "https://openapi.naver.com/v1/nid/me";
 
@@ -324,47 +329,52 @@ public class MemberServiceImpl implements MemberService {
 	      String memberId = SecurityUtils.xss(obj3.getString("id"));
 	      String memberName = SecurityUtils.xss(obj3.getString("name"));
 	      String memberBirth = SecurityUtils.xss(obj3.getString("birthyear") + "-" + obj3.getString("birthday"));
+	      String memberPw = SecurityUtils.sha256(obj3.getString("birthday").replace("-", ""));
 	      String memberGender = SecurityUtils.xss(obj3.getString("gender"));
 	      String memberPhone = SecurityUtils.xss(obj3.getString("mobile"));
 	      String memberEmail = SecurityUtils.xss(obj3.getString("email"));
+	      Integer memberState = 2;
 	      
 		  MemberDTO naver = MemberDTO.builder()
 				  .memberId(memberId)
+				  .memberPw(memberPw)
 				  .memberName(memberName)
 				  .memberBirth(memberBirth)
 				  .memberGender(memberGender)
 				  .memberPhone(memberPhone)
 				  .memberEmail(memberEmail)
+				  .memberState(memberState)
 				  .build();
 			
 		  
 		  if(memberMapper.selectMemberByEmail(memberEmail) == null) {
 			  memberMapper.insertNaver(naver);
-		  } else {
 			  try {
 			    	response.setContentType("text/html");
 			    	PrintWriter out = response.getWriter();
-			    		out.println("<script>");
-			    		out.println("alert('등록된 아이디가 있습니다.')");
-						out.println("location.href='" + request.getContextPath() + "/member/loginPage'");
-			    		out.println("</script>");
-			    		out.close();
+		    		out.println("<script>");
+		    		out.println("alert('마이페이지에서 비밀번호(초기 설정 : 가입자생일 ex:0101) 수정이 필요합니다. 자세한 내용은 공지사항을 확인하세요.')");
+					out.println("location.href='" + request.getContextPath() + "/lsh'");
+		    		out.println("</script>");
+		    		out.close();
 			    	  
 			    } catch (Exception e) {
 			    	e.printStackTrace();
 			    }
-		  }
+		  } 
+		  
 		  MemberDTO loginMember = memberMapper.selectMemberById(memberId);
 		  
 		  memberMapper.insertMemberLog(loginMember.getMemberNo());
 		  
 		  HttpSession session = request.getSession();
-	      session.setAttribute("loginMember", loginMember);
-	      session.setMaxInactiveInterval(60*60);
-	      
+		  session.setAttribute("loginMember", loginMember);
+		  session.setMaxInactiveInterval(60*60);
+		  
 	    } catch (Exception e) {
 	    	e.printStackTrace();
 	    }
+	    
 	}
 	
 	@Override
@@ -396,8 +406,6 @@ public class MemberServiceImpl implements MemberService {
 	    String state = request.getParameter("state");
 	    String redirectURI = null;
 	    String header = null;
-	    String access_token = null;
-	    MemberDTO loginMember;
 	    
 		try {
 			redirectURI = URLEncoder.encode("http://localhost:9090/gym/member/kakaoCallback", "UTF-8");
@@ -419,7 +427,6 @@ public class MemberServiceImpl implements MemberService {
 	      con.setRequestMethod("POST");
 	      int responseCode = con.getResponseCode();
 	      BufferedReader br;
-	      System.out.println("responseCode="+responseCode);
 	      if(responseCode==200) { 
 	        br = new BufferedReader(new InputStreamReader(con.getInputStream()));
 	      } else {  
@@ -433,11 +440,8 @@ public class MemberServiceImpl implements MemberService {
 	      br.close();
 	      org.json.JSONObject obj = new org.json.JSONObject(res.toString());
 	      
-		  access_token = obj.getString("access_token");
+		  String access_token = obj.getString("access_token");
 	      
-		  System.out.println(access_token);
-
-		  
 		  header = "Bearer " + access_token; 
 
 	      String apiURL2 = "https://kapi.kakao.com/v2/user/me";
@@ -446,11 +450,35 @@ public class MemberServiceImpl implements MemberService {
 	      requestHeaders.put("Authorization", header);
 	      
 	      String responseBody = get(apiURL2,requestHeaders);
-
-	      org.json.JSONObject obj2 = new org.json.JSONObject(responseBody.toString());
 	      
+	      org.json.JSONObject obj2 = new org.json.JSONObject(responseBody.toString());
 	      org.json.JSONObject obj3 = obj2.getJSONObject("kakao_account");
-	      org.json.JSONObject obj4 = obj3.getJSONObject("profile");
+	      
+	      String apiURL3 = "https://kauth.kakao.com/oauth/authorize?";
+	      apiURL3 += "client_id=" + clientId; 
+	      apiURL3 += "&redirect_uri=" + redirectURI;
+	      apiURL3 += "&response_type=code";
+	      apiURL3 += "&scope=profile_nickname,account_email,gender,birthday";
+	      
+	      if(obj3.isNull("profile")) {
+	    	  
+			  try {
+			    	response.setContentType("text/html");
+			    	PrintWriter out = response.getWriter();
+		    		out.println("<script>");
+		    		out.println("alert('동의해!')");
+					out.println("location.href='" + apiURL3 + "'");
+		    		out.println("</script>");
+		    		out.close();
+			    	  
+			    } catch (Exception e) {
+			    	e.printStackTrace();
+			    }
+	    	  
+	      } else {
+	    	  org.json.JSONObject obj4 = obj3.getJSONObject("profile");
+	      
+	      
 	      String memberId = SecurityUtils.xss(String.valueOf(obj2.getLong("id")));
 	      String memberName = SecurityUtils.xss(obj4.getString("nickname"));
 	      String memberEmail = SecurityUtils.xss(obj3.getString("email"));
@@ -459,81 +487,141 @@ public class MemberServiceImpl implements MemberService {
 	      char memberGender = gender2.charAt(0);
 	      
 	      String memberBirth = SecurityUtils.xss(obj3.getString("birthday"));
+	      String memberPw = SecurityUtils.sha256(obj3.getString("birthday"));
+	      
 	      String memberPhone = "카카오가입";
+	      Integer memberState = 1;
 	      
 		  MemberDTO kakao = MemberDTO.builder()
 				  .memberId(memberId)
+				  .memberPw(memberPw)
 				  .memberName(memberName)
 				  .memberEmail(memberEmail)
 				  .memberGender(String.valueOf(memberGender))
 				  .memberBirth(memberBirth)
 				  .memberPhone(memberPhone)
+				  .memberState(memberState)
 				  .build();
-		  
 		  
 		  if(memberMapper.selectMemberByEmail(memberEmail) == null) {
 			  memberMapper.insertKakao(kakao);
-		  } else {
 			  try {
 			    	response.setContentType("text/html");
 			    	PrintWriter out = response.getWriter();
-			    		out.println("<script>");
-			    		out.println("alert('등록된 회원입니다.')");
-						out.println("location.href='" + request.getContextPath() + "/member/loginPage'");
-			    		out.println("</script>");
-			    		out.close();
+		    		out.println("<script>");
+		    		out.println("alert('마이페이지에서 비밀번호(초기 설정 : 가입자생일 ex:0101)와 휴대폰번호 수정이 필요합니다. 자세한 내용은 공지사항을 확인하세요.')");
+					out.println("location.href='" + request.getContextPath() + "/lsh'");
+		    		out.println("</script>");
+		    		out.close();
 			    	  
 			    } catch (Exception e) {
 			    	e.printStackTrace();
 			    }
-		  }
-		  loginMember = memberMapper.selectMemberById(memberId);
+		  } 
 		  
-		  memberMapper.insertMemberLog(loginMember.getMemberNo());
+		  
+		  MemberDTO loginMember = memberMapper.selectMemberById(memberId);
+		  
+		  if(loginMember != null) {
+			  memberMapper.insertMemberLog(loginMember.getMemberNo());
+		  }
 		  
 		  HttpSession session = request.getSession();
-	      session.setAttribute("loginMember", loginMember);
-	      session.setMaxInactiveInterval(60*60);
-	      
+		  session.setAttribute("loginMember", loginMember);
+		  session.setMaxInactiveInterval(60*60);
+	      }
 	    } catch (Exception e) {
 	    	e.printStackTrace();
 	    }
-	    
 	}
 	
 	@Override
-	public void naverLogout(HttpServletRequest request) {
+	public void logout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
 		
-		String clientId = "XYULZHj0e4wadrMeNhvI";
-	    String clientSecret = "4gVLsa0no9";
-	    String accesstoken = request.getParameter("accesstoken");
-	    
-		String apiURL;
-	    apiURL = "https://nid.naver.com/oauth2.0/token?grant_type=delete";
-	    apiURL += "&client_id=" + clientId;
-	    apiURL += "&client_secret=" + clientSecret;
-	    apiURL += "&access_token=" + accesstoken;
-	    apiURL += "&service_provider=" + "NAVER";
-	    
-	    System.out.println(apiURL);
-	    
-	    try {
-		      URL url = new URL(apiURL);
-		      HttpURLConnection con = (HttpURLConnection)url.openConnection();
-		      con.setRequestMethod("POST");
-		      int responseCode = con.getResponseCode();
-		      BufferedReader br;
-		      System.out.println("responseCode="+responseCode);
-		      if(responseCode==200) { 
-		        br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		      } else {  
-		        br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
-		      }
-		      br.close();
-	    } catch (Exception e) {
-	    	e.printStackTrace();
-	    }
-	    
+		Integer state = 0;
+		
+		if(loginMember != null) {
+			state = loginMember.getMemberState();
+		}
+		
+		session.invalidate();
+		
+		if(state == 1) {
+			
+			String clientId = "3e6d88b955a2408ebdcace4d52b2bf99";
+		    String logout_redirect_uri = "http://localhost:9090/gym";
+		    
+			String apiURL;
+		    apiURL = "https://kauth.kakao.com/oauth/logout?";
+		    apiURL += "client_id=" + clientId;
+		    apiURL += "&logout_redirect_uri=" + logout_redirect_uri;
+		    
+		    try {
+		    	response.setContentType("text/html");
+		    	PrintWriter out = response.getWriter();
+	    		out.println("<script>");
+				out.println("location.href='" + apiURL + "'");
+	    		out.println("</script>");
+	    		out.close();
+		    	  
+		    } catch (Exception e) {
+		    	e.printStackTrace();
+		    }
+		} else if(state == 2) {
+			
+			String clientId = "XYULZHj0e4wadrMeNhvI";
+		    String clientSecret = "4gVLsa0no9";
+
+			
+			String apiURL = "https://nid.naver.com/oauth2.0/token?grant_type=delete";
+		    apiURL += "&client_id=" + clientId;
+		    apiURL += "&client_secret=" + clientSecret;
+		    apiURL += "&access_token=" + access_token_naver;
+		    apiURL += "&service_provider=" + "NAVER";
+		    
+		    try {
+			      URL url = new URL(apiURL);
+			      HttpURLConnection con = (HttpURLConnection)url.openConnection();
+			      con.setRequestMethod("GET");
+			      int responseCode = con.getResponseCode();
+			      BufferedReader br;
+			      if(responseCode==200) { 
+			        br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			      } else {  
+			        br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+			      }
+			      br.close();
+			      try {
+				    	response.setContentType("text/html");
+				    	PrintWriter out = response.getWriter();
+			    		out.println("<script>");
+						out.println("location.href='" + request.getContextPath() + "'");
+			    		out.println("</script>");
+			    		out.close();
+				    	  
+				    } catch (Exception e) {
+				    	e.printStackTrace();
+				    }
+		    } catch (Exception e) {
+		    	e.printStackTrace();
+		    }
+		} else {
+			
+		    try {
+		    	response.setContentType("text/html");
+		    	PrintWriter out = response.getWriter();
+	    		out.println("<script>");
+				out.println("location.href='" + request.getContextPath() + "'");
+	    		out.println("</script>");
+	    		out.close();
+		    	  
+		    } catch (Exception e) {
+		    	e.printStackTrace();
+		    }
+		}
+		
+		
 	}
 	
     private static String get(String apiUrl, Map<String, String> requestHeaders){
