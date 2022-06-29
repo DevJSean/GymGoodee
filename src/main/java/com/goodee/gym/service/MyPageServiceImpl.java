@@ -29,19 +29,37 @@ public class MyPageServiceImpl implements MyPageService {
 	
 	// 잔여수강권 조회
 	@Override
-	public Map<String, Object> getRemainTicketsById(String memberId) {
+	public Map<String, Object> getRemainTicketsById(HttpServletRequest request, Model model) {
+		HttpSession session = request.getSession();
+		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
+		String memberId = loginMember.getMemberId();
 		Map<String, Object> map = new HashMap<>();
+		
+		model.addAttribute(myPageMapper.selectTicketsById(memberId));
 		map.put("remainTickets", myPageMapper.selectTicketsById(memberId));
 		return map;
 	}
 
 	// 다가올 수업 내역 조회
 	@Override
-	public Map<String, Object> getCommingReservationsByNo(Long memberNo) {
+	public Map<String, Object> getCommingReservationsByNo(HttpServletRequest request) {
+
+		// 파라미터
+		HttpSession session = request.getSession();
+		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
+		Long memberNo = loginMember.getMemberNo();
+		String subject = request.getParameter("subject");
+		
+		// 전달할 Map
 		Map<String, Object> map = new HashMap<>();
-		map.put("commingTotalCount", myPageMapper.selectCommingCount(memberNo));
-		map.put("commingReservations", myPageMapper.selectCommingReservationsByNo(memberNo));
-		return map;
+		map.put("memberNo", memberNo);
+		map.put("subject", subject);
+		
+		// 반환할 Map
+		Map<String, Object> resMap = new HashMap<>();
+		resMap.put("commingTotalCount", myPageMapper.selectCommingCount(map));				// 다가올 수업 수
+		resMap.put("commingReservations", myPageMapper.selectCommingReservationsByNo(map)); // 다가올 수업 내역
+		return resMap;
 	}
 	
 	// 예약 취소
@@ -59,8 +77,13 @@ public class MyPageServiceImpl implements MyPageService {
 	@Override
 	public void getOverReservationsByNo(HttpServletRequest request, Model model) {
 		
-		Optional<String> optNo = Optional.ofNullable(request.getParameter("memberNo"));
-		Long memberNo = Long.parseLong(optNo.orElse("0"));
+		HttpSession session = request.getSession();
+		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
+		Long memberNo = loginMember.getMemberNo();
+		
+		if(memberNo == null) {
+			
+		}
 		
 		Optional<String> optPage = Optional.ofNullable(request.getParameter("page"));
 		int page = Integer.parseInt(optPage.orElse("1"));
@@ -82,8 +105,10 @@ public class MyPageServiceImpl implements MyPageService {
 	
 	// 결제 내역 조회
 	@Override
-	public void getMyPayListByNo(Long memberNo, Model model) {
-		model.addAttribute("payList", myPageMapper.selectPayList(memberNo));
+	public void getMyPayListByNo(HttpServletRequest request, Model model) {
+		HttpSession session = request.getSession();
+		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
+		model.addAttribute("payList", myPageMapper.selectPayList(loginMember.getMemberNo()));
 	}
 	
 	// 동일 종목 추가 결제시
@@ -93,33 +118,26 @@ public class MyPageServiceImpl implements MyPageService {
 		Optional<String> optNo = Optional.ofNullable(request.getParameter("PCD_PAYER_NO"));
 		Long memberNo = Long.parseLong(optNo.orElse("0"));
 		
-		List<PayListDTO> payList = myPageMapper.selectPayList(memberNo);
-		int i = 0;
-		for(int j = 1, size = payList.size(); j <= size; j++) {
-			if(payList.get(i).getTicket().getTicketSubject().equals(payList.get(j).getTicket().getTicketSubject())) {
-				Integer ticketPeriod = payList.get(i).getTicket().getTicketPeriod();
-				Integer ticketCount = payList.get(i).getTicket().getTicketCount();
-				String ticketSubject = null;
-				if(payList.get(i).getTicket().getTicketSubject().equals("수영")) {
-					ticketSubject = "SWIM";
-				} else if(payList.get(i).getTicket().getTicketSubject().equals("스포츠댄스")) {
-					ticketSubject = "DANCE";
-				} else if(payList.get(i).getTicket().getTicketSubject().equals("필라테스")) {
-					ticketSubject = "PILATES";
-				} else if(payList.get(i).getTicket().getTicketSubject().equals("스피닝")) {
-					ticketSubject = "SPINNING";
-				}
-				
-				TicketDTO ticket = TicketDTO.builder()
-						.memberNo(memberNo)
-						.ticketPeriod(ticketPeriod)
-						.ticketCount(ticketCount)
-						.ticketSubject(ticketSubject)
-						.build();
-				
-				myPageMapper.updateTicket(ticket);
-				return;
-			} 
+		List<PayListDTO> payList = myPageMapper.selectValidPayList(memberNo);
+		if(payList.size() > 1) {
+			int i = 0;
+			for(int j = 1, size = payList.size(); j <= size; j++) {
+				if(payList.get(i).getTicket().getTicketSubject().equals(payList.get(j).getTicket().getTicketSubject())) {
+					Integer ticketPeriod = payList.get(i).getTicket().getTicketPeriod();
+					Integer ticketCount = payList.get(i).getTicket().getTicketCount();
+					String ticketSubject = payList.get(i).getTicket().getTicketSubject();
+	
+					TicketDTO ticket = TicketDTO.builder()
+							.memberNo(memberNo)
+							.ticketPeriod(ticketPeriod)
+							.ticketCount(ticketCount)
+							.ticketSubject(ticketSubject)
+							.build();
+					
+					myPageMapper.updateTicket(ticket);
+					return;
+				} 
+			}
 		}
 	}
 	
@@ -270,9 +288,11 @@ public class MyPageServiceImpl implements MyPageService {
 	// 비밀번호 변경일
 	@Override
 	public Map<String, Object> getPwModified(HttpServletRequest request) {
-		String memberId = SecurityUtils.xss(request.getParameter("memberId"));
+		HttpSession session = request.getSession();
+		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
+		
 		Map<String, Object> map = new HashMap<>();
-		map.put("postDays", myPageMapper.selectPwModified(memberId));
+		map.put("postDays", myPageMapper.selectPwModified(loginMember.getMemberId()));
 		return map;
 	}
 }

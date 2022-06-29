@@ -6,21 +6,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.goodee.gym.mapper.MyPageMapper">
 
 	<!-- 다가올 수업 -->
-	<select id="selectCommingReservationsByNo" parameterType="Long" resultType="reservationDTO">
+	<select id="selectCommingReservationsByNo" parameterType="Map" resultType="reservationDTO">
 		SELECT C.CLASS_DATE, C.CLASS_TIME, R.RN, R.RESERVATION_CODE, R.MEMBER_NO, R.CLASS_CODE, R.RESERVATION_DATE, R.RESERVATION_STATE
 		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY CLASS_CODE) AS RN, RESERVATION_CODE, MEMBER_NO, CLASS_CODE, RESERVATION_DATE, RESERVATION_STATE
 		          FROM RESERVATION
-		         WHERE RESERVATION_STATE = 0) R JOIN CLASS C
+		         WHERE RESERVATION_STATE = 0
+		           AND MEMBER_NO = #{memberNo}
+		           AND RESERVATION_CODE LIKE '${subject}%') R JOIN CLASS C
 		    ON R.CLASS_CODE = C.CLASS_CODE
-		 WHERE R.MEMBER_NO = #{memberNo}
 		 ORDER BY R.RN
 	</select>
 
 	<!-- 다가올 수업 갯수 -->
-	<select id="selectCommingCount" parameterType="Long" resultType="Integer">
+	<select id="selectCommingCount" parameterType="Map" resultType="Integer">
 		SELECT COUNT(*)
 		  FROM RESERVATION
 		 WHERE MEMBER_NO = #{memberNo}
+		   AND RESERVATION_CODE LIKE '${subject}%'
 		   AND RESERVATION_STATE = 0
 	</select>
 	
@@ -44,10 +46,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT C.CLASS_DATE, C.CLASS_TIME, R.RN, R.RESERVATION_CODE, R.MEMBER_NO, R.CLASS_CODE, R.RESERVATION_DATE, R.RESERVATION_STATE
 		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY CLASS_CODE DESC) AS RN, RESERVATION_CODE, MEMBER_NO, CLASS_CODE, RESERVATION_DATE, RESERVATION_STATE
 		          FROM RESERVATION 
-		         WHERE RESERVATION_STATE = 1) R JOIN CLASS C
+		         WHERE RESERVATION_STATE = 1
+		           AND MEMBER_NO = #{memberNo}) R JOIN CLASS C
 		    ON R.CLASS_CODE = C.CLASS_CODE
-		 WHERE R.MEMBER_NO = #{memberNo}
-		   AND R.RN BETWEEN #{beginRecord} AND #{endRecord}
+		 WHERE R.RN BETWEEN #{beginRecord} AND #{endRecord}
 		 ORDER BY R.RN
 	</select>
 	
@@ -78,11 +80,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 마이페이지 - 결제내역조회 -->
 	<select id="selectPayList" parameterType="Map" resultMap="PayListMap">
 		SELECT P.RN, P.PAYLIST_NO, P.MEMBER_NO, P.TICKET_NO, P.PAYLIST_DATE, T.TICKET_SUBJECT, T.TICKET_PERIOD, T.TICKET_COUNT, T.TICKET_PRICE
-		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY PAYLIST_DATE DESC) AS RN, PAYLIST_NO, MEMBER_NO, TICKET_NO, PAYLIST_DATE
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY PAYLIST_DATE DESC, PAYLIST_NO DESC) AS RN, PAYLIST_NO, MEMBER_NO, TICKET_NO, PAYLIST_DATE
 		  	      FROM PAYLIST
 		  	     WHERE MEMBER_NO = #{memberNo}) P JOIN TICKET T
 		  	ON P.TICKET_NO = T.TICKET_NO
 		 ORDER BY P.RN
+	</select>
+	
+	<!-- 동일 종목 추가 결제를 위한 결제내역조회(만료일 지나지 않음) -->
+	<select id="selectValidPayList" parameterType="Map" resultMap="PayListMap">
+		SELECT P.RN, P.PAYLIST_NO, P.MEMBER_NO, P.TICKET_NO, P.PAYLIST_DATE, T.TICKET_SUBJECT, T.TICKET_PERIOD, T.TICKET_COUNT, T.TICKET_PRICE, (P.PAYLIST_DATE + T.TICKET_PERIOD) AS DUEDATE
+      	  FROM (SELECT ROW_NUMBER() OVER(ORDER BY PAYLIST_DATE DESC, PAYLIST_NO DESC) AS RN, PAYLIST_NO, MEMBER_NO, TICKET_NO, PAYLIST_DATE
+                  FROM PAYLIST
+                 WHERE MEMBER_NO = #{memberNo}) P JOIN TICKET T
+            ON P.TICKET_NO = T.TICKET_NO
+         WHERE (P.PAYLIST_DATE + T.TICKET_PERIOD) >= SYSDATE
+         ORDER BY P.RN
 	</select>
 	
 	<!-- 동일 종목 추가 결제시 만료일, 잔여횟수 증가 -->
@@ -94,7 +107,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		   AND REMAIN_TICKET_END_DATE >= SYSDATE
 	</update>
 
-	<!-- 비밀번호 일치하는지 조회 -->
+	<!-- 비밀번호 일치하는지 조회 -->                                                                                                                                                                                                                                                                                                                                                           
 	<select id="selectMemberPwByNo" parameterType="Long" resultType="String">
 		SELECT MEMBER_PW
 		  FROM MEMBER
@@ -128,7 +141,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT REMAIN_TICKET_NO, MEMBER_ID, REMAIN_TICKET_SUBJECT, REMAIN_TICKET_END_DATE, REMAIN_TICKET_REMAIN_COUNT
 		  FROM REMAIN_TICKET
 		 WHERE MEMBER_ID = #{memberId}
-		   AND REMAIN_TICKET_END_DATE >= SYSDATE
 	</select>
 	
 	<!-- 회원탈퇴 -->
@@ -139,7 +151,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</delete>
 	
 	<!-- 비밀번호 변경일 -->
-	<select id="selectPwModified" parameterType="String" resultType="Long">
+	<select id="selectPwModified" parameterType="String" resultType="Double">
 		SELECT MONTHS_BETWEEN(SYSDATE, MEMBER_PW_MODIFIED)
 		  FROM MEMBER 
 		 WHERE MEMBER_ID = #{memberId}

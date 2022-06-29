@@ -276,8 +276,8 @@
 	
 		<nav>
 			<ul class="myPageNav">
-				<li class="navItem nowPage"><a href="${contextPath}/mypage/myReserveList?memberNo=${loginMember.memberNo}&memberId=${loginMember.memberId}">수강내역</a></li>
-				<li class="navItem"><a href="${contextPath}/mypage/myPayList?memberNo=${loginMember.memberNo}">결제내역</a></li>
+				<li class="navItem nowPage"><a href="${contextPath}/mypage/myReserveList">수강내역</a></li>
+				<li class="navItem"><a href="${contextPath}/mypage/myPayList">결제내역</a></li>
 				<li class="navItem">개인정보</li>
 			</ul>	
 		</nav>
@@ -313,8 +313,8 @@
 				</div>
 				<button>수정하기</button><br>
 			</form>
-			<input type="button" value="비밀번호 수정" id="btnPwChange" onclick='location.href="${contextPath}/mypage/changePwPage?memberNo=${loginMember.memberNo}"'><br>
-			<a href="${contextPath}/mypage/signOutPage?memberNo=${loginMember.memberNo}">회원탈퇴</a>
+			<input type="button" value="비밀번호 수정" id="btnPwChange" onclick='location.href="${contextPath}/mypage/changePwPage"'><br>
+			<a href="${contextPath}/mypage/signOutPage">회원탈퇴</a>
 		</div>
 
 		

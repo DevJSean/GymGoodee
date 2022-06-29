@@ -99,9 +99,9 @@
 	
 		<nav>
 			<ul class="myPageNav">
-				<li class="navItem nowPage">수강내역</li>
-				<li class="navItem"><a href="${contextPath}/mypage/myPayList?memberNo=${loginMember.memberNo}">결제내역</a></li>
-				<li class="navItem"><a href="${contextPath}/mypage/myInfo?memberNo=${loginMember.memberNo}">개인정보</a></li>
+				<li class="navItem"><a href="${contextPath}/mypage/myReserveList">수강내역</a></li>
+				<li class="navItem"><a href="${contextPath}/mypage/myPayList">결제내역</a></li>
+				<li class="navItem"><a href="${contextPath}/mypage/myInfo">개인정보</a></li>
 			</ul>	
 		</nav>
 	

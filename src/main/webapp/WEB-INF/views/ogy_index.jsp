@@ -14,7 +14,6 @@
 	$(function() {
 		$.ajax({
 			url: '${contextPath}/mypage/pwModifiedCheck',
-			data: 'memberId=${loginMember.memberId}',
 			dataType: 'json',
 			type: 'get',
 			success: function(obj) {
@@ -31,9 +30,6 @@
 </script>
 <style>
 	#modal.modal-overlay {
-		display: none;
-	}
-	#modal.modal-overlay {
 	    width: 100%;
 	    height: 100%;
 	    position: absolute;
@@ -49,6 +45,7 @@
 	    -webkit-backdrop-filter: blur(1.5px);
 	    border-radius: 10px;
 	    border: 1px solid rgba(255, 255, 255, 0.18);
+	    display:none;
 	}
     #modal .modal-window {
         background: rgba( 69, 139, 197, 0.70 );

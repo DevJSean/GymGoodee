@@ -31,15 +31,15 @@ public class MyPageController {
 	
 	@ResponseBody
 	@GetMapping(value="/remainTickets", produces="application/json")
-	public Map<String, Object> remainTickets(@RequestParam String memberId) {
-		return myPageService.getRemainTicketsById(memberId);
+	public Map<String, Object> remainTickets(HttpServletRequest request, Model model) {
+		return myPageService.getRemainTicketsById(request, model);
 		
 	}
 	
 	@ResponseBody
 	@GetMapping(value="/mypage/myCommingReserveList", produces="application/json")
-	public Map<String, Object> myCommingReserveList(@RequestParam Long memberNo) {
-		return myPageService.getCommingReservationsByNo(memberNo);
+	public Map<String, Object> myCommingReserveList(HttpServletRequest request) {
+		return myPageService.getCommingReservationsByNo(request);
 	}
 	
 	@ResponseBody
@@ -49,8 +49,8 @@ public class MyPageController {
 	}
 	
 	@GetMapping("/mypage/myPayList")
-	public String myPayList(@RequestParam Long memberNo, Model model) {
-		myPageService.getMyPayListByNo(memberNo, model);
+	public String myPayList(HttpServletRequest request, Model model) {
+		myPageService.getMyPayListByNo(request, model);
 		return "mypage/myPayList";
 	}
 	
@@ -60,7 +60,7 @@ public class MyPageController {
 	}
 
 	@GetMapping("/mypage/changePwPage")
-	public String changePwPage() {
+	public String changePwPage(HttpServletRequest request) {
 		return "mypage/changePw";
 	}
 	

@@ -15,8 +15,10 @@
 <script>
 	
 	$(function() {
+		fnCommingSubjectList();
 		fnCommingReserveList();
 		fnReserveCancle();
+		fnGetTime();
 	})
 	
 	// 오늘 날짜 추출
@@ -28,18 +30,29 @@
 	var todayDate = year + month + day;
 	
 	
-	// 다가올 수업 내역
-	function fnCommingReserveList() {
+    // 예약일시 타임스탬프 날짜 형태로 수정
+    function fnGetTime(date){
+    	var date = new Date(date);
+        return date.getFullYear() + "-" + ('0' + (date.getMonth() + 1)).slice(-2) + "-" + ('0' + date.getDate()).slice(-2) + " " + date.getHours() + ":" + ('0' + date.getMinutes()).slice(-2) + ":" + ('0' + date.getSeconds()).slice(-2) + ":" + date.getMilliseconds();
+    }
+	
+    // 처음 수강내역 확인시
+    function fnCommingReserveList() {
 		$.ajax({
 			// 요청
 			url: '${contextPath}/mypage/myCommingReserveList',
-			data: 'memberNo=${loginMember.memberNo}',
+			data: 'subject=${remainTicket.remainTicketSubject}',
 			type: 'get',
 			// 응답
 			dataType: 'json',
 			success: function(obj) {
 				$('#commingReservationsList').empty();
 				$('#commingTotalCount').text(obj.commingTotalCount);
+				if(obj.commingTotalCount == 0) {
+					var tr = $('<tr>')
+					.append($('<td colspan="5">').text('예약된 내역이 없습니다.'));
+					$(tr).appendTo('#commingReservationsList');
+				} 
 				$.each(obj.commingReservations, function(i, comming) {
 					var tr = $('<tr>')
 					.append($('<td>').text(comming.rn))
@@ -58,7 +71,7 @@
 						$(tr).append($('<td>').text('필라테스'))
 						.append($('<input type="hidden" name="remainTicketSubject" value="PILATES">'));
 					}
-					$(tr).append($('<td>').text(comming.reservationDate));
+					$(tr).append($('<td>').text(fnGetTime(comming.reservationDate)));
 					if(comming.classDate == todayDate) {
 						$(tr).append($('<td>').text('취소불가'));
 					} else {
@@ -67,8 +80,57 @@
 					
 					$(tr).appendTo('#commingReservationsList');
 				})
-				
 			}
+		})	// ajax
+	}
+    
+	// 다가올 수업 내역 종목별로
+	function fnCommingSubjectList() {
+		$('body').on('click', '.btnSubjectList', function() {
+			$.ajax({
+				// 요청
+				url: '${contextPath}/mypage/myCommingReserveList',
+				data: 'subject=' + $(this).prev().val(),
+				type: 'get',
+				// 응답
+				dataType: 'json',
+				success: function(obj) {
+					$('#commingReservationsList').empty();
+					$('#commingTotalCount').text(obj.commingTotalCount);
+					if(obj.commingTotalCount == 0) {
+						var tr = $('<tr>')
+						.append($('<td colspan="5">').text('예약된 내역이 없습니다.'));
+						$(tr).appendTo('#commingReservationsList');
+					} 
+					$.each(obj.commingReservations, function(i, comming) {
+						var tr = $('<tr>')
+						.append($('<td>').text(comming.rn))
+						.append($('<td>').text(comming.classDate))
+						.append($('<td>').text(comming.classTime));
+						if(comming.reservationCode.startsWith('SWIM')) {
+							$(tr).append($('<td>').text('수영'))
+							.append($('<input type="hidden" name="remainTicketSubject" value="SWIM">'));
+						} else if(comming.reservationCode.startsWith('DANCE')) {
+							$(tr).append($('<td>').text('스포츠댄스'))
+							.append($('<input type="hidden" name="remainTicketSubject" value="DANCE">'));
+						} else if(comming.reservationCode.startsWith('SPINNING')) {
+							$(tr).append($('<td>').text('스피닝'))
+							.append($('<input type="hidden" name="remainTicketSubject" value="SPINNING">'));
+						} else if(comming.reservationCode.startsWith('PILATES')) {
+							$(tr).append($('<td>').text('필라테스'))
+							.append($('<input type="hidden" name="remainTicketSubject" value="PILATES">'));
+						}
+						$(tr).append($('<td>').text(fnGetTime(comming.reservationDate)));
+						if(comming.classDate == todayDate) {
+							$(tr).append($('<td>').text('취소불가'));
+						} else {
+							$(tr).append($('<td>').html('<input type="button" value="예약취소" class="btnReserveCancle" data-reservation_code="' + comming.reservationCode + '">'));
+						}
+						
+						$(tr).appendTo('#commingReservationsList');
+					})
+				}
+			})	// ajax
 		})
 	}
 	
@@ -96,7 +158,6 @@
 				}
 			})	
 		}
-	
 	
 </script>
 <style>
@@ -143,14 +204,18 @@
 		<nav>
 			<ul class="myPageNav">
 				<li class="navItem nowPage">수강내역</li>
-				<li class="navItem"><a href="${contextPath}/mypage/myPayList?memberNo=${loginMember.memberNo}">결제내역</a></li>
-				<li class="navItem"><a href="${contextPath}/mypage/myInfo?memberNo=${loginMember.memberNo}">개인정보</a></li>
+				<li class="navItem"><a href="${contextPath}/mypage/myPayList">결제내역</a></li>
+				<li class="navItem"><a href="${contextPath}/mypage/myInfo">개인정보</a></li>
 			</ul>	
 		</nav>
 	
 		<div>
-		- 다가올 수업 - <span id="commingTotalCount"></span>개
-		<table>
+			<div id="btn-mapper">
+			</div>
+	
+
+		<table border="1">
+			<caption>- 다가올 수업 <span id="commingTotalCount"></span>개 -</caption>
 			<thead>
 				<tr>
 					<td>순번</td>
@@ -165,8 +230,8 @@
 		
 		<br><br>
 		
-		- 지난 수업 - ${overTotalCount}개
-		<table>
+		<table border="1">
+			<caption>- 지난 수업 ${overTotalCount}개 -</caption>
 			<thead>
 				<tr>
 					<td>번호</td>

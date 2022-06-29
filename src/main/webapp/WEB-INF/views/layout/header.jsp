@@ -13,14 +13,20 @@
 <script>
 	$(function() {
 		fnRemainTickets();
+		fnGetDate();
 	})
+	
+	// 예약일시 타임스탬프 날짜 형태로 수정
+    function fnGetDate(date){
+    	var date = new Date(date);
+        return date.getFullYear() + "-" + ('0' + (date.getMonth() + 1)).slice(-2) + "-" + ('0' + date.getDate()).slice(-2);
+    }
 
 	//보유수강권 잔여횟수
 	function fnRemainTickets() {
 		$.ajax({
 			// 요청
 			url: '${contextPath}/remainTickets',
-			data: 'memberId=${loginMember.memberId}',
 			type: 'get',
 			// 응답
 			dataType: 'json',
@@ -40,6 +46,13 @@
 					}
 					$('#remainTickets')
 					.append($('<div>').text(subject + '\t' + remainTicket.remainTicketRemainCount + '회'));
+					$('#endDate')
+					.append($('<div>').text(subject + '권 만료일 ' + fnGetDate(remainTicket.remainTicketEndDate)));
+					
+					// 보유한 수강권에 대한 예약리스트버튼 생성
+					$('#btn-mapper')
+					.append($('<input type="hidden" value="' + remainTicket.remainTicketSubject + '" name="subject">'))
+					.append($('<input type="button" value="' + subject + '" class="btnSubjectList" data-subject="' + remainTicket.remainTicketSubject + '">'));
 				})
 			}
 		})
@@ -50,7 +63,7 @@
 	}
 
 	function fnMyPage() {
-		location.href='${contextPath}/mypage/myReserveList?memberNo=${loginMember.memberNo}&memberId=${loginMember.memberId}';
+		location.href='${contextPath}/mypage/myReserveList';
 	}
 	
 	function fnAdminPage() {
@@ -107,13 +120,13 @@
 		</c:if>	
 	</c:if>
 	
-	<hr>
-	
 	<nav>
 		<ul class="indexNav">
 			<li class="indexItem"><a href="">센터소개</a></li>
 			<li class="indexItem"><a href="">운동소개</a></li>
+			<li class="indexItem"><a href="${contextPath}/pay/paySwim">수강권구매</a></li>
 			<li class="indexItem"><a href="${contextPath}/board/noticeList">게시판</a></li>
+			
 		</ul>
 	</nav>
 	

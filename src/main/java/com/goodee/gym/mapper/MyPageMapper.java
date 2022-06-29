@@ -16,8 +16,8 @@ import com.goodee.gym.domain.TicketDTO;
 public interface MyPageMapper {
 
 	// 다가올 수업 내역 조회
-	public List<ReservationDTO> selectCommingReservationsByNo(Long memberNo);
-	public int selectCommingCount(Long memberNo);
+	public List<ReservationDTO> selectCommingReservationsByNo(Map<String, Object> map);
+	public int selectCommingCount(Map<String, Object> map);
 	
 	// 예약 취소
 	public int updateReservation(String reservationCode);
@@ -29,6 +29,9 @@ public interface MyPageMapper {
 	
 	// 결제 내역 조회
 	public List<PayListDTO> selectPayList(Long memberNo);
+	
+	// 만료일이 지나지 않은 결제 내역 조회
+	public List<PayListDTO> selectValidPayList(Long memberNo);
 	
 	// 동일 종목 추가 결제시
 	public int updateTicket(TicketDTO ticket);
@@ -52,7 +55,7 @@ public interface MyPageMapper {
 	public int deleteMember(Long memberNo);
 	
 	// 비밀번호 변경일 
-	public Long selectPwModified(String memberId);
+	public Double selectPwModified(String memberId);
 	
 	// 예약확정 처리
 	public void updateReservationState();

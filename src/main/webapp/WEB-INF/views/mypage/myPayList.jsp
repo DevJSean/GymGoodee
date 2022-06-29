@@ -10,41 +10,6 @@
 <meta charset="UTF-8">
 <title>마이페이지</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
-<script>
-	$(function() {
-		fnRemainTickets();
-	})
-
-	// 보유수강권 정보
-	function fnRemainTickets() {
-		$.ajax({
-			// 요청
-			url: '${contextPath}/remainTickets',
-			data: 'memberId=${loginMember.memberId}',
-			type: 'get',
-			// 응답
-			dataType: 'json',
-			success: function(obj) {
-				$('#myTickets').empty();
-				$.each(obj.remainTickets, function(i, remainTicket) {
-					let subject = null;
-					switch(remainTicket.remainTicketSubject) {
-					case 'SWIM': subject = '수영';
-						break;
-					case 'DANCE': subject = '스포츠댄스';
-						break;
-					case 'SPINNING': subject = '스피닝';
-						break;
-					case 'PILATES': subject = '필라테스';
-						break;
-					}
-					$('#myTickets')
-					.append($('<div>').text(subject + '\t' + remainTicket.remainTicketEndDate));
-				})
-			}
-		})
-	}
-</script>
 <style>
 	.myPageNav {
 		display: flex;
@@ -87,18 +52,16 @@
 		
 		<nav>
 			<ul class="myPageNav">
-				<li class="navItem"><a href="${contextPath}/mypage/myReserveList?memberNo=${loginMember.memberNo}&memberId=${loginMember.memberId}">수강내역</a></li>
+				<li class="navItem"><a href="${contextPath}/mypage/myReserveList">수강내역</a></li>
 				<li class="navItem nowPage">결제내역</li>
-				<li class="navItem"><a href="${contextPath}/mypage/myInfo?memberNo=${loginMember.memberNo}">개인정보</a></li>
+				<li class="navItem"><a href="${contextPath}/mypage/myInfo">개인정보</a></li>
 			</ul>	
 		</nav>
 		
 		
-    	수강권 만료일
-	    <div id="myTickets">
-	    </div>
-		
 		<table>
+			<caption id="endDate">
+			</caption>
 			<thead>
 				<tr>
 					<td>번호</td>
@@ -114,7 +77,20 @@
 				<c:forEach items="${payList}" var="pay">
 					<tr>
 						<td>${pay.rn}</td>
-						<td>${pay.ticket.ticketSubject}</td>
+						<c:choose>
+							<c:when test="${pay.ticket.ticketSubject eq 'SWIM'}">
+								<td>수영</td>
+							</c:when>
+							<c:when test="${pay.ticket.ticketSubject eq 'DANCE'}">
+								<td>스포츠댄스</td>
+							</c:when>
+							<c:when test="${pay.ticket.ticketSubject eq 'PILATES'}">
+								<td>필라테스</td>
+							</c:when>
+							<c:when test="${pay.ticket.ticketSubject eq 'SPINNING'}">
+								<td>스피닝</td>
+							</c:when>
+						</c:choose>
 						<td>${pay.ticket.ticketPeriod}일</td>
 						<td>${pay.ticket.ticketCount}회</td>
 						<td>${pay.payListNo}</td>
