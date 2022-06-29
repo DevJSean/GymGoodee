@@ -9,9 +9,12 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+	<script src="../resources/js/jquery-3.6.0.js"></script>
 </head>
 <body>
-		
+	
+	<jsp:include page="../layout/header.jsp"></jsp:include>
+	
 	<h1>수강권 구매</h1><br>
 	<h3>아래 버튼을 클릭하여 선택해 주세요</h3>
 	<br>
@@ -56,6 +59,8 @@
 			</tr>
 		</tbody>
 	</table>
+	
+	<jsp:include page="../layout/footer.jsp"></jsp:include>
 	
 </body>
 </html>

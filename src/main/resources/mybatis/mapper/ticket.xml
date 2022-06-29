@@ -21,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			(PAYLIST_SEQ.NEXTVAL, #{memberNo}, #{ticketNo}, #{payListDate})
 	</insert>
 
-	
+
 	<!-- 잔여수강권 추가 -->
 	<insert id="insertRemainTicket" parameterType="RemainTicketDTO">
 		INSERT INTO REMAIN_TICKET
@@ -30,8 +30,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			(REMAIN_TICKET_SEQ.NEXTVAL, #{memberId}, #{remainTicketSubject}, #{remainTicketEndDate}, #{remainTicketRemainCount})
 	</insert>
 	
+	<!-- 잔여수강권 조회 -->
+	<select id="selectRemainTicket" resultType="RemainTicketDTO">
+		SELECT REMAIN_TICKET_NO, MEMBER_ID, REMAIN_TICKET_SUBJECT, REMAIN_TICKET_END_DATE, REMAIN_TICKET_REMAIN_COUNT
+		  FROM REMAIN_TICKET
+	</select>
 	
 	
+	<!-- 현재 각 강좌에 신청한 인원이 몇명인지 -->
+	<select id="selectCountRemainTicket" parameterType="RemainTicketDTO" resultType="Integer">
+		SELECT COUNT(MEMBER_ID)
+		  FROM REMAIN_TICKET
+		 WHERE MEMBER_ID = '${memberId}' AND REMAIN_TICKET_SUBJECT = '${remainTicketSubject}'
+	</select>
+	
+	
+	
+	<!-- 잔여수강권 삭제 -->
+	<delete id="deleteRemainTicket" parameterType="Long">
+		DELETE
+		  FROM REMAIN_TICKET
+		 WHERE REMAIN_TICKET_NO = #{remainTicketNo}
+	</delete>
 	
 	
 	
