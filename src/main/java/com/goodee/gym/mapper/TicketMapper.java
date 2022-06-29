@@ -1,5 +1,7 @@
 package com.goodee.gym.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.goodee.gym.domain.PayListDTO;
@@ -15,4 +17,9 @@ public interface TicketMapper {
 	
 	public Integer insertRemainTicket(RemainTicketDTO remainTicket);
 	
+	public List<RemainTicketDTO> selectRemainTicket();
+	
+	public Integer selectCountRemainTicket(RemainTicketDTO remainTicket);
+	
+	public int deleteRemainTicket(Long remainTicketNo);
 }

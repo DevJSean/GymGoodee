@@ -82,7 +82,7 @@ pageEncoding="UTF-8"%>
 				<tr>
 					<th>이메일</th>
 					<td>
-						<input type="text" name="memberEmail" id="memberEmail" value="${loginMember.memberEmail}">
+						<input type="text" name="memberEmail" id="memberEmail" value="">
 					</td>
 				</tr>
 				<tr>
