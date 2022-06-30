@@ -1,0 +1,118 @@
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var,
+b, i,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+body {
+    line-height:1;
+}
+
+article,aside,details,figcaption,figure,
+footer,header,hgroup,menu,nav,section {
+    display:block;
+}
+
+nav ul {
+    list-style:none;
+}
+
+blockquote, q {
+    quotes:none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content:'';
+    content:none;
+}
+
+a {
+    margin:0;
+    padding:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* change colours to suit your needs */
+ins {
+    background-color:#ff9;
+    color:#000;
+    text-decoration:none;
+}
+
+/* change colours to suit your needs */
+mark {
+    background-color:#ff9;
+    color:#000;
+    font-style:italic;
+    font-weight:bold;
+}
+
+del {
+    text-decoration: line-through;
+}
+
+abbr[title], dfn[title] {
+    border-bottom:1px dotted;
+    cursor:help;
+}
+
+table {
+    border-collapse:collapse;
+    border-spacing:0;
+}
+
+/* change border colour to suit your needs */
+hr {
+    display:block;
+    height:1px;
+    border:0;  
+    border-top:1px solid #cccccc;
+    margin:1em 0;
+    padding:0;
+}
+
+input, select {
+    vertical-align:middle;
+}
+
+/* 폰트 초기화 */
+body, input, textarea, select, button, table {
+	font-family: 'NanumGothicCoding', 'Nanum Gothic', AppleSDGothicNeo-Regular, 'Malgun Gothic', '맑은 고딕', dotum, '돋움', sans-serif;
+}
+
+/* 
+jsp(html)파일에 적용할 웹폰트 링크 태그를 먼저 넣습니다.
+<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-gothic-coding.css" rel="stylesheet">
+위 폰트는 나눔고딕코딩,
+폰트를 적용하려면 css(style)에 font-family를 적용하면 됨.
+font-family: 'NanumGothicCodingLigature';
+font-family: 'NanumGothicCodingLigatureBold';
+font-family: 'NanumGothicCoding';
+font-family: 'NanumGothicCodingBold';
+
+웹폰트 링크 태그를 작업하는 jsp(html)파일에 작성하고, 그 아래에 reset.css 파일을 external 방식으로 적용하거나,
+reset.css 파일을 import한 본인의 css 파일을 그 아래에 external 방식으로 적용하면 폰트도 적용이 됩니다.
+
+
+이 reset.css 파일을 자신의 css파일에 적용하려면, 맨 윗줄에
+@import "reset.css";
+넣으면 됩니다.
+*/
