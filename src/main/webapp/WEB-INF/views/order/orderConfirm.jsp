@@ -85,6 +85,9 @@
 </head>
 
 <body>
+
+	<jsp:include page="../layout/header.jsp"></jsp:include>
+
 	<h2>| 결제 정보 확인</h2>
 	<table border="1">
 		<thead>

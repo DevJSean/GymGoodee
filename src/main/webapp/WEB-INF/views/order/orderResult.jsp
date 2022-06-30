@@ -14,6 +14,8 @@
 
 <body>
 
+	<jsp:include page="../layout/header.jsp"></jsp:include>
+
 	<c:if test="${payDate == null}">
 		<h1>결제 취소</h1>
 		<input type="button" value="다시 예약하기" id=""  onclick="location.href='${contextPath}/phg'">

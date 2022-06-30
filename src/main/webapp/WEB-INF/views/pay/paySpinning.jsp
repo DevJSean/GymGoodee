@@ -12,6 +12,8 @@
 </head>
 <body>
 		
+	<jsp:include page="../layout/header.jsp"></jsp:include>
+		
 	<h1>수강권 구매</h1><br>
 	<h3>아래 버튼을 클릭하여 선택해 주세요</h3>
 	<br>
@@ -20,11 +22,12 @@
 	
 	
 	
-	<a href="${contextPath}/pay/paySwim">수영</a>
-	<span>스피닝</span>
-	<a href="${contextPath}/pay/payPliates">필라테스</a>
-	<a href="${contextPath}/pay/payDance">스포츠 댄스</a>
-	
+	<ul class="paymentNav">
+		<li class="paySwim"><a href="${contextPath}/pay/paySwim">수영</a></li>
+		<li class="paySpinning">스피닝</li>
+		<li class="payPilates"><a href="${contextPath}/pay/payPliates">필라테스</a></li>
+		<li class="payDance"><a href="${contextPath}/pay/payDance">스포츠 댄스</a></li>
+	</ul>
 	
 	<br><br><br>
 	<hr>

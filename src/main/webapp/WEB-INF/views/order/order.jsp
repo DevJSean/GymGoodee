@@ -56,6 +56,9 @@ pageEncoding="UTF-8"%>
 
 </head>
 <body>
+
+	<jsp:include page="../layout/header.jsp"></jsp:include>
+
     <form id="orderForm" name="orderForm">
         <h2>| 주문 정보 설정</h2>
         <table border="1">
