@@ -1,37 +1,4 @@
-## 최초 1회 작업
-(1) 깃 복제
-git clone https://github.com/DevJSean/GymGoodee.git
-
-(2) 복제된 로컬 레파지토리로 이동
-cd GymGoodee
-
-(3) 자신의 브랜치 생성 (브랜치 명은 자신의 이름 이니셜로 정했습니다.)
-git branch jsh
-
-(4) 자신의 브랜치로 이동
-git checkout jsh
-
-전원 작업 완료
---------------------------------------------------------------------------
-			반복 	수행
---------------------------------------------------------------------------
-## 모든 조원은 작업을 시작하기 전에 작업을 수행합니다.
-(1) main branch로 이동
-git checkout main
-
-(2) main의 내용 pull 하기
-git pull origin main
-
-(3) 자신의 branch로 이동하기
-git checkout jsh
-
-(4) main에서 pull한 내용을 자신의 branch로 병합하기
-git merge main
-
----------------------------------------------------------------------------
-## 모든 조원은 기능 구현을 완료한 후 이 과정을 수행합니다.
-## 관리자가 merge하기 이전에 여러 명이 동시에 push하게 되면 충돌(conflict)이 일어날 수 있습니다.
-## push 하기 이전에 다른 조원이 push 하지 않았는지 확인하면 충돌을 방지할 수 있습니다.
+## git 순서 1 ( push 작업 )
 (1) 자신이 맡은 작업을 열심히 한다.
 
 (2) stage에 올리기
@@ -43,11 +10,9 @@ git commit -m '2022-00-00 지시현 로그인 구현 완료'
 (4) push하기 
 git push origin jsh
 
-(5) 꼭 git 관리자에게 push 했다고 알려주기
-    관리자가 merge하기 이전에 다른 조원이 또 push를 하게 되면 충돌이 발생할 수 있습니다.  
-
+(5) 꼭 git 관리자에게 push 했다고 알려주기, 관리자가 merge하기 이전에 다른 조원이 또 push를 하게 되면 충돌이 발생할 수 있습니다.  
 ---------------------------------------------------------------------------
-## 관리자가 할 일
+## git 순서 2, 관리자가 할 일
 (1) push 받고 merge할 내용이 생기면
 git checkout main
 
@@ -63,6 +28,49 @@ git push origin main
 (5) vim editor는 :wq
 
 (4) 관리자가 merge와 push 완료했다고 조원에게 알림
+----------------------------------------------------------------------------
+## git 순서 3 ( pull 작업 )
+(1) main branch로 이동
+git checkout main
+
+(2) main의 내용 pull 하기
+git pull origin main
+
+(3) 자신의 branch로 이동하기
+git checkout jsh
+
+(4) main에서 pull한 내용을 자신의 branch로 병합하기
+git merge main
 
 
 
+----------------------------------------------------------------------------
+※ pull 오류
+Please commit your changes or stash them before you merge.
+Please commit your changes or stash them before you switch branches.
+
+해결방법 1 : git stash
+	     현재 디렉토리의 파일을 임시로 백업하고 깨끗한 상태로 돌리기
+	     버전관리 되는 대상 파일들을 임시저장 하는 것.
+(1) 현재 Staging 영역에 있는 파일의 변경사항을 스택에 넣어 둔다.
+git stash
+
+(2) main에서 pull하거나, git checkout 등 원격 저장소에서 내 로컬 브랜치로 변경사항을 적용한다.
+git pull origin master
+ 
+(3) 변경 사항을 적용하고, 스택에서 제거 한다.
+git stash pop 
+
+해결방법 2 : git add
+ 	     git status를 통해서 가이드를 확인해보면
+	     no changes added to commit (use "git add" and/or "git commit -a")  
+(1) git add를 통해 해당 파일을 staging 영역에 저장하고 git pull 작업을 해도 오류는 해결 가능하다.
+git add
+
+----------------------------------------------------------------------------
+※ 어떤 파일들을 스테이징(add) 했는지, 수정을 했는지 확인하기
+  상태창!!!!상태창!!!상태창1!!!상태창!!상태창!!!!!!
+git status
+
+※ 내가 커밋한 내역들을 확인하기
+git log --all --oneline

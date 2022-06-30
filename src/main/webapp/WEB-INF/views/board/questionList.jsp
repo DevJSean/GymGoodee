@@ -72,7 +72,7 @@
 		<tbody>
 			<c:forEach items="${questions}" var="question" varStatus="vs">
 				<tr>
-					<td>${beginNo - vs.index}<span> ${beginNo}</span><span> ${vs.index}</span><span> ${vs.count}</span></td>
+					<td>${beginNo - vs.index}</td>
 					<td><a href="${contextPath}/board/questionDetail?questionNo=${question.questionNo}">${question.questionTitle}</a></td>
 					<td>${question.memberId}</td>
 					<td>${question.questionCreated}</td>

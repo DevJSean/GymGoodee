@@ -13,7 +13,7 @@
 </head>
 <body>
 	
-	<h1>index</h1>
+	<h1>메인 페이지</h1>
 	
 	<jsp:include page="./layout/header.jsp"></jsp:include>
 	
