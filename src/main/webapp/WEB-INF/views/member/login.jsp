@@ -13,16 +13,24 @@
 
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" integrity="sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://momentjs.com/downloads/moment-with-locales.js"></script>
 
 <script>
 	
 	$(function(){
 		fnLogin();
 		fnDisplayRememberId();
-	})
-	
-	$(function(){
-		$('.input_remember').on('click', function(){
+
+		$('#remember_id').on('click', function(){
+			$('.input_remember').prop('checked', true);
+			if($('#remember_id').is(':checked')){
+				$('.input_remember').addClass('check');
+			} else {
+				$('.input_remember').removeClass('check');
+			}
+		})
+		
+		$('.remember_text').on('click', function(){
 			$(this).toggleClass('remember_check');
 			
 		})
@@ -183,42 +191,25 @@
             position: relative;
         }
        	.blindCheck {
-		display: none;
+			display: none;
 		}
         .id_remember_wrap {
             margin-top: 13px;
             padding-right: 90px;
             position: relative;
         }
-        .remember_check {
-            padding-left: 23px;
-            position: relative;
-        }
-        .remember_check .input_remember {
-            position: absolute;
-            top: 2px;
-            left: 3px;
-            width: 15px;
-            height: 15px;
-        }
         .remember_text {
-        	display: inline_block;
         	font-size: 14px;
         	font-weight: 500;
         	line-height: 17px;
         	color: #777;
+ 			padding-left: 20px;
+			background-image: url(../resources/images/uncheck.png);
+			background-size: 18px 18px;
+			background-repeat: no-repeat;
         }
-        .remember_check .remember_text::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-image: url(https://ssl.pstatic.net/static/nid/login/m_sp_01_login_008d5216.png);
-            background-size: 266px 225px;
-            background-position: -244px -87px;
-            background-color: #fff;
-            width: 18px;
-            height: 18px;
+        .remember_check {
+            background-image: url(../resources/images/check.png);
         }
         .btn_login_wrap {
             margin-top: 38px;
@@ -311,11 +302,9 @@
 				                        </div>
 				                    </div>
 				                    <div class="id_remember_wrap">
-				                        <div class="remember_check">
+				                        <div class="remember">
+			                            	<label for="rememberId" class="remember_text">로그인 상태 유지</label>
 			                            	<input type="checkbox" id="rememberId" class="input_remember blindCheck">
-				                            	<label for="rememberId" class="remember_text">
-				                            		로그인 상태 유지
-				                            	</label>
 				                        </div>
 			                        </div>
 			                        <div class="btn_login_wrap">
@@ -326,7 +315,7 @@
 				                    <div class="api_login" id="api_login">
 				                    	<!-- 네이버 로그인 창으로 이동 -->	
 					                   	<a href="${naver}">			
-											<img width="200" height="45" src="https://developers.naver.com/doc/review_201802/CK_bEFnWMeEBjXpQ5o8N_20180202_7aot50.png"/>
+											<img width="200" height="45" src="../resources/images/btn_NaverLogin.png"/>
 										</a>
 										<!-- 카카오 로그인 창으로 이동 -->	
 										<a href="${kakao}">			
