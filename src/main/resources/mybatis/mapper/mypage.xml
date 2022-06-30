@@ -47,6 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY CLASS_CODE DESC) AS RN, RESERVATION_CODE, MEMBER_NO, CLASS_CODE, RESERVATION_DATE, RESERVATION_STATE
 		          FROM RESERVATION 
 		         WHERE RESERVATION_STATE = 1
+		           AND RESERVATION_CODE LIKE '${subject}%'
 		           AND MEMBER_NO = #{memberNo}) R JOIN CLASS C
 		    ON R.CLASS_CODE = C.CLASS_CODE
 		 WHERE R.RN BETWEEN #{beginRecord} AND #{endRecord}
@@ -54,10 +55,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<!-- 지난 수업 갯수 -->
-	<select id="selectOverCount" parameterType="Long" resultType="Integer">
+	<select id="selectOverCount" parameterType="Map" resultType="Integer">
 		SELECT COUNT(*)
 		  FROM RESERVATION
 		 WHERE MEMBER_NO = #{memberNo}
+		   AND RESERVATION_CODE LIKE '${subject}%'
 		   AND RESERVATION_STATE = 1
 	</select>
 	
@@ -84,7 +86,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  	      FROM PAYLIST
 		  	     WHERE MEMBER_NO = #{memberNo}) P JOIN TICKET T
 		  	ON P.TICKET_NO = T.TICKET_NO
+	     WHERE P.RN BETWEEN #{beginRecord} AND #{endRecord}
 		 ORDER BY P.RN
+	</select>
+	
+	<!-- 결제내역 개수 -->
+	<select id="getPayListCount" parameterType="Map" resultType="Integer">
+		SELECT COUNT(*)
+		  FROM PAYLIST
+		 WHERE MEMBER_NO = #{memberNo}
 	</select>
 	
 	<!-- 동일 종목 추가 결제를 위한 결제내역조회(만료일 지나지 않음) -->
@@ -104,7 +114,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		   SET REMAIN_TICKET_END_DATE = REMAIN_TICKET_END_DATE + #{ticketPeriod},
 		       REMAIN_TICKET_REMAIN_COUNT = REMAIN_TICKET_REMAIN_COUNT + #{ticketCount}
 		 WHERE MEMBER_ID = (SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_NO = #{memberNo}) AND REMAIN_TICKET_SUBJECT = #{ticketSubject}
-		   AND REMAIN_TICKET_END_DATE >= SYSDATE
 	</update>
 
 	<!-- 비밀번호 일치하는지 조회 -->                                                                                                                                                                                                                                                                                                                                                           

@@ -42,6 +42,7 @@
 		</interceptor>
 		<interceptor>
 		   <mapping path="/mypage/**"/>
+		   <mapping path="/remainTickets"/>
 		   <beans:ref bean="preventMyPageInterceptor"/>
 		</interceptor>
 	</interceptors>	

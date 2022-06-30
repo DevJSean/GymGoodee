@@ -10,6 +10,7 @@
 <meta charset="UTF-8">
 <title>마이페이지</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <style>
 	.myPageNav {
 		display: flex;
@@ -59,15 +60,13 @@
 		</nav>
 		
 		
-		<table>
+		<table border="1">
 			<caption id="endDate">
 			</caption>
 			<thead>
 				<tr>
 					<td>번호</td>
-					<td>수강권</td>
-					<td></td>
-					<td></td>
+					<td colspan="3">수강권</td>
 					<td>결제번호</td>
 					<td>결제금액</td>
 					<td>결제일</td>
@@ -99,6 +98,13 @@
 					</tr>
 				</c:forEach>			
 			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="7">
+						${paging}
+					</td>
+				</tr>
+			</tfoot>
 		</table>
 		
 	</section>

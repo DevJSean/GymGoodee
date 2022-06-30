@@ -35,7 +35,7 @@ public class MyPageServiceImpl implements MyPageService {
 		String memberId = loginMember.getMemberId();
 		Map<String, Object> map = new HashMap<>();
 		
-		model.addAttribute(myPageMapper.selectTicketsById(memberId));
+		model.addAttribute("remainTickets", myPageMapper.selectTicketsById(memberId));
 		map.put("remainTickets", myPageMapper.selectTicketsById(memberId));
 		return map;
 	}
@@ -75,40 +75,61 @@ public class MyPageServiceImpl implements MyPageService {
 	
 	// 지난 수업 내역 조회
 	@Override
-	public void getOverReservationsByNo(HttpServletRequest request, Model model) {
+	public Map<String, Object> getOverReservationsByNo(HttpServletRequest request, int page) {
 		
 		HttpSession session = request.getSession();
 		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
 		Long memberNo = loginMember.getMemberNo();
+		String subject = request.getParameter("subject");
 		
-		if(memberNo == null) {
-			
-		}
+		// 전달할 Map
+		Map<String, Object> m = new HashMap<>();
+		m.put("memberNo", memberNo);
+		m.put("subject", subject);
 		
-		Optional<String> optPage = Optional.ofNullable(request.getParameter("page"));
-		int page = Integer.parseInt(optPage.orElse("1"));
-		
-		int overTotalCount = myPageMapper.selectOverCount(memberNo);
-		
+		// page와 overTotalCount를 이용해서 페이징 정보를 구한다.
+		int overTotalCount = myPageMapper.selectOverCount(m);
 		PageUtils pageUtils = new PageUtils();
 		pageUtils.setPageEntity(overTotalCount, page);
 		
-		Map<String, Object> map = new HashMap<>();
-		map.put("beginRecord", pageUtils.getBeginRecord());
-		map.put("endRecord", pageUtils.getEndRecord());
-		map.put("memberNo", memberNo);
+		// 목록은 beginRecord~endRecord 사이값을 가져온다.
+		m.put("beginRecord", pageUtils.getBeginRecord());
+		m.put("endRecord", pageUtils.getEndRecord());
 		
-		model.addAttribute("overTotalCount", overTotalCount);
-		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/mypage/myReserveList?memberNo=" + memberNo));
-		model.addAttribute("overReservations", myPageMapper.selectOverReservationsByNo(map));
+		// 반환할 Map
+		Map<String, Object> map = new HashMap<>();
+		map.put("overTotalCount", overTotalCount);
+		map.put("overReservations", myPageMapper.selectOverReservationsByNo(m));
+		map.put("p", pageUtils);
+		return map;
 	}
 	
 	// 결제 내역 조회
 	@Override
 	public void getMyPayListByNo(HttpServletRequest request, Model model) {
+		
 		HttpSession session = request.getSession();
 		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
-		model.addAttribute("payList", myPageMapper.selectPayList(loginMember.getMemberNo()));
+		Long memberNo = loginMember.getMemberNo();
+		
+		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+		int page = Integer.parseInt(opt.orElse("1"));
+
+		// 전달할 Map
+		Map<String, Object> map = new HashMap<>();
+		map.put("memberNo", memberNo);
+		
+		int totalPayListCount = myPageMapper.getPayListCount(map);
+		PageUtils pageUtils = new PageUtils();
+		pageUtils.setPageEntity(totalPayListCount, page);
+		
+		// 목록은 beginRecord~endRecord 사이값을 가져온다.
+		map.put("beginRecord", pageUtils.getBeginRecord());
+		map.put("endRecord", pageUtils.getEndRecord());
+		
+		model.addAttribute("totalPayListCount", totalPayListCount);
+		model.addAttribute("payList", myPageMapper.selectPayList(map));
+		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/mypage/myPayList"));
 	}
 	
 	// 동일 종목 추가 결제시
@@ -121,7 +142,7 @@ public class MyPageServiceImpl implements MyPageService {
 		List<PayListDTO> payList = myPageMapper.selectValidPayList(memberNo);
 		if(payList.size() > 1) {
 			int i = 0;
-			for(int j = 1, size = payList.size(); j <= size; j++) {
+			for(int j = 1, size = payList.size(); j < size; j++) {
 				if(payList.get(i).getTicket().getTicketSubject().equals(payList.get(j).getTicket().getTicketSubject())) {
 					Integer ticketPeriod = payList.get(i).getTicket().getTicketPeriod();
 					Integer ticketCount = payList.get(i).getTicket().getTicketCount();

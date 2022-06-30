@@ -24,8 +24,7 @@ public class MyPageController {
 	private MyPageService myPageService;
 
 	@GetMapping("/mypage/myReserveList")
-	public String myReserveList(HttpServletRequest request, Model model) {
-		myPageService.getOverReservationsByNo(request, model);
+	public String myReserveList() {
 		return "mypage/myReserveList";
 	}
 	
@@ -42,6 +41,11 @@ public class MyPageController {
 		return myPageService.getCommingReservationsByNo(request);
 	}
 	
+	@ResponseBody
+	@GetMapping(value="/mypage/myOverReserveList", produces="application/json")
+	public Map<String, Object> getMembers(HttpServletRequest request, @RequestParam int page){
+		return myPageService.getOverReservationsByNo(request, page);
+	}
 	@ResponseBody
 	@GetMapping(value="/reserveCancle", produces="application/json")
 	public Map<String, Object> remove(@RequestParam String reservationCode, @RequestParam String memberId, @RequestParam String remainTicketSubject) {

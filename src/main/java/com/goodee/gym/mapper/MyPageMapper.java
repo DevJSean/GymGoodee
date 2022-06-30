@@ -25,10 +25,11 @@ public interface MyPageMapper {
 	
 	// 지난 수업 내역 조회
 	public List<ReservationDTO> selectOverReservationsByNo(Map<String, Object> map);
-	public int selectOverCount(Long memberNo);
+	public int selectOverCount(Map<String, Object> map);
 	
 	// 결제 내역 조회
-	public List<PayListDTO> selectPayList(Long memberNo);
+	public List<PayListDTO> selectPayList(Map<String, Object> map);
+	public int getPayListCount(Map<String, Object> map);
 	
 	// 만료일이 지나지 않은 결제 내역 조회
 	public List<PayListDTO> selectValidPayList(Long memberNo);

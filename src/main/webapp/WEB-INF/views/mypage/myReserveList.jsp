@@ -11,14 +11,15 @@
 <meta charset="UTF-8">
 <title>마이페이지</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script>
 	
 	$(function() {
-		fnCommingSubjectList();
+		fnSubjectList();
 		fnCommingReserveList();
+		fnOverReserveList();
 		fnReserveCancle();
 		fnGetTime();
+		fnPagingLink();
 	})
 	
 	// 오늘 날짜 추출
@@ -36,7 +37,7 @@
         return date.getFullYear() + "-" + ('0' + (date.getMonth() + 1)).slice(-2) + "-" + ('0' + date.getDate()).slice(-2) + " " + date.getHours() + ":" + ('0' + date.getMinutes()).slice(-2) + ":" + ('0' + date.getSeconds()).slice(-2) + ":" + date.getMilliseconds();
     }
 	
-    // 처음 수강내역 확인시
+    // 처음 수강내역 확인시 전체목록조회
     function fnCommingReserveList() {
 		$.ajax({
 			// 요청
@@ -84,13 +85,14 @@
 		})	// ajax
 	}
     
-	// 다가올 수업 내역 종목별로
-	function fnCommingSubjectList() {
+	// 전체 예약 내역 종목별로 보여주기
+	var page = 1;  // 초기화
+	function fnSubjectList() {
 		$('body').on('click', '.btnSubjectList', function() {
 			$.ajax({
 				// 요청
 				url: '${contextPath}/mypage/myCommingReserveList',
-				data: 'subject=' + $(this).prev().val(),
+				data: 'subject=' + $(this).data('subject'),
 				type: 'get',
 				// 응답
 				dataType: 'json',
@@ -131,33 +133,144 @@
 					})
 				}
 			})	// ajax
+			$.ajax({
+				url: '${contextPath}/mypage/myOverReserveList',
+				data: 'page=' + page + '&subject=' + $(this).data('subject'),
+				type: 'get',
+				dataType: 'json',
+				success: function(obj){
+					$('#overTotalCount').text(obj.overTotalCount);
+					fnPrintOverReservationList(obj);
+					fnPrintPaging(obj.p);
+				}
+			})	// ajax
 		})
 	}
 	
 	// 예약취소
 	function fnReserveCancle() {
-			$('body').on('click', '.btnReserveCancle', function() {
-				if(confirm('예약을 취소할까요 ?')) {
-					$.ajax({
-						// 요청
-						url: '${contextPath}/reserveCancle',
-						data: 'reservationCode=' + $(this).data('reservation_code') + '&memberId=${loginMember.memberId}&remainTicketSubject=' + $(this).parent().prev().prev().val(),
-						type: 'get',
-						// 응답
-						dataType: 'json',
-						success: function(obj){
-							if(obj.resState > 0 && obj.resRemain > 0) {
-								alert('예약이 취소되었습니다.');
-								fnRemainTickets();
-								fnCommingReserveList();
-							} else {
-								alert('예약취소에 실패했습니다.');
-							}
+		$('body').on('click', '.btnReserveCancle', function() {
+			if(confirm('예약을 취소할까요 ?')) {
+				$.ajax({
+					// 요청
+					url: '${contextPath}/reserveCancle',
+					data: 'reservationCode=' + $(this).data('reservation_code') + '&memberId=${loginMember.memberId}&remainTicketSubject=' + $(this).parent().prev().prev().val(),
+					type: 'get',
+					// 응답
+					dataType: 'json',
+					success: function(obj){
+						if(obj.resState > 0 && obj.resRemain > 0) {
+							alert('예약이 취소되었습니다.');
+							fnRemainTickets();
+							fnCommingReserveList();
+							fnOverReserveList();
+						} else {
+							alert('예약취소에 실패했습니다.');
 						}
-					})
-				}
-			})	
+					}
+				}) // ajax
+			}
+		}) // onClick
+	}
+	
+	// 페이징 링크 처리(page 전역변수 값을 링크의 data-page값으로 바꿈)
+	function fnPagingLink() {
+		$(document).on('click', '.enable_link', function(){
+			page = $(this).data('page');
+		})
+	}
+	
+	// 지난 예약 목록 전체
+	var page = 1;  // 초기화
+	function fnOverReserveList() {
+		$.ajax({
+			url: '${contextPath}/mypage/myOverReserveList',
+			data: 'page=' + page + '&subject=${remainTicket.remainTicketSubject}',
+			type: 'get',
+			dataType: 'json',
+			success: function(obj){
+				$('#overTotalCount').text(obj.overTotalCount);
+				fnPrintOverReservationList(obj);
+				fnPrintPaging(obj.p);
+			}
+		})	// ajax
+	}
+	
+	// 지난 예약 목록 
+	function fnPrintOverReservationList(obj){
+		$('#overReservations').empty();
+		if(obj.overTotalCount == 0) {
+			var tr = $('<tr>')
+			.append($('<td colspan="5">').text('수강한 내역이 없습니다.'));
+			$(tr).appendTo('#overReservations');
 		}
+		$.each(obj.overReservations, function(i, over){
+			var tr = '<tr>';
+			tr += '<td>' + over.rn + '</td>';
+			tr += '<td>' + over.classDate + '</td>';
+			tr += '<td>' + over.classTime + '</td>';
+			if(over.reservationCode.startsWith('SWIM')) {
+				tr += '<td>수영</td>';
+			} else if (over.reservationCode.startsWith('DANCE')) {
+				tr += '<td>스포츠댄스</td>';
+			} else if (over.reservationCode.startsWith('PILATES')) {
+				tr += '<td>필라테스</td>';
+			} else if (over.reservationCode.startsWith('SPINNING')) {
+				tr += '<td>스피닝</td>';
+			}
+			tr += '<td>' + fnGetTime(over.reservationDate) +'</td>';
+			tr += '</tr>';
+			$('#overReservations').append(tr);
+		})
+	}
+	
+	// 페이징 정보 출력
+	function fnPrintPaging(p){
+		
+		$('#paging').empty();
+		
+		var paging = '';
+		
+		// ◀◀ : 이전 블록으로 이동
+		if(page <= p.pagePerBlock){
+			paging += '<div class="disable_link">◀◀</div>';
+		} else {
+			paging += '<div class="enable_link" data-page="' + (p.beginPage - 1) + '">◀◀</div>';
+		}
+		
+		// ◀  : 이전 페이지로 이동
+		if(page == 1){
+			paging += '<div class="disable_link">◀</div>';
+		} else {
+			paging += '<div class="enable_link" data-page="' + (page - 1) + '">◀</div>';
+		}
+		
+		// 1 2 3 4 5 : 페이지 번호
+		for(let i = p.beginPage; i <= p.endPage; i++){
+			if(i == page){
+				paging += '<div class="disable_link now_page">' + i + '</div>';
+			} else {
+				paging += '<div class="enable_link" data-page="' + i + '">' + i + '</div>';
+			}
+		}
+		
+		// ▶  : 다음 페이지로 이동
+		if(page == p.totalPage){
+			paging += '<div class="disable_link">▶</div>';
+		} else {
+			paging += '<div class="enable_link" data-page="' + (page + 1) + '">▶</div>';
+		}
+		
+		// ▶▶ : 다음 블록으로 이동
+		if(p.endPage == p.totalPage){
+			paging += '<div class="disable_link">▶▶</div>';
+		} else {
+			paging += '<div class="enable_link" data-page="' + (p.endPage + 1) + '">▶▶</div>';
+		}
+		
+		$('#paging').append(paging);
+		
+	}
 	
 </script>
 <style>
@@ -190,6 +303,21 @@
 	td {
 		text-align: center;
 	}
+	#paging{
+      display : flex;
+      justify-content: center;
+   }
+   #paging div{
+      width : 32px;
+      height : 20px;
+      text-align: center;
+   }
+   .disable_link{
+      color: lightgray;
+   }
+   .enable_link{
+      cursor: pointer;
+   }
 	
 </style>
 </head>
@@ -231,7 +359,7 @@
 		<br><br>
 		
 		<table border="1">
-			<caption>- 지난 수업 ${overTotalCount}개 -</caption>
+			<caption>- 지난 수업 <span id="overTotalCount"></span>개 -</caption>
 			<thead>
 				<tr>
 					<td>번호</td>
@@ -241,38 +369,19 @@
 					<td>예약일시</td>		
 				</tr>
 			</thead>
-			<tbody>
-				<c:forEach items="${overReservations}" var="over">
-					<tr>
-						<td>${over.rn}</td>
-						<td>${over.classDate}</td>
-						<td>${over.classTime}</td>
-						<c:choose>
-							<c:when test="${fn:startsWith(over.reservationCode, 'SWIM')}" >
-			         			<td>수영</td>
-			     			</c:when>
-			     			<c:when test="${fn:startsWith(over.reservationCode, 'PILATES')}" >
-			         			<td>필라테스</td>
-			     			</c:when>
-			     			<c:when test="${fn:startsWith(over.reservationCode, 'SPINNING')}" >
-			         			<td>스피닝</td>
-			     			</c:when>
-			     			<c:when test="${fn:startsWith(over.reservationCode, 'DANCE')}" >
-			         			<td>스포츠댄스</td>
-			     			</c:when>
-						</c:choose>
-						<td>${over.reservationDate}</td>
-					</tr>
-				</c:forEach>
-			</tbody>
+			<tbody id="overReservations"></tbody>
 			<tfoot>	
 			<tr>
 				<td colspan="5">
-					${paging}
+					<div id="paging"></div>
 				</td>
 			</tr>
 		</tfoot>
 		</table>
+		
+		<!-- 검색 -->
+		
+		
 		</div>
 	</section>
 </body>
