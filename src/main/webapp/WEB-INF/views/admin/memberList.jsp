@@ -15,8 +15,8 @@
 <script>
 	
 	$(function() {
-
 	})
+	
 	
 </script>
 <style>
@@ -57,44 +57,51 @@
 	<h1>관리자페이지</h1>
 	
 	<jsp:include page="../layout/header.jsp"></jsp:include>
+	
 	<c:if test="${loginMember.memberId eq 'admin'}">
 		<section>
+		
 			<nav>
 				<ul class="myPageNav">
-					<li class="navItem"><a href="${contextPath}/member/memberList">회원목록</a></li>
-					<li class="navItem"><a href="">강사등록</a></li>
-					<li class="navItem"><a href="">강좌개설</a></li>
-					<li class="navItem"><a href="${contextPath}/member/classList">개설강좌</a></li>
-					<li class="navItem"><a href="${contextPath}/member/reserveList">예약내역</a></li>
-					<li class="navItem nowPage">결제내역</li>
+					<li class="navItem nowPage">회원목록</li>
+					<li class="navItem"><a href="${contextPath}/admin/addTeacherPage">강사등록</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/addClassPage">강좌개설</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/classList">개설강좌</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/reserveList">예약내역</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/payList">결제내역</a></li>
 				</ul>	
 			</nav>
 		
 			<div>
 			<table>
+				<caption>전체 회원 수 ${totalRecord - 1}명</caption>
 				<thead>
 					<tr>
 						<td>번호</td>
-						<td>결제번호</td>
+						<td>회원번호</td>
 						<td>아이디</td>		
-						<td>수강권번호</td>		
-						<td>결제일</td>		
+						<td>이름</td>		
+						<td>연락처</td>		
+						<td>가입일시</td>		
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach var="payList" items="${pays}">
-						<tr>
-							<td>${totalRecord - payList.rn + 1}</td>
-							<td>${payList.payListNo}</td>
-							<td>${payList.memberId}</td>
-							<td>${payList.ticketNo}</td>
-							<td>${payList.payListDate}</td>
-						</tr>
+					<c:forEach var="member" items="${members}">
+						<c:if test="${member.memberId ne 'admin'}">
+							<tr>
+								<td>${member.rn}</td>
+								<td>${member.memberNo}</td>
+								<td>${member.memberId}</td>
+								<td>${member.memberName}</td>
+								<td>${member.memberPhone}</td>
+								<td>${member.memberSignUp}</td>
+							</tr>
+						</c:if>
 					</c:forEach>
 				</tbody>
 				<tfoot>	
 					<tr>
-						<td colspan="5">
+						<td colspan="6">
 							${paging}
 						</td>
 					</tr>

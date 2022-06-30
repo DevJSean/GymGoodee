@@ -25,7 +25,7 @@
 				if(confirm('예약을 취소할까요 ?')) {
 					$.ajax({
 						// 요청
-						url: '${contextPath}/member/reserveCancle',
+						url: '${contextPath}/admin/reserveCancle',
 						data: 'reservationCode=' + $(this).data('reservation_code') + '&memberId=' + $(this).next().val() + '&remainTicketSubject=' + $(this).prev().val(),
 						type: 'get',
 						// 응답
@@ -33,7 +33,7 @@
 						success: function(obj){
 							if(obj.resState > 0 && obj.resRemain > 0) {
 								alert('예약이 취소되었습니다.');
-								location.href = '${contextPath}/member/reserveList';
+								location.href = '${contextPath}/admin/reserveList';
 							} else {
 								alert('예약취소에 실패했습니다.');
 							}
@@ -87,12 +87,12 @@
 		
 			<nav>
 				<ul class="myPageNav">
-					<li class="navItem"><a href="${contextPath}/member/memberList">회원목록</a></li>
-					<li class="navItem"><a href="">강사등록</a></li>
-					<li class="navItem"><a href="">강좌개설</a></li>
-					<li class="navItem"><a href="${contextPath}/member/classList">개설강좌</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/memberList">회원목록</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/addTeacherPage">강사등록</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/addClassPage">강좌개설</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/classList">개설강좌</a></li>
 					<li class="navItem nowPage">예약내역</li>
-					<li class="navItem"><a href="${contextPath}/member/payList">결제내역</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/payList">결제내역</a></li>
 				</ul>	
 			</nav>
 		
@@ -112,7 +112,7 @@
 				<tbody>
 					<c:forEach var="reservation" items="${reservations}">
 						<tr>
-							<td>${totalRecord - reservation.rn + 1}</td>
+							<td>${reservation.rn}</td>
 							<td>${reservation.reservationCode}</td>
 							<td>${reservation.memberId}</td>
 							<td>${reservation.classCode}</td>
@@ -132,16 +132,16 @@
 							
 							<td>
 								<c:if test="${fn:startsWith(reservation.reservationCode, 'SWIM')}">
-									<input type="hidden" name="remainTicketSubject" value="수영">
+									<input type="hidden" name="remainTicketSubject" value="SWIM">
 								</c:if>
 								<c:if test="${fn:startsWith(reservation.reservationCode, 'DANCE')}">
-									<input type="hidden" name="remainTicketSubject" value="스포츠댄스">
+									<input type="hidden" name="remainTicketSubject" value="DANCE">
 								</c:if>
 								<c:if test="${fn:startsWith(reservation.reservationCode, 'SPINNING')}">
-									<input type="hidden" name="remainTicketSubject" value="스피닝">
+									<input type="hidden" name="remainTicketSubject" value="SPINNING">
 								</c:if>
 								<c:if test="${fn:startsWith(reservation.reservationCode, 'PILATES')}">
-									<input type="hidden" name="remainTicketSubject" value="필라테스">
+									<input type="hidden" name="remainTicketSubject" value="PILATES">
 								</c:if>
 								
 								<c:if test="${reservation.reservationState == 0}">

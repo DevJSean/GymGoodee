@@ -13,9 +13,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Properties;
 
 import javax.mail.Authenticator;
@@ -32,14 +30,9 @@ import javax.servlet.http.HttpSession;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
-import com.goodee.gym.domain.ClassDTO;
 import com.goodee.gym.domain.MemberDTO;
-import com.goodee.gym.domain.PayListDTO;
-import com.goodee.gym.domain.ReservationDTO;
 import com.goodee.gym.mapper.MemberMapper;
-import com.goodee.gym.util.PageUtils;
 import com.goodee.gym.util.SecurityUtils;
 
 import net.nurigo.java_sdk.exceptions.CoolsmsException;
@@ -212,7 +205,7 @@ public class MemberServiceImpl implements MemberService {
 			if(res == 1) {
 				out.println("<script>");
 				out.println("alert('회원 가입되었습니다.')");
-				out.println("location.href='" + request.getContextPath() + "/lsh'");
+				out.println("location.href='" + request.getContextPath() + "'");
 				out.println("</script>");
 				out.close();
 			} else {
@@ -326,7 +319,8 @@ public class MemberServiceImpl implements MemberService {
 	      org.json.JSONObject obj2 = new org.json.JSONObject(responseBody.toString());
 	      
 	      org.json.JSONObject obj3 = obj2.getJSONObject("response");
-	      String memberId = SecurityUtils.xss(obj3.getString("id"));
+	      String memberIdCode = SecurityUtils.xss(obj3.getString("id"));
+	      String memberId = memberIdCode.substring(0, 20);
 	      String memberName = SecurityUtils.xss(obj3.getString("name"));
 	      String memberBirth = SecurityUtils.xss(obj3.getString("birthyear") + "-" + obj3.getString("birthday"));
 	      String memberPw = SecurityUtils.sha256(obj3.getString("birthday").replace("-", ""));
@@ -354,7 +348,7 @@ public class MemberServiceImpl implements MemberService {
 			    	PrintWriter out = response.getWriter();
 		    		out.println("<script>");
 		    		out.println("alert('마이페이지에서 비밀번호(초기 설정 : 가입자생일 ex:0101) 수정이 필요합니다. 자세한 내용은 공지사항을 확인하세요.')");
-					out.println("location.href='" + request.getContextPath() + "/lsh'");
+					out.println("location.href='" + request.getContextPath() + "'");
 		    		out.println("</script>");
 		    		out.close();
 			    	  
@@ -510,7 +504,7 @@ public class MemberServiceImpl implements MemberService {
 			    	PrintWriter out = response.getWriter();
 		    		out.println("<script>");
 		    		out.println("alert('마이페이지에서 비밀번호(초기 설정 : 가입자생일 ex:0101)와 휴대폰번호 수정이 필요합니다. 자세한 내용은 공지사항을 확인하세요.')");
-					out.println("location.href='" + request.getContextPath() + "/lsh'");
+					out.println("location.href='" + request.getContextPath() + "'");
 		    		out.println("</script>");
 		    		out.close();
 			    	  
@@ -621,7 +615,6 @@ public class MemberServiceImpl implements MemberService {
 		    }
 		}
 		
-		
 	}
 	
     private static String get(String apiUrl, Map<String, String> requestHeaders){
@@ -726,120 +719,6 @@ public class MemberServiceImpl implements MemberService {
 			e.printStackTrace();
 		}
 		
-	}
-	
-	@Override
-	public void memberList(HttpServletRequest request, Model model) {
-		int totalRecord = memberMapper.selectMemberCount();
-		
-		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
-		int page = Integer.parseInt(opt.orElse("1"));
-		
-		// PageEntity
-		PageUtils pageUtils = new PageUtils();
-		pageUtils.setPageEntity(totalRecord, page);
-		
-		// Map
-		Map<String, Object> map = new HashMap<>();
-		map.put("beginRecord", pageUtils.getBeginRecord());
-		map.put("endRecord", pageUtils.getEndRecord());
-		
-		// 목록 가져오기
-		List<MemberDTO> members = memberMapper.selectMemberList(map);
-		
-		model.addAttribute("members", members);
-		model.addAttribute("totalRecord", totalRecord);
-		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/member/memberList"));
-	}
-	
-	@Override
-	public void classList(HttpServletRequest request, Model model) {
-		int totalRecord = memberMapper.selectClassCount();
-		
-		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
-		int page = Integer.parseInt(opt.orElse("1"));
-		
-		// PageEntity
-		PageUtils pageUtils = new PageUtils();
-		pageUtils.setPageEntity(totalRecord, page);
-		
-		// Map
-		Map<String, Object> map = new HashMap<>();
-		map.put("beginRecord", pageUtils.getBeginRecord());
-		map.put("endRecord", pageUtils.getEndRecord());
-		
-		// 목록 가져오기
-		
-		List<ClassDTO> classes = memberMapper.selectClassList(map);
-		for(int i = 0; i<classes.size();i++) {
-			
-			// 2-1) 해당 강좌에 예약한 사람 수
-			String classCode = classes.get(i).getClassCode();
-			classes.get(i).setCurrentCount(memberMapper.selectCountByClassCode(classCode));
-		}
-
-		model.addAttribute("classes", classes);
-		model.addAttribute("totalRecord", totalRecord);
-		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/member/classList"));
-	}
-	
-	@Override
-	public void payList(HttpServletRequest request, Model model) {
-		int totalRecord = memberMapper.selectPayCount();
-		
-		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
-		int page = Integer.parseInt(opt.orElse("1"));
-		
-		// PageEntity
-		PageUtils pageUtils = new PageUtils();
-		pageUtils.setPageEntity(totalRecord, page);
-		
-		// Map
-		Map<String, Object> map = new HashMap<>();
-		map.put("beginRecord", pageUtils.getBeginRecord());
-		map.put("endRecord", pageUtils.getEndRecord());
-		
-		// 목록 가져오기
-		List<PayListDTO> pays = memberMapper.selectPayList(map);
-
-		model.addAttribute("pays", pays);
-		model.addAttribute("totalRecord", totalRecord);
-		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/member/payList"));
-	}
-	
-	@Override
-	public void reserveList(HttpServletRequest request, Model model) {
-		int totalRecord = memberMapper.selectReserveCount();
-		
-		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
-		int page = Integer.parseInt(opt.orElse("1"));
-		
-		// PageEntity
-		PageUtils pageUtils = new PageUtils();
-		pageUtils.setPageEntity(totalRecord, page);
-		
-		// Map
-		Map<String, Object> map = new HashMap<>();
-		map.put("beginRecord", pageUtils.getBeginRecord());
-		map.put("endRecord", pageUtils.getEndRecord());
-		
-		// 목록 가져오기
-		List<ReservationDTO> reservations = memberMapper.selectReserveList(map);
-		
-		model.addAttribute("reservations", reservations);
-		model.addAttribute("totalRecord", totalRecord);
-		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/member/reserveList"));
-	}
-	
-	@Override
-	public Map<String, Object> reserveCancle(String reservationCode, String memberId, String remainTicketSubject) {
-		Map<String, Object> map = new HashMap<>();
-		// 예약내역 : 예약상태 -1로 업데이트
-		map.put("resState", memberMapper.updateReservation(reservationCode));
-		// 잔여수강권 : 잔여횟수 +1 
-		map.put("resRemain", memberMapper.updateRemainTicket(memberId, remainTicketSubject));
-
-		return map;
 	}
 	
 }
