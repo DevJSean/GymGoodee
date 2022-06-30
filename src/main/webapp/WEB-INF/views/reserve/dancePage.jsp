@@ -89,7 +89,7 @@
 </head>
 <body>
 
-	
+	<jsp:include page="../layout/header.jsp"></jsp:include>
 	
 	<div><img id="DanceImage" alt="스포츠댄스" src="../resources/images/dance.png"></div>
 	

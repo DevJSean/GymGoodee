@@ -82,89 +82,86 @@
 	<h1>관리자페이지</h1>
 	
 	<jsp:include page="../layout/header.jsp"></jsp:include>
-	<c:if test="${loginMember.memberId eq 'admin'}">
-		<section>
-		
-			<nav>
-				<ul class="myPageNav">
-					<li class="navItem"><a href="${contextPath}/admin/memberList">회원목록</a></li>
-					<li class="navItem"><a href="${contextPath}/admin/addTeacherPage">강사등록</a></li>
-					<li class="navItem"><a href="${contextPath}/admin/addClassPage">강좌개설</a></li>
-					<li class="navItem"><a href="${contextPath}/admin/classList">개설강좌</a></li>
-					<li class="navItem nowPage">예약내역</li>
-					<li class="navItem"><a href="${contextPath}/admin/payList">결제내역</a></li>
-				</ul>	
-			</nav>
-		
-			<div>
-			<table>
-				<thead>
+	
+	<section>
+	
+		<nav>
+			<ul class="myPageNav">
+				<li class="navItem"><a href="${contextPath}/admin/memberList">회원목록</a></li>
+				<li class="navItem"><a href="${contextPath}/admin/addTeacherPage">강사등록</a></li>
+				<li class="navItem"><a href="${contextPath}/admin/addClassPage">강좌개설</a></li>
+				<li class="navItem"><a href="${contextPath}/admin/classList">개설강좌</a></li>
+				<li class="navItem nowPage">예약내역</li>
+				<li class="navItem"><a href="${contextPath}/admin/payList">결제내역</a></li>
+			</ul>	
+		</nav>
+	
+		<div>
+		<table>
+			<thead>
+				<tr>
+					<td>번호</td>
+					<td>예약코드</td>
+					<td>아이디</td>		
+					<td>강좌코드</td>		
+					<td>신청일시</td>		
+					<td>예약상태</td>		
+					<td></td>		
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach var="reservation" items="${reservations}">
 					<tr>
-						<td>번호</td>
-						<td>예약코드</td>
-						<td>아이디</td>		
-						<td>강좌코드</td>		
-						<td>신청일시</td>		
-						<td>예약상태</td>		
-						<td></td>		
-					</tr>
-				</thead>
-				<tbody>
-					<c:forEach var="reservation" items="${reservations}">
-						<tr>
-							<td>${reservation.rn}</td>
-							<td>${reservation.reservationCode}</td>
-							<td>${reservation.memberId}</td>
-							<td>${reservation.classCode}</td>
-							<td>${reservation.reservationDate}</td>
+						<td>${reservation.rn}</td>
+						<td>${reservation.reservationCode}</td>
+						<td>${reservation.memberId}</td>
+						<td>${reservation.classCode}</td>
+						<td>${reservation.reservationDate}</td>
+						
+						<td>
+							<c:if test="${reservation.reservationState == -1}">
+								예약취소							
+							</c:if>
+							<c:if test="${reservation.reservationState == 0}">
+								예약완료							
+							</c:if>
+							<c:if test="${reservation.reservationState == 1}">
+								수강완료							
+							</c:if>
+						</td>
+						
+						<td>
+							<c:if test="${fn:startsWith(reservation.reservationCode, 'SWIM')}">
+								<input type="hidden" name="remainTicketSubject" value="SWIM">
+							</c:if>
+							<c:if test="${fn:startsWith(reservation.reservationCode, 'DANCE')}">
+								<input type="hidden" name="remainTicketSubject" value="DANCE">
+							</c:if>
+							<c:if test="${fn:startsWith(reservation.reservationCode, 'SPINNING')}">
+								<input type="hidden" name="remainTicketSubject" value="SPINNING">
+							</c:if>
+							<c:if test="${fn:startsWith(reservation.reservationCode, 'PILATES')}">
+								<input type="hidden" name="remainTicketSubject" value="PILATES">
+							</c:if>
 							
-							<td>
-								<c:if test="${reservation.reservationState == -1}">
-									예약취소							
-								</c:if>
-								<c:if test="${reservation.reservationState == 0}">
-									예약완료							
-								</c:if>
-								<c:if test="${reservation.reservationState == 1}">
-									수강완료							
-								</c:if>
-							</td>
-							
-							<td>
-								<c:if test="${fn:startsWith(reservation.reservationCode, 'SWIM')}">
-									<input type="hidden" name="remainTicketSubject" value="SWIM">
-								</c:if>
-								<c:if test="${fn:startsWith(reservation.reservationCode, 'DANCE')}">
-									<input type="hidden" name="remainTicketSubject" value="DANCE">
-								</c:if>
-								<c:if test="${fn:startsWith(reservation.reservationCode, 'SPINNING')}">
-									<input type="hidden" name="remainTicketSubject" value="SPINNING">
-								</c:if>
-								<c:if test="${fn:startsWith(reservation.reservationCode, 'PILATES')}">
-									<input type="hidden" name="remainTicketSubject" value="PILATES">
-								</c:if>
-								
-								<c:if test="${reservation.reservationState == 0}">
-									<input type="button" value="예약취소" class="btnReserveCancle" data-reservation_code="${reservation.reservationCode}">
-									<input type="hidden" name="memberId" value="${reservation.memberId}">
-								</c:if>
-							</td>
-						</tr>
-					</c:forEach>
-				</tbody>
-				<tfoot>	
-					<tr>
-						<td colspan="7">
-							${paging}
+							<c:if test="${reservation.reservationState == 0}">
+								<input type="button" value="예약취소" class="btnReserveCancle" data-reservation_code="${reservation.reservationCode}">
+								<input type="hidden" name="memberId" value="${reservation.memberId}">
+							</c:if>
 						</td>
 					</tr>
-				</tfoot>
-			</table>
-			</div>
-		</section>
-	</c:if>
-	<c:if test="${loginMember.memberId ne 'admin'}">
-		<a href="${contextPath}/member/loginPage">관리자 페이지는 관리자만 확인할 수 있습니다.</a>
-	</c:if>
+				</c:forEach>
+			</tbody>
+			<tfoot>	
+				<tr>
+					<td colspan="7">
+						${paging}
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+		</div>
+	</section>
+
 </body>
 </html>

@@ -12,7 +12,7 @@ public class PageUtils {
 		- 레코드를 한 페이지에 3개씩 표시한다면
 		- 전체 페이지는 4개가 된다.   */
 	private int totalRecord;       // 전체 레코드 수          -> DB에서 구해온다.		SELECT COUNT(*) FROM EMPLOYEES;
-	private int recordPerPage = 10; // 한 페이지 당 5개 레코드 -> 여기서 임의로 정한다.
+	private int recordPerPage = 5; // 한 페이지 당 5개 레코드 -> 여기서 임의로 정한다.
 	private int totalPage;         // 전체 페이지 개수        -> totalRecord와 recordPerPage로 계산한다.
 	
 	
@@ -48,12 +48,16 @@ public class PageUtils {
 		this.totalRecord = totalRecord;
 		this.page = page;
 		
+		
 		// totalPage 필드 값 계산
 		totalPage = totalRecord / recordPerPage;
+		
 		if(totalRecord % recordPerPage != 0) { 
 			totalPage++;
+		} else if(totalRecord == 0) {
+			totalPage = 1;
 		}
-		
+
 		// beginRecord, endRecord 필드 값 계산
 		beginRecord = (page - 1) * recordPerPage + 1;
 		endRecord = beginRecord + recordPerPage - 1;
@@ -69,74 +73,10 @@ public class PageUtils {
 		}
 		
 	}
-	
-	// path : "/employee/list", "/board/list" 등이 각 ServiceImpl에서 전달된다.
-	// 1  prevBlock prev  1  2  3  4  5  next nextBlock 마지막페이지
+		
+	// ◀◀  ◀  1  2  3  4  5  ▶  ▶▶
 	public String getPaging(String path) {
 		
-		StringBuilder sb = new StringBuilder(); 
-
-		String concat = path.contains("?") ? "&" : "?";
-		path += concat;
-		
-		// 1페이지로 이동, 1페이지는 <a> 태그가 없다.
-		if(page == 1) {
-			sb.append("<span class=\"unlink\">1</span>");
-		} else {
-			sb.append("<a class=\"link\" href=\"" + path + "page=1\">1</a>");
-		}
-		
-		// 이전 블록으로 이동, 1블록은 <a> 태그가 없다.
-		if(page <= pagePerBlock) {
-			sb.append("<span class=\"unlink\">prevBlock</span>");
-		} else {
-			sb.append("<a class=\"link\" href=\"" + path + "page=" + (beginPage - 1) + "\">prevBlock</a>");
-		}
-		
-		// 이전 페이지 (prev), 1페이지는 <a> 태그가 없다.
-		if(page == 1) {
-			sb.append("<span class=\"unlink\">prev</span>");
-		} else {
-			sb.append("<a class=\"link\" href=\"" + path + "page=" + (page - 1) + "\">prev</a>");
-		}
-		
-		// 페이지 번호 (1 2 3 4 5), 현재 페이지는 <a> 태그가 없다.
-		for(int p = beginPage; p <= endPage; p++) {
-			if(p == page) {
-				sb.append("<span class=\"unlink\">" + p + "</span>"); 
-			} else {
-				sb.append("<a class=\"link\" href=\"" + path + "page=" + p + "\">" + p + "</a>");
-			}
-		}
-		
-		// 다음 페이지 (next), 마지막 페이지는 <a> 태그가 없다.
-		if(page == totalPage) {
-			sb.append("<span class=\"unlink\">next</span>");
-		} else {
-			sb.append("<a class=\"link\" href=\"" + path + "page=" + (page + 1) + "\">next</a>");
-		}
-		
-		// 다음 블록으로 이동, 마지막 블록에는 <a> 태그가 없다.
-		if(endPage == totalPage) {
-			sb.append("<span class=\"unlink\">nextBlock</span>");
-		} else {
-			sb.append("<a class=\"link\" href=\"" + path + "page=" + (endPage + 1) + "\">nextBlock</a>");
-		}
-		
-		// 마지막페이지로 이동, 마지막 페이지는 <a> 태그가 없다.
-		if(page == totalPage) {
-			sb.append("<span class=\"unlink\">" + totalPage + "</span>");
-		} else {
-			sb.append("<a class=\"link\" href=\"" + path + "page=" + totalPage + "\">" + totalPage + "</a>");
-		}
-		
-		return sb.toString();
-	}
-	
-
-	// ◀◀ 1 2 3 4 5 ▶▶
-	public String getPaging1(String path) {
-		
 		StringBuilder sb = new StringBuilder();
 		
 		String concat = path.contains("?") ? "&" : "?";
@@ -144,9 +84,16 @@ public class PageUtils {
 		
 		// 이전 블록으로 이동, 1블록은 <a> 태그가 없다.
 		if(page <= pagePerBlock) {
-			sb.append("<span class=\"unlink\"><i class=\"fa-solid fa-backward\"></i></span>");
+			sb.append("<span class=\"unlink\"><i class=\"fa-solid fa-caret-left\"></i><i class=\"fa-solid fa-caret-left\"></i></span>");
 		} else {
-			sb.append("<a class=\"link\" href=\"" + path + "page=" + (beginPage - 1) + "\"><i class=\"fa-solid fa-backward\"></i></a>");
+			sb.append("<a class=\"link\" href=\"" + path + "page=" + (beginPage - 1) + "\"><i class=\"fa-solid fa-caret-left\"></i><i class=\"fa-solid fa-caret-left\"></i></a>");
+		}
+		
+		// 이전 페이지 (◀), 1페이지는 <a> 태그가 없다.
+		if(page == 1) {
+			sb.append("<span class=\"unlink\"><i class=\"fa-solid fa-caret-left\"></i></span>");
+		} else {
+			sb.append("<a class=\"link\" href=\"" + path + "page=" + (page - 1) + "\"><i class=\"fa-solid fa-caret-left\"></i></a>");
 		}
 		
 		// 페이지 번호 (1 2 3 4 5), 현재 페이지는 <a> 태그가 없다.
@@ -158,59 +105,18 @@ public class PageUtils {
 			}
 		}
 		
-		// 다음 블록으로 이동, 마지막 블록에는 <a> 태그가 없다.
-		if(endPage == totalPage) {
-			sb.append("<span class=\"unlink\"><i class=\"fa-solid fa-forward\"></i></span>");
-		} else {
-			sb.append("<a class=\"link\" href=\"" + path + "page=" + (endPage + 1) + "\"><i class=\"fa-solid fa-forward\"></i></a>");
-		}
-		return sb.toString();
-	}
-
-	
-	// ◀◀  prev  1  2  3  4  5  next  ▶▶
-	public String getPaging2(String path) {
-		
-		StringBuilder sb = new StringBuilder();
-		
-		String concat = path.contains("?") ? "&" : "?";
-		path += concat;
-		
-		// 이전 블록으로 이동, 1블록은 <a> 태그가 없다.
-		if(page <= pagePerBlock) {
-			sb.append("<span class=\"unlink\"><i class=\"fa-solid fa-backward\"></i></span>");
-		} else {
-			sb.append("<a class=\"link\" href=\"" + path + "page=" + (beginPage - 1) + "\"><i class=\"fa-solid fa-backward\"></i></a>");
-		}
-		
-		// 이전 페이지 (prev), 1페이지는 <a> 태그가 없다.
-		if(page == 1) {
-			sb.append("<span class=\"unlink\">prev</span>");
-		} else {
-			sb.append("<a class=\"link\" href=\"" + path + "page=" + (page - 1) + "\">prev</a>");
-		}
-		
-		// 페이지 번호 (1 2 3 4 5), 현재 페이지는 <a> 태그가 없다.
-		for(int p = beginPage; p <= endPage; p++) {
-			if(p == page) {
-				sb.append("<span class=\"unlink\">" + p + "</span>");
-			} else {
-				sb.append("<a class=\"link\" href=\"" + path + "page=" + p + "\">" + p + "</a>");
-			}
-		}
-		
-		// 다음 페이지 (next), 마지막 페이지는 <a> 태그가 없다.
+		// 다음 페이지 (▶), 마지막 페이지는 <a> 태그가 없다.
 		if(page == totalPage) {
-			sb.append("<span class=\"unlink\">next</span>");
+			sb.append("<span class=\"unlink\"><i class=\"fa-solid fa-caret-right\"></i></span>");
 		} else {
-			sb.append("<a class=\"link\" href=\"" + path + "page=" + (page + 1) + "\">next</a>");
+			sb.append("<a class=\"link\" href=\"" + path + "page=" + (page + 1) + "\"><i class=\"fa-solid fa-caret-right\"></i></a>");
 		}
 		
 		// 다음 블록으로 이동, 마지막 블록에는 <a> 태그가 없다.
 		if(endPage == totalPage) {
-			sb.append("<span class=\"unlink\"><i class=\"fa-solid fa-forward\"></i></span>");
+			sb.append("<span class=\"unlink\"><i class=\"fa-solid fa-caret-right\"></i><i class=\"fa-solid fa-caret-right\"></i></span>");
 		} else {
-			sb.append("<a class=\"link\" href=\"" + path + "page=" + (endPage + 1) + "\"><i class=\"fa-solid fa-forward\"></i></a>");
+			sb.append("<a class=\"link\" href=\"" + path + "page=" + (endPage + 1) + "\"><i class=\"fa-solid fa-caret-right\"></i><i class=\"fa-solid fa-caret-right\"></i></a>");
 		}
 		
 		return sb.toString();

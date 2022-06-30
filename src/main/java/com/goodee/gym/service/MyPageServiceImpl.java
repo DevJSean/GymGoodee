@@ -129,7 +129,7 @@ public class MyPageServiceImpl implements MyPageService {
 		
 		model.addAttribute("totalPayListCount", totalPayListCount);
 		model.addAttribute("payList", myPageMapper.selectPayList(map));
-		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/mypage/myPayList"));
+		model.addAttribute("paging", pageUtils.getPaging(request.getContextPath() + "/mypage/myPayList"));
 	}
 	
 	// 동일 종목 추가 결제시

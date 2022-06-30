@@ -78,6 +78,8 @@
 </style>
 </head>
 <body>
+
+	<jsp:include page="../layout/header.jsp"></jsp:include>
 	
 	<h1>공지사항 수정 화면</h1>
 	<form id="f" action="${contextPath}/board/noticeModify" method="post" enctype="multipart/form-data">

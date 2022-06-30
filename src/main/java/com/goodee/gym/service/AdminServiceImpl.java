@@ -191,7 +191,7 @@ public class AdminServiceImpl implements AdminService {
 		
 		model.addAttribute("members", members);
 		model.addAttribute("totalRecord", totalRecord);
-		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/member/memberList"));
+		model.addAttribute("paging", pageUtils.getPaging(request.getContextPath() + "/admin/memberList"));
 	}
 	
 	@Override
@@ -222,7 +222,7 @@ public class AdminServiceImpl implements AdminService {
 
 		model.addAttribute("classes", classes);
 		model.addAttribute("totalRecord", totalRecord);
-		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/member/classList"));
+		model.addAttribute("paging", pageUtils.getPaging(request.getContextPath() + "/admin/classList"));
 	}
 	
 	@Override
@@ -246,7 +246,7 @@ public class AdminServiceImpl implements AdminService {
 
 		model.addAttribute("pays", pays);
 		model.addAttribute("totalRecord", totalRecord);
-		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/member/payList"));
+		model.addAttribute("paging", pageUtils.getPaging(request.getContextPath() + "/admin/payList"));
 	}
 	
 	@Override
@@ -270,7 +270,7 @@ public class AdminServiceImpl implements AdminService {
 		
 		model.addAttribute("reservations", reservations);
 		model.addAttribute("totalRecord", totalRecord);
-		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/member/reserveList"));
+		model.addAttribute("paging", pageUtils.getPaging(request.getContextPath() + "/admin/reserveList"));
 	}
 	
 	@Transactional

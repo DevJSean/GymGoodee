@@ -89,6 +89,8 @@
 </head>
 <body>
 
+	<jsp:include page="../layout/header.jsp"></jsp:include>
+
 	<input type="button" value="QnA 목록" id="btnList">
 	<c:if test="${loginMember.memberId eq question.memberId || loginMember.memberId eq 'admin'}">
 		<input type="button" value="삭제" id="btnRemove">

@@ -35,6 +35,8 @@
 </head>
 <body>
 
+	<jsp:include page="../layout/header.jsp"></jsp:include>
+
 	<h1>공지사항 상세 보기</h1>
 
 	번호 ${notice.noticeNo}<br>

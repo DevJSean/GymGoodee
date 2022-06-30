@@ -186,14 +186,14 @@
 							else{
 								if(spinningclass.reservationState == 0){
 									// (1) 내가 예약한 수업인 경우 [예약 취소] 버튼
-									tr.append($('<td>').html('<input type="button" class ="btnReserveCancel" data-classcode="'+ swimclass.classCode + '" value="예약취소">'));
+									tr.append($('<td>').html('<input type="button" class ="btnReserveCancel" data-classcode="'+ spinningclass.classCode + '" value="예약취소">'));
 								}else if(spinningclass.reservationState == -1 || spinningclass.reservationState == 500){
 									// (2-1) 수강권이 있고, 예약하지 않은 수업에 대해서 [예약하기] 버튼
 									if(spinningclass.currentCount < spinningclass.locationLimit && obj.state==1){		
-										tr.append($('<td>').html('<input type="button" class ="btnReserve" data-classcode="'+ swimclass.classCode + '" value="예약하기">'));			
+										tr.append($('<td>').html('<input type="button" class ="btnReserve" data-classcode="'+ spinningclass.classCode + '" value="예약하기">'));			
 									}
 									// (2-2) 수강권이 없고, 예약을 안한 강좌에 대해 [수강권 구매] 버튼
-									else if(spinningclass.currentCount < swimclspinningclassass.locationLimit && obj.state==0){	
+									else if(spinningclass.currentCount < spinningclass.locationLimit && obj.state==0){	
 										tr.append($('<td>').html('<input type="button" class ="btnBuyTicket" value="수강권 구매">'));			
 									}
 									// (2-3) 내가 예약을 안했을 때 인원이 마감된 경우 [예약마감] 버튼

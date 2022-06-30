@@ -89,7 +89,7 @@
 </head>
 <body>
 
-	
+	<jsp:include page="../layout/header.jsp"></jsp:include>
 	
 	<div><img id="PilatesImage" alt="필라테스" src="../resources/images/pilates.png"></div>
 	

@@ -58,57 +58,54 @@
 	
 	<jsp:include page="../layout/header.jsp"></jsp:include>
 	
-	<c:if test="${loginMember.memberId eq 'admin'}">
-		<section>
-			<nav>
-				<ul class="myPageNav">
-					<li class="navItem"><a href="${contextPath}/admin/memberList">회원목록</a></li>
-					<li class="navItem"><a href="${contextPath}/admin/addTeacherPage">강사등록</a></li>
-					<li class="navItem"><a href="${contextPath}/admin/addClassPage">강좌개설</a></li>
-					<li class="navItem nowPage">개설강좌</li>
-					<li class="navItem"><a href="${contextPath}/admin/reserveList">예약내역</a></li>
-					<li class="navItem"><a href="${contextPath}/admin/payList">결제내역</a></li>
-				</ul>	
-			</nav>
+	<section>
+		<nav>
+			<ul class="myPageNav">
+				<li class="navItem"><a href="${contextPath}/admin/memberList">회원목록</a></li>
+				<li class="navItem"><a href="${contextPath}/admin/addTeacherPage">강사등록</a></li>
+				<li class="navItem"><a href="${contextPath}/admin/addClassPage">강좌개설</a></li>
+				<li class="navItem nowPage">개설강좌</li>
+				<li class="navItem"><a href="${contextPath}/admin/reserveList">예약내역</a></li>
+				<li class="navItem"><a href="${contextPath}/admin/payList">결제내역</a></li>
+			</ul>	
+		</nav>
+	
+		<div>
+		<table>
+			<thead>
+				<tr>
+					<td>번호</td>
+					<td>강좌코드</td>
+					<td>강사이름</td>		
+					<td>날짜</td>		
+					<td>시간</td>		
+					<td>현재신청인원</td>		
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach var="classList" items="${classes}">
+					<tr>
+						<td>${classList.rn}</td>
+						<td>${classList.classCode}</td>
+						<td>${classList.teacherName}</td>
+						<td>${classList.classDate}</td>
+						<td>${classList.classTime}</td>
+						<td>${classList.currentCount} / ${classList.locationLimit}</td>
+					</tr>
+				</c:forEach>
+			</tbody>
+			<tfoot>	
+				<tr>
+					<td colspan="6">
+						${paging}
+					</td>
+				</tr>
+			</tfoot>
+		</table>
 		
-			<div>
-			<table>
-				<thead>
-					<tr>
-						<td>번호</td>
-						<td>강좌코드</td>
-						<td>강사이름</td>		
-						<td>날짜</td>		
-						<td>시간</td>		
-						<td>현재신청인원</td>		
-					</tr>
-				</thead>
-				<tbody>
-					<c:forEach var="classList" items="${classes}">
-						<tr>
-							<td>${classList.rn}</td>
-							<td>${classList.classCode}</td>
-							<td>${classList.teacherName}</td>
-							<td>${classList.classDate}</td>
-							<td>${classList.classTime}</td>
-							<td>${classList.currentCount} / ${classList.locationLimit}</td>
-						</tr>
-					</c:forEach>
-				</tbody>
-				<tfoot>	
-					<tr>
-						<td colspan="6">
-							${paging}
-						</td>
-					</tr>
-				</tfoot>
-			</table>
-			
-			</div>
-		</section>
-	</c:if>
-	<c:if test="${loginMember.memberId ne 'admin'}">
-		<a href="${contextPath}/member/loginPage">관리자 페이지는 관리자만 확인할 수 있습니다.</a>
-	</c:if>
+		</div>
+	</section>
+	
+
 </body>
 </html>

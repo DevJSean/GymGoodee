@@ -75,7 +75,7 @@ public class BoardServiceImpl implements BoardService {
 		
 		model.addAttribute("notices", notices);
 		model.addAttribute("beginNo", totalRecord - pageUtils.getRecordPerPage() * (page - 1));
-		model.addAttribute("paging", pageUtils.getPaging2(request.getContextPath() + "/board/noticeList"));
+		model.addAttribute("paging", pageUtils.getPaging(request.getContextPath() + "/board/noticeList"));
 	}
 	
 	@Override
@@ -110,10 +110,10 @@ public class BoardServiceImpl implements BoardService {
 		switch(column) {
 		case "NOTICE_TITLE":
 		case "NOTICE_CONTENT":
-			model.addAttribute("paging", pageUtils.getPaging2(request.getContextPath() + "/board/noticeSearch?column=" + column + "&query=" + query));
+			model.addAttribute("paging", pageUtils.getPaging(request.getContextPath() + "/board/noticeSearch?column=" + column + "&query=" + query));
 			break;
 		case "NOTICE_CREATED":
-			model.addAttribute("paging", pageUtils.getPaging2(request.getContextPath() + "/board/noticeSearch?column=" + column + "&begin=" + begin + "&end=" + end));
+			model.addAttribute("paging", pageUtils.getPaging(request.getContextPath() + "/board/noticeSearch?column=" + column + "&begin=" + begin + "&end=" + end));
 			break;
 		}
 	}
@@ -523,7 +523,7 @@ public class BoardServiceImpl implements BoardService {
 		
 		model.addAttribute("questions", questions);
 		model.addAttribute("beginNo", totalRecord - pageUtils.getRecordPerPage() * (page - 1));
-		model.addAttribute("paging", pageUtils.getPaging2(request.getContextPath() + "/board/questionList"));
+		model.addAttribute("paging", pageUtils.getPaging(request.getContextPath() + "/board/questionList"));
 	}
 	
 	@Override
@@ -559,10 +559,10 @@ public class BoardServiceImpl implements BoardService {
 		case "QUESTION_TITLE":
 		case "MEMBER_ID":
 		case "QUESTION_CONTENT":
-			model.addAttribute("paging", pageUtils.getPaging2(request.getContextPath() + "/board/questionSearch?column=" + column + "&query=" + query));
+			model.addAttribute("paging", pageUtils.getPaging(request.getContextPath() + "/board/questionSearch?column=" + column + "&query=" + query));
 			break;
 		case "QUESTION_CREATED":
-			model.addAttribute("paging", pageUtils.getPaging2(request.getContextPath() + "/board/questionSearch?column=" + column + "&begin=" + begin + "&end=" + end));
+			model.addAttribute("paging", pageUtils.getPaging(request.getContextPath() + "/board/questionSearch?column=" + column + "&begin=" + begin + "&end=" + end));
 			break;
 		}
 	}
@@ -777,7 +777,7 @@ public class BoardServiceImpl implements BoardService {
 		model.addAttribute("reviews", reviews);
 		model.addAttribute("now", nowDate);
 		model.addAttribute("beginNo", totalRecord - pageUtils.getRecordPerPage() * (page - 1));
-		model.addAttribute("paging", pageUtils.getPaging2(request.getContextPath() + "/board/reviewList"));
+		model.addAttribute("paging", pageUtils.getPaging(request.getContextPath() + "/board/reviewList"));
 	}
 	
 	@Override
@@ -820,10 +820,10 @@ public class BoardServiceImpl implements BoardService {
 		case "REVIEW_SUBJECT":
 		case "MEMBER_ID":
 		case "REVIEW_CONTENT":
-			model.addAttribute("paging", pageUtils.getPaging2(request.getContextPath() + "/board/reviewSearch?column=" + column + "&query=" + query));
+			model.addAttribute("paging", pageUtils.getPaging(request.getContextPath() + "/board/reviewSearch?column=" + column + "&query=" + query));
 			break;
 		case "REVIEW_CREATED":
-			model.addAttribute("paging", pageUtils.getPaging2(request.getContextPath() + "/board/reviewSearch?column=" + column + "&begin=" + begin + "&end=" + end));
+			model.addAttribute("paging", pageUtils.getPaging(request.getContextPath() + "/board/reviewSearch?column=" + column + "&begin=" + begin + "&end=" + end));
 			break;
 		}
 	}

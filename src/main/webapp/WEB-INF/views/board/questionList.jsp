@@ -48,6 +48,8 @@
 </style>
 </head>
 <body>
+
+	<jsp:include page="../layout/header.jsp"></jsp:include>
 	
 	<h1>QnA 목록</h1>
 	<input type="button" value="메인으로 돌아가기" onclick="location.href='${contextPath}'">
