@@ -60,43 +60,39 @@
 	
 	<c:if test="${loginMember.memberId eq 'admin'}">
 		<section>
-		
 			<nav>
 				<ul class="myPageNav">
-					<li class="navItem nowPage">회원목록</li>
-					<li class="navItem"><a href="">강사등록</a></li>
-					<li class="navItem"><a href="">강좌개설</a></li>
-					<li class="navItem"><a href="${contextPath}/member/classList">개설강좌</a></li>
-					<li class="navItem"><a href="${contextPath}/member/reserveList">예약내역</a></li>
-					<li class="navItem"><a href="${contextPath}/member/payList">결제내역</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/memberList">회원목록</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/addTeacherPage">강사등록</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/addClassPage">강좌개설</a></li>
+					<li class="navItem nowPage">개설강좌</li>
+					<li class="navItem"><a href="${contextPath}/admin/reserveList">예약내역</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/payList">결제내역</a></li>
 				</ul>	
 			</nav>
 		
 			<div>
 			<table>
-				<caption>전체 회원 수 ${totalRecord - 1}명</caption>
 				<thead>
 					<tr>
 						<td>번호</td>
-						<td>회원번호</td>
-						<td>아이디</td>		
-						<td>이름</td>		
-						<td>연락처</td>		
-						<td>가입일시</td>		
+						<td>강좌코드</td>
+						<td>강사이름</td>		
+						<td>날짜</td>		
+						<td>시간</td>		
+						<td>현재신청인원</td>		
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach var="member" items="${members}">
-						<c:if test="${member.memberId ne 'admin'}">
-							<tr>
-								<td>${member.rn}</td>
-								<td>${member.memberNo}</td>
-								<td>${member.memberId}</td>
-								<td>${member.memberName}</td>
-								<td>${member.memberPhone}</td>
-								<td>${member.memberSignUp}</td>
-							</tr>
-						</c:if>
+					<c:forEach var="classList" items="${classes}">
+						<tr>
+							<td>${classList.rn}</td>
+							<td>${classList.classCode}</td>
+							<td>${classList.teacherName}</td>
+							<td>${classList.classDate}</td>
+							<td>${classList.classTime}</td>
+							<td>${classList.currentCount} / ${classList.locationLimit}</td>
+						</tr>
 					</c:forEach>
 				</tbody>
 				<tfoot>	

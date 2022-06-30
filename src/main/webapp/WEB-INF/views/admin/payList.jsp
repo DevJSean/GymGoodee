@@ -15,8 +15,8 @@
 <script>
 	
 	$(function() {
+
 	})
-	
 	
 </script>
 <style>
@@ -57,17 +57,16 @@
 	<h1>관리자페이지</h1>
 	
 	<jsp:include page="../layout/header.jsp"></jsp:include>
-	
 	<c:if test="${loginMember.memberId eq 'admin'}">
 		<section>
 			<nav>
 				<ul class="myPageNav">
-					<li class="navItem"><a href="${contextPath}/member/memberList">회원목록</a></li>
-					<li class="navItem"><a href="">강사등록</a></li>
-					<li class="navItem"><a href="">강좌개설</a></li>
-					<li class="navItem nowPage">개설강좌</li>
-					<li class="navItem"><a href="${contextPath}/member/reserveList">예약내역</a></li>
-					<li class="navItem"><a href="${contextPath}/member/payList">결제내역</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/memberList">회원목록</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/addTeacherPage">강사등록</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/addClassPage">강좌개설</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/classList">개설강좌</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/reserveList">예약내역</a></li>
+					<li class="navItem nowPage">결제내역</li>
 				</ul>	
 			</nav>
 		
@@ -76,28 +75,45 @@
 				<thead>
 					<tr>
 						<td>번호</td>
-						<td>강좌코드</td>
-						<td>강사이름</td>		
-						<td>날짜</td>		
-						<td>시간</td>		
-						<td>현재신청인원</td>		
+						<td>아이디</td>		
+						<td>수강권</td>
+						<td></td>
+						<td></td>		
+						<td>결제번호</td>
+						<td>결제금액</td>
+						<td>결제일</td>		
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach var="classList" items="${classes}">
+					<c:forEach var="payList" items="${pays}">
 						<tr>
-							<td>${totalRecord - classList.rn + 1}</td>
-							<td>${classList.classCode}</td>
-							<td>${classList.teacherName}</td>
-							<td>${classList.classDate}</td>
-							<td>${classList.classTime}</td>
-							<td>${classList.currentCount} / ${classList.locationLimit}</td>
+							<td>${payList.rn}</td>
+							<td>${payList.memberId}</td>
+							<c:choose>
+								<c:when test="${payList.ticket.ticketSubject eq 'SWIM'}">
+									<td>수영</td>
+								</c:when>
+								<c:when test="${payList.ticket.ticketSubject eq 'DANCE'}">
+									<td>스포츠댄스</td>
+								</c:when>
+								<c:when test="${payList.ticket.ticketSubject eq 'PILATES'}">
+									<td>필라테스</td>
+								</c:when>
+								<c:when test="${payList.ticket.ticketSubject eq 'SPINNING'}">
+									<td>스피닝</td>
+								</c:when>
+							</c:choose>
+							<td>${payList.ticket.ticketPeriod}일</td>
+							<td>${payList.ticket.ticketCount}회</td>
+							<td>${payList.payListNo}</td>
+							<td>${payList.ticket.ticketPrice}</td>
+							<td>${payList.payListDate}</td>
 						</tr>
 					</c:forEach>
 				</tbody>
 				<tfoot>	
 					<tr>
-						<td colspan="6">
+						<td colspan="8">
 							${paging}
 						</td>
 					</tr>

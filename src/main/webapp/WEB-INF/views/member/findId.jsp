@@ -8,7 +8,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
+<title>GymGoodee : 아이디 찾기</title>
 
 <script src="../resources/js/jquery-3.6.0.js"></script>
 
@@ -63,7 +64,6 @@
 </head>
 <body>
 
-	
 	<h3>아이디 찾기</h3>
 	
 	<div class="authArea">

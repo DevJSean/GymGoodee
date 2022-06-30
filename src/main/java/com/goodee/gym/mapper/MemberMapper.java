@@ -1,15 +1,8 @@
 package com.goodee.gym.mapper;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
-import com.goodee.gym.domain.ClassDTO;
 import com.goodee.gym.domain.MemberDTO;
-import com.goodee.gym.domain.PayListDTO;
-import com.goodee.gym.domain.ReservationDTO;
 
 
 @Mapper
@@ -36,20 +29,4 @@ public interface MemberMapper {
 	public MemberDTO selectMemberByIdPhone(MemberDTO member);
 	public int updatePw(MemberDTO member);
 	
-	/* 관리자 */
-	public int selectMemberCount();
-	public List<MemberDTO> selectMemberList(Map<String, Object> map);
-	
-	public int selectClassCount();
-	public Integer selectCountByClassCode(String classCode);
-	public List<ClassDTO> selectClassList(Map<String, Object> map);
-	
-	public int selectPayCount();
-	public List<PayListDTO> selectPayList(Map<String, Object> map);
-	
-	public int selectReserveCount();
-	public List<ReservationDTO> selectReserveList(Map<String, Object> map);
-	
-	public int updateReservation(String reservationCode);
-	public int updateRemainTicket(@Param(value="memberId") String memberId, @Param(value="remainTicketSubject") String remainTicketSubject);
 }

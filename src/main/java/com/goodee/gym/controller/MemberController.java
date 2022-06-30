@@ -89,13 +89,13 @@ public class MemberController {
 	@GetMapping("/member/naverCallback")
 	public String naverCallback(HttpServletRequest request, HttpServletResponse response) {
 		memberService.naverCallback(request, response);
-		return "lsh_index";
+		return "index";
 	}
 	
 	@GetMapping("/member/kakaoCallback")
 	public String kakaoCallback(Model model, HttpServletRequest request, HttpServletResponse response) {
 		memberService.kakaoCallback(request, response);
-		return "lsh_index";
+		return "index";
 	}
 	
 	@GetMapping("/member/logout")
@@ -127,36 +127,5 @@ public class MemberController {
 	public void changePw(HttpServletRequest request, HttpServletResponse response) {
 		memberService.changePw(request, response);
 	}
-	
-	@GetMapping("/member/memberList")
-	public String memberList(HttpServletRequest request, Model model) {
-		memberService.memberList(request, model);
-		return "member/memberList";
-	}
-	
-	@GetMapping("/member/classList")
-	public String classList(HttpServletRequest request, Model model) {
-		memberService.classList(request, model);
-		return "member/classList";
-	}
-	
-	@GetMapping("/member/payList")
-	public String payList(HttpServletRequest request, Model model) {
-		memberService.payList(request, model);
-		return "member/payList";
-	}
-	
-	@GetMapping("/member/reserveList")
-	public String reserveList(HttpServletRequest request, Model model) {
-		memberService.reserveList(request, model);
-		return "member/reserveList";
-	}
-	
-	@ResponseBody
-	@GetMapping(value="/member/reserveCancle", produces="application/json")
-	public Map<String, Object> remove(@RequestParam String reservationCode, @RequestParam String memberId, @RequestParam String remainTicketSubject) {
-		return memberService.reserveCancle(reservationCode, memberId, remainTicketSubject);
-	}
-	
 	
 }

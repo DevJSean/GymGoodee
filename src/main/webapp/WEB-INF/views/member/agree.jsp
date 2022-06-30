@@ -8,7 +8,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
+<title>GymGoodee : 회원가입</title>
 <style>
 
 	.blind {
@@ -28,6 +29,7 @@
 
 </style>
 <script src="../resources/js/jquery-3.6.0.js"></script>
+<script src="http://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
 
 	$(function(){
@@ -64,7 +66,7 @@
 		
 		$('#f').on('submit', function(event){
 			if($('#service').is(':checked') == false || $('#privacy').is(':checked') == false) {
-				alert('필수 약관에 모두 동의하세요.');
+				swal("잠깐!", "필수 약관에 모두 동의하세요.", "info");
 				event.preventDefault();
 				return false;
 			}
