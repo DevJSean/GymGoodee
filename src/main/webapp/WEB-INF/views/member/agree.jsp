@@ -92,7 +92,7 @@
 		
 		<label for="service" class="item">이용약관에 동의합니다.(필수)</label><br>
 		<input type="checkbox" id="service" class="blind checkOne">
-		<textarea rows="10" cols="80" spellcheck="false"> 여러분을 환영합니다. &#10;&#10; GymGoodee 서비스 및 제품(이하 ‘서비스’)을 이용해 주셔서 감사합니다. &#10; 본 약관은 다양한 GymGoodee 서비스의 이용과 관련하여 회원 또는 비회원과의 관계를 설명하며, 아울러 여러분의 GymGoodee 서비스 이용에 도움이 될 수 있는 유익한 정보를 포함하고 있습니다. &#10; GymGoodee 서비스를 이용하시거나 GymGoodee 서비스 회원으로 가입하실 경우 여러분은 본 약관 및 관련 운영 정책을 확인하거나 동의하게 되므로, 잠시 시간을 내시어 주의 깊게 살펴봐 주시기 바랍니다.
+		<textarea rows="10" cols="80" spellcheck="false" readonly> 여러분을 환영합니다. &#10;&#10; GymGoodee 서비스 및 제품(이하 ‘서비스’)을 이용해 주셔서 감사합니다. &#10; 본 약관은 다양한 GymGoodee 서비스의 이용과 관련하여 회원 또는 비회원과의 관계를 설명하며, 아울러 여러분의 GymGoodee 서비스 이용에 도움이 될 수 있는 유익한 정보를 포함하고 있습니다. &#10; GymGoodee 서비스를 이용하시거나 GymGoodee 서비스 회원으로 가입하실 경우 여러분은 본 약관 및 관련 운영 정책을 확인하거나 동의하게 되므로, 잠시 시간을 내시어 주의 깊게 살펴봐 주시기 바랍니다.
 		&#10; 회원으로 가입하시면 GymGoodee 서비스를 보다 편리하게 이용할 수 있습니다. &#10; 여러분은 본 약관을 읽고 동의하신 후 회원 가입을 신청하실 수 있으며, GymGoodee는 이에 대한 승낙을 통해 회원 가입 절차를 완료하고 여러분께 GymGoodee 서비스 이용 계정(이하 ‘계정’)을 부여합니다. 계정이란 회원이 GymGoodee 서비스에 로그인한 이후 이용하는 서비스 이용 이력을 회원 별로 관리하기 위해 설정한 회원 식별 단위를 말합니다. 회원은 자신의 계정을 통해 좀더 다양한 GymGoodee 서비스를 보다 편리하게 이용할 수 있습니다. 
 		&#10; GymGoodee는 여러분이 게재한 게시물이 GymGoodee 서비스를 통해 다른 이용자들에게 전달되어 우리 모두의 삶을 더욱 풍요롭게 해줄 것을 기대합니다. 게시물은 여러분이 타인 또는 자신이 보게 할 목적으로 GymGoodee 서비스 상에 게재한 부호, 문자, 그림, 사진, 링크 등으로 구성된 각종 콘텐츠 자체 또는 파일을 말합니다.
 		&#10; GymGoodee는 여러분의 생각과 감정이 표현된 콘텐츠를 소중히 보호할 것을 약속드립니다. 여러분이 제작하여 게재한 게시물에 대한 지식재산권 등의 권리는 당연히 여러분에게 있습니다.
@@ -117,7 +117,7 @@
 		
 		<label for="privacy" class="item">개인정보 수집에 동의합니다.(필수)</label><br>
 		<input type="checkbox" id="privacy" class="blind checkOne">
-		<textarea rows="10" cols="80" spellcheck="false"> 개인정보보호법에 따라 GymGoodee에 회원가입 신청하시는 분께 수집하는 개인정보의 항목, 개인정보의 수집 및 이용목적, 개인정보의 보유 및 이용기간, 동의 거부권 및 동의 거부 시 불이익에 관한 사항을 안내 드리오니 자세히 읽은 후 동의하여 주시기 바랍니다.
+		<textarea rows="10" cols="80" spellcheck="false" readonly> 개인정보보호법에 따라 GymGoodee에 회원가입 신청하시는 분께 수집하는 개인정보의 항목, 개인정보의 수집 및 이용목적, 개인정보의 보유 및 이용기간, 동의 거부권 및 동의 거부 시 불이익에 관한 사항을 안내 드리오니 자세히 읽은 후 동의하여 주시기 바랍니다.
 			&#10; 수집하는 개인정보 &#10; 이용자가 예약, 게시판 등과 같이 개인화 혹은 회원제 서비스를 이용하기 위해 회원가입을 할 경우, GymGoodee는 서비스 이용을 위해 필요한 최소한의 개인정보를 수집합니다.
 			&#10; 회원가입 시점에 GymGoodee가 이용자로부터 수집하는 개인정보는 아래와 같습니다. &#10; 회원 가입 시에 ‘아이디, 비밀번호, 이름, 생년월일, 성별, 휴대전화번호, 이메일 주소’를 필수항목으로 수집합니다. 
 			&#10; 개인정보 수집 및 이용 동의를 거부할 권리 &#10; 이용자는 개인정보의 수집 및 이용 동의를 거부할 권리가 있습니다. 회원가입 시 수집하는 최소한의 개인정보, 즉, 필수 항목에 대한 수집 및 이용 동의를 거부하실 경우, 회원가입이 어려울 수 있습니다.</textarea>
@@ -125,7 +125,7 @@
 		
 		<label for="location" class="item">위치정보 수집에 동의합니다.(선택)</label><br>
 		<input type="checkbox" name="agreements" value="location" id="location" class="blind checkOne">  
-		<textarea rows="10" cols="80" spellcheck="false"> 위치기반서비스 이용약관에 동의하시면, 위치를 활용한 GymGoodee 위치기반 서비스를 이용할 수 있습니다.
+		<textarea rows="10" cols="80" spellcheck="false" readonly> 위치기반서비스 이용약관에 동의하시면, 위치를 활용한 GymGoodee 위치기반 서비스를 이용할 수 있습니다.
 			&#10; 제 1 조 (목적) &#10; 이 약관은 GymGoodee가 제공하는 위치기반서비스와 관련하여 회사와 개인위치정보주체와의 권리, 의무 및 책임사항, 기타 필요한 사항을 규정함을 목적으로 합니다.
 			&#10; 제 2 조 (약관 외 준칙) &#10; 이 약관에 명시되지 않은 사항은 위치정보의 보호 및 이용 등에 관한 법률, 개인정보보호법, 정보통신망 이용촉진 및 정보보호 등에 관한 법률, 전기통신기본법, 전기통신사업법 등 관계법령과 회사의 이용약관 및 개인정보처리방침, 회사가 별도로 정한 지침 등에 의합니다.
 			&#10; 제 3 조 (서비스 내용 및 요금) &#10; 회사는 위치정보사업자로부터 위치정보를 전달받아 아래와 같은 위치기반서비스를 제공합니다. 생활편의 서비스 제공: 주변 시설물 찾기, 날씨 등 생활 편의 서비스를 제공합니다. &#10; 위치기반서비스의 이용요금은 무료입니다.
@@ -135,7 +135,7 @@
 		
 		<label for="promotion" class="item">프로모션 정보 수신에 동의합니다.(선택)</label><br>
 		<input type="checkbox" name="agreements" value="promotion" id="promotion" class="blind checkOne">
-		<textarea rows="3" cols="80" spellcheck="false"> GymGoodee에서 제공하는 이벤트/혜택 등 다양한 정보를 휴대전화, 이메일로 받아보실 수 있습니다.</textarea>
+		<textarea rows="3" cols="80" spellcheck="false"  readonly> GymGoodee에서 제공하는 이벤트/혜택 등 다양한 정보를 휴대전화, 이메일로 받아보실 수 있습니다.</textarea>
 		<br><br>
 		
 		<input type="button" value="취소" onclick="history.back()">
