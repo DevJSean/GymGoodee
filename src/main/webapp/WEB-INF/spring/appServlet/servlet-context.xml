@@ -27,7 +27,7 @@
 	<beans:bean class="com.goodee.gym.interceptor.LoginInterceptor" id="loginInterceptor" />
 	<beans:bean class="com.goodee.gym.interceptor.PreventLoginInterceptor" id="preventLoginInterceptor" />
 	<beans:bean class="com.goodee.gym.interceptor.PreventMyPageInterceptor" id="preventMyPageInterceptor" />
-	
+	<beans:bean class="com.goodee.gym.interceptor.PreventAdminPageInterceptor" id="preventAdminPageInterceptor" />
 	
 	<interceptors>
 		<interceptor>
@@ -42,8 +42,13 @@
 		</interceptor>
 		<interceptor>
 		   <mapping path="/mypage/**"/>
+		   <mapping path="/order/**"/>
 		   <mapping path="/remainTickets"/>
 		   <beans:ref bean="preventMyPageInterceptor"/>
+		</interceptor>
+		<interceptor>
+		   <mapping path="/admin/**"/>
+		   <beans:ref bean="preventAdminPageInterceptor"/>
 		</interceptor>
 	</interceptors>	
 	

@@ -9,7 +9,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.goodee.gym.domain.MemberDTO;
 
-public class PreventMyPageInterceptor implements HandlerInterceptor {
+public class PreventAdminPageInterceptor implements HandlerInterceptor {
 
 	// 로그아웃되면 마이페이지에 접근할 수 없도록 막기
 	@Override
@@ -27,7 +27,7 @@ public class PreventMyPageInterceptor implements HandlerInterceptor {
 			out.println("</script>");
 			out.close();
 			return false;
-		} else if (loginMember.getMemberId().equals("admin")) {
+		} else if (loginMember.getMemberId().equals("admin") == false) {
 			response.setContentType("text/html");
 			PrintWriter out = response.getWriter();
 			out.println("<script>");
