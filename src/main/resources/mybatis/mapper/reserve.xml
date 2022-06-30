@@ -85,7 +85,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	
 	<!-- 수영 예약 취소하기(update) -->
-	<update id="updateCancelSwim" parameterType="Map">
+	<update id="updateCancelClass" parameterType="Map">
 		UPDATE RESERVATION
 		SET RESERVATION_STATE = -1
 		WHERE MEMBER_NO = #{memberNo} AND CLASS_CODE = #{classCode}

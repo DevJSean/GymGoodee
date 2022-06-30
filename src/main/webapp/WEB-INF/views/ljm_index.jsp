@@ -20,7 +20,10 @@
 	
 	<hr>
 	
-	<a href="${contextPath}/reserve/swimPage">수영 예약페이지</a>
+	<a href="${contextPath}/reserve/swimPage">수영 예약페이지</a><br>
+	<a href="${contextPath}/reserve/pilatesPage">필라테스 예약페이지</a><br>
+	<a href="${contextPath}/reserve/spinningPage">스피닝 예약페이지</a><br>
+	<a href="${contextPath}/reserve/dancePage">스포츠댄스 예약페이지</a><br>
 	
 	
 	

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +35,40 @@ public class AdminController {
 	public String addClassPage() {
 		return "admin/adminAddClass";
 	}
+	
+	
+	// 추가
+	@GetMapping("/admin/memberList")
+	public String memberList(HttpServletRequest request, Model model) {
+		adminService.memberList(request, model);
+		return "admin/memberList";
+	}
+	
+	@GetMapping("/admin/classList")
+	public String classList(HttpServletRequest request, Model model) {
+		adminService.classList(request, model);
+		return "admin/classList";
+	}
+	
+	@GetMapping("/admin/payList")
+	public String payList(HttpServletRequest request, Model model) {
+		adminService.payList(request, model);
+		return "admin/payList";
+	}
+	
+	@GetMapping("/admin/reserveList")
+	public String reserveList(HttpServletRequest request, Model model) {
+		adminService.reserveList(request, model);
+		return "admin/reserveList";
+	}
+	
+	@ResponseBody
+	@GetMapping(value="/admin/reserveCancle", produces="application/json")
+	public Map<String, Object> remove(@RequestParam String reservationCode, @RequestParam String memberId, @RequestParam String remainTicketSubject) {
+		return adminService.reserveCancle(reservationCode, memberId, remainTicketSubject);
+	}
+	
+
 	
 	// 강사 추가(INSERT)
 	@ResponseBody
@@ -71,20 +106,13 @@ public class AdminController {
 		return adminService.addClass(registclass, response);
 	}
 	
-	// 개설 강좌 목록 가져오기 (SELECT)
-	@ResponseBody
-	@GetMapping(value="/admin/ClassList", produces="application/json")
-	public Map<String, Object> ClassList(){
-		return adminService.getClasses();
-	}
-	
-	
-	// 테스트
 	// 강좌 목록 + 페이징 처리
 	@ResponseBody
-	@GetMapping(value="/classes", produces="application/json")
-	public Map<String, Object> getClasses(int page){
-		return adminService.getClasses1(page);
+	@GetMapping(value="/admin/ClassList", produces="application/json")
+	public Map<String, Object> ClassList(int page){
+		return adminService.getClasses(page);
 	}
+	
+
 	
 }

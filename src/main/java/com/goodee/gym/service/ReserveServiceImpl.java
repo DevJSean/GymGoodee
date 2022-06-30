@@ -30,7 +30,7 @@ public class ReserveServiceImpl implements ReserveService {
 	// classDTO의 reserveState에 예약 유무를 넣어준다.
 	// select 작업으로만 이루어져어있으므로 transaction은 할 필요 x
 	@Override
-	public Map<String, Object> getSwimClasses(HttpServletRequest request) {
+	public Map<String, Object> getClasses(HttpServletRequest request) {
 		String subject = request.getParameter("subject");
 		String classDate = request.getParameter("classDate");
 		
@@ -112,10 +112,10 @@ public class ReserveServiceImpl implements ReserveService {
 		return res;
 	}
 
-	// 2. 수영 예약하기 (UPDATE/INSERT + UPDATE)
+	// 2. 예약하기 (UPDATE/INSERT + UPDATE)
 	@Transactional
 	@Override
-	public Map<String, Object> reserveSwim(HttpServletRequest request) {
+	public Map<String, Object> reserve(HttpServletRequest request) {
 		// request에서 파라미터들 받아와서 insert 할 reservationDTO 만들고
 		// 결과 res 로 받아오기
 		
@@ -201,10 +201,10 @@ public class ReserveServiceImpl implements ReserveService {
 	}
 	
 	
-	// 3. 수영 예약 취소하기 (UPDATE + UPDATE)
+	// 3. 예약 취소하기 (UPDATE + UPDATE)
 	@Transactional
 	@Override
-	public Map<String, Object> cancelSwim(HttpServletRequest request) {
+	public Map<String, Object> cancel(HttpServletRequest request) {
 		
 		
 		// 1) 파라미터 처리
@@ -217,8 +217,8 @@ public class ReserveServiceImpl implements ReserveService {
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("memberNo", memberNo);
-		map.put("classCode", classCode);
-		int res = reserveMapper.updateCancelSwim(map);
+		map.put("classCode", classCode);		// classCode를 통해 종목 구별이 가능하다.
+		int res = reserveMapper.updateCancelClass(map);
 		//System.out.println("수강 취소 : " +res);
 		
 		// 2) 잔여수강권 횟수 증가시키기

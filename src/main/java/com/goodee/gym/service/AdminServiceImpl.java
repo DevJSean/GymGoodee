@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,8 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 
 import com.goodee.gym.domain.ClassDTO;
+import com.goodee.gym.domain.MemberDTO;
+import com.goodee.gym.domain.PayListDTO;
+import com.goodee.gym.domain.ReservationDTO;
 import com.goodee.gym.domain.TeacherDTO;
 import com.goodee.gym.mapper.AdminMapper;
 import com.goodee.gym.util.PageUtils;
@@ -140,27 +146,9 @@ public class AdminServiceImpl implements AdminService {
 		return null;
 	}
 	
-	// 개설 강좌 목록 가져오기
+	// 개설 강좌 목록 가져오기 + 페이징 처리
 	@Override
-	public Map<String, Object> getClasses() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		List<ClassDTO> classes = adminMapper.selectClasses();
-		if(classes == null) {
-			// 개설 강좌 정보가 없을 경우
-			map.put("classes", null);
-			map.put("res", 0);
-		} else {
-			map.put("classes",classes);
-			map.put("res", 1);
-		}
-		return map;
-	}
-	
-	
-	
-	// 테스트
-	@Override
-	public Map<String, Object> getClasses1(int page) {
+	public Map<String, Object> getClasses(int page) {
 		
 		int totalRecord = adminMapper.selectClassCount();
 		PageUtils p = new PageUtils();
@@ -175,7 +163,125 @@ public class AdminServiceImpl implements AdminService {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("classes", adminMapper.selectClassList(m));
 		map.put("p", p);
+		System.out.println("map : " + map);
 				
+		return map;
+	}
+	
+	
+	// 새로 추가
+	@Override
+	public void memberList(HttpServletRequest request, Model model) {
+		int totalRecord = adminMapper.selectMemberCount();
+		
+		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+		int page = Integer.parseInt(opt.orElse("1"));
+		
+		// PageEntity
+		PageUtils pageUtils = new PageUtils();
+		pageUtils.setPageEntity(totalRecord, page);
+		
+		// Map
+		Map<String, Object> map = new HashMap<>();
+		map.put("beginRecord", pageUtils.getBeginRecord());
+		map.put("endRecord", pageUtils.getEndRecord());
+		
+		// 목록 가져오기
+		List<MemberDTO> members = adminMapper.selectMemberList(map);
+		
+		model.addAttribute("members", members);
+		model.addAttribute("totalRecord", totalRecord);
+		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/member/memberList"));
+	}
+	
+	@Override
+	public void classList(HttpServletRequest request, Model model) {
+		int totalRecord = adminMapper.selectClassCount();
+		
+		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+		int page = Integer.parseInt(opt.orElse("1"));
+		
+		// PageEntity
+		PageUtils pageUtils = new PageUtils();
+		pageUtils.setPageEntity(totalRecord, page);
+		
+		// Map
+		Map<String, Object> map = new HashMap<>();
+		map.put("beginRecord", pageUtils.getBeginRecord());
+		map.put("endRecord", pageUtils.getEndRecord());
+		
+		// 목록 가져오기
+		
+		List<ClassDTO> classes = adminMapper.selectClassList(map);
+		for(int i = 0; i<classes.size();i++) {
+			
+			// 2-1) 해당 강좌에 예약한 사람 수
+			String classCode = classes.get(i).getClassCode();
+			classes.get(i).setCurrentCount(adminMapper.selectCountByClassCode(classCode));
+		}
+
+		model.addAttribute("classes", classes);
+		model.addAttribute("totalRecord", totalRecord);
+		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/member/classList"));
+	}
+	
+	@Override
+	public void payList(HttpServletRequest request, Model model) {
+		int totalRecord = adminMapper.selectPayCount();
+		
+		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+		int page = Integer.parseInt(opt.orElse("1"));
+		
+		// PageEntity
+		PageUtils pageUtils = new PageUtils();
+		pageUtils.setPageEntity(totalRecord, page);
+		
+		// Map
+		Map<String, Object> map = new HashMap<>();
+		map.put("beginRecord", pageUtils.getBeginRecord());
+		map.put("endRecord", pageUtils.getEndRecord());
+		
+		// 목록 가져오기
+		List<PayListDTO> pays = adminMapper.selectPayList(map);
+
+		model.addAttribute("pays", pays);
+		model.addAttribute("totalRecord", totalRecord);
+		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/member/payList"));
+	}
+	
+	@Override
+	public void reserveList(HttpServletRequest request, Model model) {
+		int totalRecord = adminMapper.selectReserveCount();
+		
+		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+		int page = Integer.parseInt(opt.orElse("1"));
+		
+		// PageEntity
+		PageUtils pageUtils = new PageUtils();
+		pageUtils.setPageEntity(totalRecord, page);
+		
+		// Map
+		Map<String, Object> map = new HashMap<>();
+		map.put("beginRecord", pageUtils.getBeginRecord());
+		map.put("endRecord", pageUtils.getEndRecord());
+		
+		// 목록 가져오기
+		List<ReservationDTO> reservations = adminMapper.selectReserveList(map);
+		
+		model.addAttribute("reservations", reservations);
+		model.addAttribute("totalRecord", totalRecord);
+		model.addAttribute("paging", pageUtils.getPaging1(request.getContextPath() + "/member/reserveList"));
+	}
+	
+	@Transactional
+	@Override
+	public Map<String, Object> reserveCancle(String reservationCode, String memberId, String remainTicketSubject) {
+		Map<String, Object> map = new HashMap<>();
+		// 예약내역 : 예약상태 -1로 업데이트
+		map.put("resState", adminMapper.updateReservation(reservationCode));
+		// 잔여수강권 : 잔여횟수 +1 
+		map.put("resRemain", adminMapper.updateRemainTicket(memberId, remainTicketSubject));
+
 		return map;
 	}
 
