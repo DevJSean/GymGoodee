@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
@@ -8,8 +9,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>강사 등록</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 <script>
 
 	/* 페이지 로드 이벤트 */
@@ -116,57 +120,111 @@
 	
 	
 </script>
+<style>
+
+	
+	/* 형식 */
+	.myPageNav {
+		display: flex;
+		flex-direction: column;
+		width: 100px;
+		list-style-type: none;
+	}
+	.navItem {
+		background-color: teal; 
+		padding: 15px;
+		cursor: pointer;
+	}
+	.navItem a {
+		text-align: center;
+		text-decoration: none;
+		color: white;
+	}
+	.navItem:hover {
+		background-color: navy;
+	}
+	nav {
+		display: flex;
+		margin-right: 30px;
+	}
+	section {
+		display: flex;
+	}
+	td {
+		text-align: center;
+	}
+
+</style>
 </head>
 <body>
 
-	<h1>강사 관리 페이지</h1>
+	<h1>관리자페이지</h1>
 	
-	<hr>
+	<jsp:include page="../layout/header.jsp"></jsp:include>
+	<c:if test="${loginMember.memberId eq 'admin'}">
 	
-	
-	<h2>강사 등록하기</h2>
-	<div>
-		이름 <input type="text" name="teacherName" id="teacherName"><br>
-		성별
-		<label for="M">
-			남자<input type="radio" name="teacherGender" value="M" id="M">
-		</label>
-		<label for="F">
-			여자<input type="radio" name="teacherGender" value="F" id="F">
-		</label>
-		<br>
-		종목
-		<label for="SWIN">
-			수영<input type="radio" name="teacherSubject" value="SWIM" id="SWIM">
-		</label>
-		<label for="PILATES">
-			필라테스<input type="radio" name="teacherSubject" value="PILATES" id="PILATES">
-		</label>
-		<label for="SPINNING">
-			스피닝<input type="radio" name="teacherSubject" value="SPINNING" id="SPINNING">
-		</label>
-		<label for="DANCE">
-			스포츠댄스<input type="radio" name="teacherSubject" value="DANCE" id="DANCE">
-		</label>
-		<br><br>
-		<input type="button" value="강사등록" id="btnTeacherAdd">
-	</div>
-	
-	<hr>
-	
-	<h2>강사 목록</h2>
-	<table border="1">
-		<thead>
-			<tr>
-				<td>강사 이름</td>
-				<td>강사 성별</td>
-				<td>강사 종목</td>
-			</tr>
-		</thead>
-		<tbody id="teachers">
+		<section>
+			<nav>
+				<ul class="myPageNav">
+					<li class="navItem"><a href="${contextPath}/admin/memberList">회원목록</a></li>
+					<li class="navItem nowPage">강사등록</li>
+					<li class="navItem"><a href="${contextPath}/admin/addClassPage">강좌개설</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/classList">개설강좌</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/reserveList">예약내역</a></li>
+					<li class="navItem"><a href="${contextPath}/admin/payList">결제내역</a></li>
+				</ul>	
+			</nav>
 			
-		</tbody>
-	</table>
+			<div>
+				<div>
+					이름 <input type="text" name="teacherName" id="teacherName"><br>
+					성별
+					<label for="M">
+						남자<input type="radio" name="teacherGender" value="M" id="M">
+					</label>
+					<label for="F">
+						여자<input type="radio" name="teacherGender" value="F" id="F">
+					</label>
+					<br>
+					종목
+					<label for="SWIN">
+						수영<input type="radio" name="teacherSubject" value="SWIM" id="SWIM">
+					</label>
+					<label for="PILATES">
+						필라테스<input type="radio" name="teacherSubject" value="PILATES" id="PILATES">
+					</label>
+					<label for="SPINNING">
+						스피닝<input type="radio" name="teacherSubject" value="SPINNING" id="SPINNING">
+					</label>
+					<label for="DANCE">
+						스포츠댄스<input type="radio" name="teacherSubject" value="DANCE" id="DANCE">
+					</label>
+					<br><br>
+					<input type="button" value="강사등록" id="btnTeacherAdd">
+				</div>
+				
+				<hr>
+				
+				<h2>강사 목록</h2>
+				<table border="1">
+					<thead>
+						<tr>
+							<td>강사 이름</td>
+							<td>강사 성별</td>
+							<td>강사 종목</td>
+						</tr>
+					</thead>
+					<tbody id="teachers">
+						
+					</tbody>
+				</table>
+			
+			</div>
+		</section>
+	</c:if>
+	<c:if test="${loginMember.memberId ne 'admin'}">
+		<a href="${contextPath}/member/loginPage">관리자 페이지는 관리자만 확인할 수 있습니다.</a>
+	</c:if>
 	
 	
 	

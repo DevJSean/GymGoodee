@@ -63,18 +63,94 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	
-	<!-- 테스트 -->
-	<select id="selectClassCount" resultType="Integer">
-		SELECT COUNT(CLASS_CODE)
-		FROM CLASS
+	<!-- 관리자페이지 -->
+	<!-- 회원 -->
+	<!-- 전체 회원 수 -->
+	<select id="selectMemberCount" resultType="Integer">
+		SELECT COUNT(MEMBER_NO)
+		  FROM MEMBER
 	</select>
+
 	
-	<select id="selectClassList" parameterType="Map" resultType="ClassDTO">
-		SELECT A.RN, A.CLASS_CODE, A.TEACHER_NO, A.LOCATION_CODE, A.CLASS_DATE, A.CLASS_TIME, A.TEACHER_NAME
-		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY C.CLASS_DATE DESC, C.LOCATION_CODE)AS RN, T.TEACHER_NAME, C.CLASS_CODE, T.TEACHER_NO, C.LOCATION_CODE, C.CLASS_DATE, C.CLASS_TIME, T.TEACHER_SUBJECT
-		  		  FROM CLASS C, TEACHER T
-		  		 WHERE C.TEACHER_NO = T.TEACHER_NO) A
+	<!-- 목록 -->
+	<select id="selectMemberList" parameterType="Map" resultType="MemberDTO">
+		SELECT A.RN, A.MEMBER_NO, A.MEMBER_ID, A.MEMBER_PW, A.MEMBER_NAME, A.MEMBER_BIRTH, A.MEMBER_GENDER, A.MEMBER_PHONE, A.MEMBER_EMAIL, A.MEMBER_AGREE_STATE, A.MEMBER_SIGN_UP, A.MEMBER_PW_MODIFIED, A.MEMBER_STATE
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY MEMBER_SIGN_UP DESC) AS RN, MEMBER_NO, MEMBER_ID, MEMBER_PW, MEMBER_NAME, MEMBER_BIRTH, MEMBER_GENDER, MEMBER_PHONE, MEMBER_EMAIL, MEMBER_AGREE_STATE, MEMBER_SIGN_UP, MEMBER_PW_MODIFIED, MEMBER_STATE
+		 		  FROM MEMBER) A
 		 WHERE A.RN BETWEEN #{beginRecord} AND #{endRecord}
 	</select>
+	
+	<!-- 강좌 -->
+	<!-- 전체 강좌 수 -->
+	<select id="selectClassCount" resultType="Integer">
+		SELECT COUNT(CLASS_CODE)
+		  FROM CLASS
+	</select>
+	
+	<!-- 현재 각 강좌에 신청한 인원이 몇명인지 -->
+	<select id="selectCountByClassCode" parameterType="String" resultType="Integer">
+		SELECT COUNT(MEMBER_NO)
+		  FROM RESERVATION
+		 WHERE CLASS_CODE = #{classCode} AND RESERVATION_STATE = 0
+	</select>
+	
+	<!-- 개설 강좌 목록 + 페이징 처리 -->	
+	<select id="selectClassList" parameterType="Map" resultType="ClassDTO">
+		SELECT A.RN, A.CLASS_CODE, A.TEACHER_NO, A.LOCATION_CODE, A.CLASS_DATE, A.CLASS_TIME, A.LOCATION_LIMIT, A.TEACHER_NAME
+  		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY CLASS_CODE DESC) AS RN, C.CLASS_CODE, T.TEACHER_NO, L.LOCATION_CODE, C.CLASS_DATE, C.CLASS_TIME, L.LOCATION_LIMIT, T.TEACHER_NAME
+  		  		  FROM LOCATION L INNER JOIN CLASS C
+  		  		    ON L.LOCATION_CODE = C.LOCATION_CODE
+  		  		  	    	INNER JOIN TEACHER T
+  		  		    ON C.TEACHER_NO = T.TEACHER_NO) A
+ 		 WHERE A.RN BETWEEN #{beginRecord} AND #{endRecord}
+	</select>
+	
+	<!-- 결제 -->
+	<!-- 전체 결제내역 수 -->
+	<select id="selectPayCount" resultType="Integer">
+		SELECT COUNT(PAYLIST_NO)
+		  FROM PAYLIST
+	</select>
+
+	<!-- 목록 -->
+	<select id="selectPayList" parameterType="Map" resultType="PayListDTO">
+		SELECT A.RN, A.PAYLIST_NO, A.MEMBER_NO, A.TICKET_NO, A.PAYLIST_DATE, A.MEMBER_ID
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY PAYLIST_NO DESC) AS RN, P.PAYLIST_NO, M.MEMBER_NO, P.TICKET_NO, P.PAYLIST_DATE, M.MEMBER_ID
+		 		  FROM MEMBER M INNER JOIN PAYLIST P
+  		  		    ON M.MEMBER_NO = P.MEMBER_NO) A
+		 WHERE A.RN BETWEEN #{beginRecord} AND #{endRecord}
+	</select>
+	
+	<!-- 예약 -->
+	<!-- 전체 예약내역 수 -->
+	<select id="selectReserveCount" resultType="Integer">
+		SELECT COUNT(RESERVATION_CODE)
+		  FROM RESERVATION
+	</select>
+
+	<!-- 목록 -->
+	<select id="selectReserveList" parameterType="Map" resultType="ReservationDTO">
+        SELECT A.RN, A.RESERVATION_CODE, A.MEMBER_NO, A.CLASS_CODE, A.RESERVATION_DATE, A.RESERVATION_STATE, A.MEMBER_ID  
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY R.RESERVATION_DATE DESC) AS RN, R.RESERVATION_CODE, M.MEMBER_NO, R.CLASS_CODE, R.RESERVATION_DATE, R.RESERVATION_STATE, M.MEMBER_ID  
+		 		  FROM MEMBER M INNER JOIN RESERVATION R
+                    ON M.MEMBER_NO = R.MEMBER_NO) A
+         WHERE A.RN BETWEEN #{beginRecord} AND #{endRecord}
+                      
+	</select>
+	
+	<!-- 예약취소 - 예약상태 업데이트 -->
+	<update id="updateReservation" parameterType="String">
+		UPDATE RESERVATION
+		   SET RESERVATION_STATE = -1
+		 WHERE RESERVATION_CODE = #{reservationCode}
+	</update>
+	
+	<!-- 예약취소 - 잔여수강권 +1 -->
+	<update id="updateRemainTicket" parameterType="String">
+		UPDATE REMAIN_TICKET
+		   SET REMAIN_TICKET_REMAIN_COUNT = REMAIN_TICKET_REMAIN_COUNT + 1
+		 WHERE MEMBER_ID = #{memberId}
+		   AND REMAIN_TICKET_SUBJECT = #{remainTicketSubject}
+	</update>
 
 </mapper>

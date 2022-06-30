@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>SWIM</title>
+<title>SPINNING</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
@@ -64,7 +64,7 @@
 			var popupY= (window.screen.height /2) - (300 / 2);
 			// 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
 
-			window.open("${contextPath}/reserve/reserveSwimPage?subject=SWIM&classDate=" + strDate, '', 'status=no, height=300, width=600, left='+ popupX + ', top='+ popupY + ', scrollbars=yes,resizable=yes');
+			window.open("${contextPath}/reserve/reserveSpinningPage?subject=SPINNING&classDate=" + strDate, '', 'status=no, height=300, width=600, left='+ popupX + ', top='+ popupY + ', scrollbars=yes,resizable=yes');
 		})
 
 	} // fnGetClassList
@@ -78,7 +78,7 @@
 	    margin: 0 auto;
   	}
   	
-  	#swimImage{
+  	#SpinningImage{
   		width : 150px;
   		height: 150px;
   		display : block;
@@ -91,7 +91,7 @@
 
 	
 	
-	<div><img id="swimImage" alt="수영" src="../resources/images/swim.png"></div>
+	<div><img id="SpinningImage" alt="스피닝" src="../resources/images/spinning.png"></div>
 	
 	
 	

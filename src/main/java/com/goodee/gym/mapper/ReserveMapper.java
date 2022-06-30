@@ -45,7 +45,7 @@ public interface ReserveMapper {
 	
 	
 	// 3. 수영 예약 취소하기
-	public int updateCancelSwim(Map<String, Object> map);
+	public int updateCancelClass(Map<String, Object> map);
 	
 	// 예약 취소 후 잔여 수강권 횟수 증감
 	public int updatePlusRemainTicket(Map<String, Object> map);
