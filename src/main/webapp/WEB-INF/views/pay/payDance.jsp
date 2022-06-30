@@ -22,10 +22,12 @@
 	<br><br><br>
 	
 	
-	<a href="${contextPath}/pay/paySwim">수영</a>
-	<a href="${contextPath}/pay/paySpinning">스피닝</a>
-	<a href="${contextPath}/pay/payPliates">필라테스</a>
-	<span>스포츠댄스</span>
+	<ul class="paymentNav">
+		<li class="paySwim"><a href="${contextPath}/pay/paySwim">수영</a></li>
+		<li class="paySpinning"><a href="${contextPath}/pay/paySpinning">스피닝</a></li>
+		<li class="payPilates"><a href="${contextPath}/pay/payPliates">필라테스</a></li>
+		<li class="payDance">스포츠 댄스</li>
+	</ul>
 	
 	
 	<br><br><br>
