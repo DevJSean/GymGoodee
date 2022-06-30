@@ -75,6 +75,8 @@
 </head>
 <body>
 
+	<jsp:include page="../layout/header.jsp"></jsp:include>
+
 	<h1>질문 작성화면</h1>
 
 	<form id="f" action="${contextPath}/board/questionAdd" method="post">

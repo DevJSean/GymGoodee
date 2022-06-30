@@ -88,7 +88,8 @@
 </style>
 </head>
 <body>
-
+	
+	<jsp:include page="../layout/header.jsp"></jsp:include>
 	
 	
 	<div><img id="swimImage" alt="수영" src="../resources/images/swim.png"></div>

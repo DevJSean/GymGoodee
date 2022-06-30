@@ -108,7 +108,7 @@
 	<table border="1">
 		<tbody>
 			<tr>
-				<td rowspan="4"><img id="pillatesImage" alt="필라테스" src="../resources/images/pillates.png" width="300"></td>
+				<td rowspan="4"><img id="pilatesImage" alt="필라테스" src="../resources/images/pilates.png" width="300"></td>
 				<td colspan="2">
 					<h1>필라테스</h1>
 					<div>신체의 전반적인 균형과 협응력을 길러주는 필라테스</div>

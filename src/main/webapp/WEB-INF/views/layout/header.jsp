@@ -319,8 +319,20 @@
       <ul class="indexNav">
          <li class="indexItem"><a href="${contextPath}/about/center">센터소개</a></li>
          <li class="indexItem"><a href="${contextPath}/about/subject">운동소개</a></li>
-         <li class="indexItem"><a href="${contextPath}/pay/paySwim">수강권구매</a></li>
-         <li class="indexItem"><a href="${contextPath}/board/noticeList">게시판</a></li>
+         <li class="indexItem">수강권구매</li>
+         <li class="indexItem"><a href="${contextPath}/pay/paySwim">수영</a></li>
+         <li class="indexItem"><a href="${contextPath}/pay/payPilates">필라테스</a></li>
+         <li class="indexItem"><a href="${contextPath}/pay/paySpinning">스피닝</a></li>
+         <li class="indexItem"><a href="${contextPath}/pay/payDance">스포츠댄스</a></li>
+         <li class="indexItem">게시판</li>
+         <li class="indexItem"><a href="${contextPath}/board/noticeList">공지사항</a></li>
+         <li class="indexItem"><a href="${contextPath}/board/questionList">QNA</a></li>
+         <li class="indexItem"><a href="${contextPath}/board/reviewList">리뷰</a></li>
+         <li class="indexItem">예약</li>
+         <li class="indexItem"><a href="${contextPath}/reserve/swimPage">수영</a></li>
+         <li class="indexItem"><a href="${contextPath}/reserve/pilatesPage">필라테스</a></li>
+         <li class="indexItem"><a href="${contextPath}/reserve/spinningPage">스피닝</a></li>
+         <li class="indexItem"><a href="${contextPath}/reserve/dancePage">스포츠 댄스</a></li>
       </ul>
    </nav>
 

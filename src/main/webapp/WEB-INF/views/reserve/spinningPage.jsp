@@ -89,7 +89,7 @@
 </head>
 <body>
 
-	
+	<jsp:include page="../layout/header.jsp"></jsp:include>
 	
 	<div><img id="SpinningImage" alt="스피닝" src="../resources/images/spinning.png"></div>
 	

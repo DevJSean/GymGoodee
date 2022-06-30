@@ -59,12 +59,21 @@
 	    return  year + '' + month + '' + day;      
 	}
 	
+	// 0. 시 분 가져오기
+	function fnGetTime(){
+	    var date = new Date();
+	    return date.getHours()+':'+ date.getMinutes();
+	}
+	
+	
+	
 	// 0. 선택 사항들 초기화하기
 	function fnInit(){
 		$('input[name="subject"]').prop('checked',false);
 		$("select#teachers option").remove();
 		$("select#locations option").remove();
-		$("#classDate").remove();
+		$("#classDate").val('');
+		$('#classTime').val('A');
 	}
 	
 	// 1. subject 담당인 강사 목록 가져오기
@@ -123,18 +132,44 @@
 			var subject = $(':radio[name=subject]:checked').val();
 			if(typeof(subject) == 'undefined'){
 				alert('종목을 선택하세요.');
+				fnInit();
 				ev.preventDefault();
 				return false;
 			}
 			
 			if($('#classDate').val() == ''){
 				alert('날짜 선택은 필수 입니다.');
+				fnInit();
 				ev.preventDefault();
 				return false;
 			}
 			
 			if($('#classDate').val() < fnGetToday()){
 				alert('지난 날짜에는 강좌 개설을 할 수 없습니다.');
+				fnInit();
+				ev.preventDefault();
+				return false;
+			}
+			
+			var strTime = $('#classTime').val();
+			var realTime;
+			switch(strTime){
+			case 'A':
+				realTime = "09:00";
+				break;
+			case 'B':
+				realTime = "10:00";
+				break;
+			case 'C':
+				realTime = "19:30";
+				break;
+			case 'D':
+				realTime = "20:30";
+				break;
+			}
+			if(realTime < fnGetTime()){
+				alert('시간이 지나 강좌를 개설할 수 없습니다.');
+				fnInit();
 				ev.preventDefault();
 				return false;
 			}
@@ -160,7 +195,7 @@
 					else{
 						if(obj.res == 1){
 							alert('강좌 개설에 성공했습니다.');
-							//fnClassList();
+							fnInit();
 							fnList();
 						}
 						else{
@@ -198,7 +233,7 @@
 			/* 응답 */
 			dataType : 'json',
 			success : function(obj){
-				console.log(obj,classes);
+				//console.log(obj.classes);
 				fnPrintClassList(obj.classes);
 				fnPrintPaging(obj.p);
 			},
@@ -235,16 +270,16 @@
 		
 		// ◀◀ : 이전 블록으로 이동
 		if(page <= p.pagePerBlock){
-			paging += '<div class="disable_link">◀◀</div>';
+			paging += '<div class="disable_link"><i class="fa-solid fa-caret-left"></i><i class="fa-solid fa-caret-left"></i></div>';
 		} else{			
-			paging += '<div class="enable_link" data-page="'+ (p.beginPage - 1) +'">◀◀</div>';
+			paging += '<div class="enable_link" data-page="'+ (p.beginPage - 1) +'"><i class="fa-solid fa-caret-left"></i><i class="fa-solid fa-caret-left"></i></div>';
 		}
 		
 		// ◀  : 이전 페이지로 이동
 		if(page == 1){
-			paging += '<div class="disable_link">◀</div>';
+			paging += '<div class="disable_link"><i class="fa-solid fa-caret-left"></i></div>';
 		} else{			
-			paging += '<div class="enable_link" data-page="'+ (page - 1) +'">◀</div>';
+			paging += '<div class="enable_link" data-page="'+ (page - 1) +'"><i class="fa-solid fa-caret-left"></i></div>';
 		}
 		
 		// 1 2 3 4 5 : 페이지 번호
@@ -259,16 +294,16 @@
 		
 		// ▶  : 다음 페이지로 이동
 		if(page == p.totalPage){
-			paging += '<div class="disable_link">▶</div>';
+			paging += '<div class="disable_link"><i class="fa-solid fa-caret-right"></i></div>';
 		} else{			
-			paging += '<div class="enable_link" data-page="'+ (page + 1) +'">▶</div>';
+			paging += '<div class="enable_link" data-page="'+ (page + 1) +'"><i class="fa-solid fa-caret-right"></i></div>';
 		}
 		
 		// ▶▶ : 다음 블록으로 이동
 		if(p.endPage == p.totalPage){
-			paging += '<div class="disable_link">▶▶</div>';
+			paging += '<div class="disable_link"><i class="fa-solid fa-caret-right"></i><i class="fa-solid fa-caret-right"></i></div>';
 		} else{			
-			paging += '<div class="enable_link" data-page="'+ (p.endPage + 1) +'">▶▶</div>';
+			paging += '<div class="enable_link" data-page="'+ (p.endPage + 1) +'"><i class="fa-solid fa-caret-right"></i><i class="fa-solid fa-caret-right"></i></div>';
 		}
 		
 		$('#paging').append(paging);
@@ -334,108 +369,98 @@
 	
 	<jsp:include page="../layout/header.jsp"></jsp:include>
 	<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
-	<c:if test="${loginMember.memberId eq 'admin'}">
 
 		
+
+	<!-- 강좌 선택하면 해당 강좌 선생님과, 해당 강좌 장소 보여주기 -->
+	<!-- CLASS 테이블의 PK 는 '날짜_시간_장소' -->
 	
-		<!-- 강좌 선택하면 해당 강좌 선생님과, 해당 강좌 장소 보여주기 -->
-		<!-- CLASS 테이블의 PK 는 '날짜_시간_장소' -->
+	<!-- radio 선택했을 때의 이벤트 처리.... -->
+	<!-- 강좌를 선택 했을 시, ajax 처리 하여 해당 강좌 선생님 선택, 장소 선택하여
+		등록 버튼 눌렀을 때 pk를 위의 형태로 만들어서 insert 하는데 실패할 경우 이미 개설된 수업이므로
+		불가능!
+	-->
+	<section>
+		<nav>
+			<ul class="myPageNav">
+				<li class="navItem"><a href="${contextPath}/admin/memberList">회원목록</a></li>
+				<li class="navItem"><a href="${contextPath}/admin/addTeacherPage">강사등록</a></li>
+				<li class="navItem nowPage">강좌개설</li>
+				<li class="navItem"><a href="${contextPath}/admin/classList">개설강좌</a></li>
+				<li class="navItem"><a href="${contextPath}/admin/reserveList">예약내역</a></li>
+				<li class="navItem"><a href="${contextPath}/adminr/payList">결제내역</a></li>
+			</ul>	
+		</nav>
 		
-		<!-- radio 선택했을 때의 이벤트 처리.... -->
-		<!-- 강좌를 선택 했을 시, ajax 처리 하여 해당 강좌 선생님 선택, 장소 선택하여
-			등록 버튼 눌렀을 때 pk를 위의 형태로 만들어서 insert 하는데 실패할 경우 이미 개설된 수업이므로
-			불가능!
-		-->
-		<section>
-			<nav>
-				<ul class="myPageNav">
-					<li class="navItem"><a href="${contextPath}/admin/memberList">회원목록</a></li>
-					<li class="navItem"><a href="${contextPath}/admin/addTeacherPage">강사등록</a></li>
-					<li class="navItem nowPage">강좌개설</li>
-					<li class="navItem"><a href="${contextPath}/admin/classList">개설강좌</a></li>
-					<li class="navItem"><a href="${contextPath}/admin/reserveList">예약내역</a></li>
-					<li class="navItem"><a href="${contextPath}/adminr/payList">결제내역</a></li>
-				</ul>	
-			</nav>
+		<div>
+			개설하고자 하는 종목을 선택하세요!<br>
+			<label for="SWIM">
+				수영<input type="radio" name="subject" id="SWIM">	
+			</label>
+			<label for="PILATES">
+				필라테스<input type="radio" name="subject" id="PILATES">	
+			</label>
+			<label for="SPINNING">
+				스피닝<input type="radio" name="subject" id="SPINNING">	
+			</label>
+			<label for="DANCE">
+				스포츠댄스<input type="radio" name="subject" id="DANCE">	
+			</label>
 			
-			<div>
-				개설하고자 하는 종목을 선택하세요!<br>
-				<label for="SWIM">
-					수영<input type="radio" name="subject" id="SWIM">	
-				</label>
-				<label for="PILATES">
-					필라테스<input type="radio" name="subject" id="PILATES">	
-				</label>
-				<label for="SPINNING">
-					스피닝<input type="radio" name="subject" id="SPINNING">	
-				</label>
-				<label for="DANCE">
-					스포츠댄스<input type="radio" name="subject" id="DANCE">	
-				</label>
+			<hr>
+		
+			<form id="f">
+				강사 선택
+				<select id="teachers" name="teacherNo">
+				</select>
+				<br>
+				장소 선택
+				<select id="locations" name="locationCode">
+				</select>
+				<br>
 				
-				<hr>
+				날짜 선택
+				<input type="text" name="classDate" id="classDate" autocomplete="off">
+				<br>
+				
+				시간 선택
+				<select id="classTime" name="classTime">
+					<option value="A">A</option>
+					<option value="B">B</option>
+					<option value="C">C</option>
+					<option value="D">D</option>
+				</select>
+				<br><br>
+				<input type="button" value="강좌 개설하기" id="btnAdd">
+			</form>
 			
-				<form id="f">
-					강사 선택
-					<select id="teachers" name="teacherNo">
-					</select>
-					<br>
-					장소 선택
-					<select id="locations" name="locationCode">
-					</select>
-					<br>
+			<hr>
+			
+			<h2>개설 강좌 목록</h2>
+			<table border="1">
+				<thead>
+					<tr>
+						<td>장소</td>
+						<td>강사명</td>
+						<td>날짜</td>
+						<td>시간</td>
+					</tr>
+				</thead>
+				<tbody id="classes">
 					
-					날짜 선택
-					<input type="text" name="classDate" id="classDate">
-					<br>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="4">
+							<div id="paging"></div>
+						</td>
+					</tr>
 					
-					시간 선택
-					<select id="classTime" name="classTime">
-						<option value="A">A</option>
-						<option value="B">B</option>
-						<option value="C">C</option>
-						<option value="D">D</option>
-					</select>
-					<br><br>
-					<input type="button" value="강좌 개설하기" id="btnAdd">
-				</form>
-				
-				<hr>
-				
-				<h2>개설 강좌 목록</h2>
-				<table border="1">
-					<thead>
-						<tr>
-							<td>장소</td>
-							<td>강사명</td>
-							<td>날짜</td>
-							<td>시간</td>
-						</tr>
-					</thead>
-					<tbody id="classes">
-						
-					</tbody>
-					<tfoot>
-						<tr>
-							<td colspan="4">
-								<div id="paging"></div>
-							</td>
-						</tr>
-						
-					</tfoot>
-				</table>
-			</div>
-		
-		</section>
-	</c:if>
-	<c:if test="${loginMember.memberId ne 'admin'}">
-		<a href="${contextPath}/member/loginPage">관리자 페이지는 관리자만 확인할 수 있습니다.</a>
-	</c:if>
-		
+				</tfoot>
+			</table>
+		</div>
 	
-	
-	
-	
+	</section>
 	
 </body>
 </html>

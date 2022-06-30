@@ -58,61 +58,58 @@
 	
 	<jsp:include page="../layout/header.jsp"></jsp:include>
 	
-	<c:if test="${loginMember.memberId eq 'admin'}">
-		<section>
+	<section>
+	
+		<nav>
+			<ul class="myPageNav">
+				<li class="navItem nowPage">회원목록</li>
+				<li class="navItem"><a href="${contextPath}/admin/addTeacherPage">강사등록</a></li>
+				<li class="navItem"><a href="${contextPath}/admin/addClassPage">강좌개설</a></li>
+				<li class="navItem"><a href="${contextPath}/admin/classList">개설강좌</a></li>
+				<li class="navItem"><a href="${contextPath}/admin/reserveList">예약내역</a></li>
+				<li class="navItem"><a href="${contextPath}/admin/payList">결제내역</a></li>
+			</ul>	
+		</nav>
+	
+		<div>
+		<table>
+			<caption>전체 회원 수 ${totalRecord - 1}명</caption>
+			<thead>
+				<tr>
+					<td>번호</td>
+					<td>회원번호</td>
+					<td>아이디</td>		
+					<td>이름</td>		
+					<td>연락처</td>		
+					<td>가입일시</td>		
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach var="member" items="${members}">
+					<c:if test="${member.memberId ne 'admin'}">
+						<tr>
+							<td>${member.rn}</td>
+							<td>${member.memberNo}</td>
+							<td>${member.memberId}</td>
+							<td>${member.memberName}</td>
+							<td>${member.memberPhone}</td>
+							<td>${member.memberSignUp}</td>
+						</tr>
+					</c:if>
+				</c:forEach>
+			</tbody>
+			<tfoot>	
+				<tr>
+					<td colspan="6">
+						${paging}
+					</td>
+				</tr>
+			</tfoot>
+		</table>
 		
-			<nav>
-				<ul class="myPageNav">
-					<li class="navItem nowPage">회원목록</li>
-					<li class="navItem"><a href="${contextPath}/admin/addTeacherPage">강사등록</a></li>
-					<li class="navItem"><a href="${contextPath}/admin/addClassPage">강좌개설</a></li>
-					<li class="navItem"><a href="${contextPath}/admin/classList">개설강좌</a></li>
-					<li class="navItem"><a href="${contextPath}/admin/reserveList">예약내역</a></li>
-					<li class="navItem"><a href="${contextPath}/admin/payList">결제내역</a></li>
-				</ul>	
-			</nav>
-		
-			<div>
-			<table>
-				<caption>전체 회원 수 ${totalRecord - 1}명</caption>
-				<thead>
-					<tr>
-						<td>번호</td>
-						<td>회원번호</td>
-						<td>아이디</td>		
-						<td>이름</td>		
-						<td>연락처</td>		
-						<td>가입일시</td>		
-					</tr>
-				</thead>
-				<tbody>
-					<c:forEach var="member" items="${members}">
-						<c:if test="${member.memberId ne 'admin'}">
-							<tr>
-								<td>${member.rn}</td>
-								<td>${member.memberNo}</td>
-								<td>${member.memberId}</td>
-								<td>${member.memberName}</td>
-								<td>${member.memberPhone}</td>
-								<td>${member.memberSignUp}</td>
-							</tr>
-						</c:if>
-					</c:forEach>
-				</tbody>
-				<tfoot>	
-					<tr>
-						<td colspan="6">
-							${paging}
-						</td>
-					</tr>
-				</tfoot>
-			</table>
-			
-			</div>
-		</section>
-	</c:if>
-	<c:if test="${loginMember.memberId ne 'admin'}">
-		<a href="${contextPath}/member/loginPage">관리자 페이지는 관리자만 확인할 수 있습니다.</a>
-	</c:if>
+		</div>
+	</section>
+
+
 </body>
 </html>

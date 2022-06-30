@@ -28,9 +28,9 @@ public class OrderController extends Payple {
 	public String paySpinning() {
 		return "pay/paySpinning";
 	}
-	@GetMapping("/pay/payPliates")
-	public String payPliates() {
-		return "pay/payPliates";
+	@GetMapping("/pay/payPilates")
+	public String payPilates() {
+		return "pay/payPilates";
 	}
 	@GetMapping("/pay/payDance")
 	public String payDance() {
@@ -72,14 +72,7 @@ public class OrderController extends Payple {
 	}
 	
 	
-	@GetMapping("/about/center")
-	public String center() {
-		return "about/center";
-	}
-	@GetMapping("/about/subject")
-	public String subject() {
-		return "about/subject";
-	}
+	
 	
 
 }

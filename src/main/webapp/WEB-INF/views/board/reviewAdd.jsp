@@ -33,6 +33,8 @@
 </script>
 </head>
 <body>
+
+	<jsp:include page="../layout/header.jsp"></jsp:include>
 	
 	<h3>리뷰 작성</h3>
 	

@@ -107,19 +107,40 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 결제 -->
 	<!-- 전체 결제내역 수 -->
-	<select id="selectPayCount" resultType="Integer">
-		SELECT COUNT(PAYLIST_NO)
-		  FROM PAYLIST
-	</select>
+	 <!-- 결제 -->
+   <!-- 전체 결제내역 수 -->
+   <select id="selectPayCount" resultType="Integer">
+      SELECT COUNT(PAYLIST_NO)
+        FROM PAYLIST
+   </select>
+   
+   <resultMap type="TicketDTO" id="TicketMap">
+      <result column="TICKET_SUBJECT" property="ticketSubject" />
+      <result column="TICKET_COUNT" property="ticketCount" />
+      <result column="TICKET_PERIOD" property="ticketPeriod" />
+      <result column="TICKET_PRICE" property="ticketPrice" />
+   </resultMap>
+   
+   <resultMap type="PayListDTO" id="PayListMap">
+      <result column="PAYLIST_NO" property="payListNo" />
+      <result column="MEMBER_NO" property="memberNo" />
+      <result column="MEMBER_ID" property="memberId" />
+      <result column="TICKET_NO" property="ticketNo" />
+      <result column="PAYLIST_DATE" property="payListDate" />
+      <result column="RN" property="rn" />
+      <collection resultMap="TicketMap" property="ticket" />
+   </resultMap>
 
-	<!-- 목록 -->
-	<select id="selectPayList" parameterType="Map" resultType="PayListDTO">
-		SELECT A.RN, A.PAYLIST_NO, A.MEMBER_NO, A.TICKET_NO, A.PAYLIST_DATE, A.MEMBER_ID
-		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY PAYLIST_NO DESC) AS RN, P.PAYLIST_NO, M.MEMBER_NO, P.TICKET_NO, P.PAYLIST_DATE, M.MEMBER_ID
-		 		  FROM MEMBER M INNER JOIN PAYLIST P
-  		  		    ON M.MEMBER_NO = P.MEMBER_NO) A
-		 WHERE A.RN BETWEEN #{beginRecord} AND #{endRecord}
-	</select>
+   <!-- 목록 -->
+   <select id="selectPayList" parameterType="Map" resultMap="PayListMap">
+        SELECT A.RN, A.PAYLIST_NO, A.MEMBER_NO, A.TICKET_NO, A.PAYLIST_DATE, A.MEMBER_ID, A.TICKET_SUBJECT, A.TICKET_PRICE, A.TICKET_COUNT, A.TICKET_PERIOD
+        FROM (SELECT ROW_NUMBER() OVER(ORDER BY PAYLIST_NO DESC) AS RN, P.PAYLIST_NO, M.MEMBER_NO, P.TICKET_NO, P.PAYLIST_DATE, M.MEMBER_ID, T.TICKET_SUBJECT, T.TICKET_PRICE, T.TICKET_COUNT, T.TICKET_PERIOD
+                 FROM TICKET T INNER JOIN PAYLIST P
+                    ON T.TICKET_NO = P.TICKET_NO
+                                INNER JOIN MEMBER M
+                    ON P.MEMBER_NO = M.MEMBER_NO) A
+       WHERE A.RN BETWEEN #{beginRecord} AND #{endRecord}
+   </select>
 	
 	<!-- 예약 -->
 	<!-- 전체 예약내역 수 -->

@@ -15,33 +15,20 @@ public class IndexController {
 	public String index() {
 		return "index";              
 	}
-	
-	@GetMapping(value={"/lsh"}) 
-	public String lsh() {
-		return "lsh_index";              
-	}
-	@GetMapping(value={"/ljm"}) 
-	public String ljm() {
-		return "ljm_index";              
-	}
-	@GetMapping(value={"/ogy"}) 
-	public String ogy() {
-		return "ogy_index";              
-	}
-	@GetMapping(value={"/phg"}) 
-	public String phg() {
-		return "phg_index";              
-	}
-	
-	@GetMapping(value="/member/login")    
-	public String member() {
-		return "member/login";         
-	}
-	
+		
 	@ResponseBody
 	@GetMapping(value = "/forecast", produces="application/json")
 	public String forecast(HttpServletRequest request) {
 		return ForecastService.forecast(request);
+	}
+	
+	@GetMapping("/about/center")
+	public String center() {
+		return "about/center";
+	}
+	@GetMapping("/about/subject")
+	public String subject() {
+		return "about/subject";
 	}
 	
 

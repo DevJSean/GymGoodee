@@ -138,15 +138,15 @@
 		var paging = '';
 		// ◀◀ : 이전 블록으로 이동
 		if(page <= p.pagePerBlock){
-			paging += '<div class="disable_link">◀◀</div>'
+			paging += '<div class="disable_link"><i class="fa-solid fa-caret-left"></i><i class="fa-solid fa-caret-left"></i></div>'
 		} else {
-			paging += '<div class="enable_link" data-page="' + (p.beginPage - 1) + '">◀◀</div>'
+			paging += '<div class="enable_link" data-page="' + (p.beginPage - 1) + '"><i class="fa-solid fa-caret-left"></i><i class="fa-solid fa-caret-left"></i></div>'
 		}
 		// ◀  : 이전 페이지로 이동
 		if(page == 1){
-			paging += '<div class="disable_link">◀</div>'
+			paging += '<div class="disable_link"><i class="fa-solid fa-caret-left"></i></div>'
 		} else {
-			paging += '<div class="enable_link" data-page="' + (p.page - 1) + '">◀</div>'
+			paging += '<div class="enable_link" data-page="' + (p.page - 1) + '"><i class="fa-solid fa-caret-left"></i></div>'
 		}
 		// 1 2 3 4 5 : 페이지 번호
 		for(let i = p.beginPage; i <= p.endPage; i++) {
@@ -158,15 +158,15 @@
 		}
 		// ▶  : 다음 페이지로 이동
 		if(page == p.totalPage){
-			paging += '<div class="disable_link">▶</div>'
+			paging += '<div class="disable_link"><i class="fa-solid fa-caret-right"></i></div>'
 		} else {
-			paging += '<div class="enable_link" data-page="' + (p.page + 1) + '">▶</div>'
+			paging += '<div class="enable_link" data-page="' + (p.page + 1) + '"><i class="fa-solid fa-caret-right"></i></div>'
 		}
 		// ▶▶ : 다음 블록으로 이동
 		if(p.endPage == p.totalPage){
-			paging += '<div class="disable_link">▶▶</div>'
+			paging += '<div class="disable_link"><i class="fa-solid fa-caret-right"></i><i class="fa-solid fa-caret-right"></i></div>'
 		} else {
-			paging += '<div class="enable_link" data-page="' + (p.endPage + 1) + '">▶▶</div>'
+			paging += '<div class="enable_link" data-page="' + (p.endPage + 1) + '"><i class="fa-solid fa-caret-right"></i><i class="fa-solid fa-caret-right"></i></div>'
 		}
 			
 		$('#paging').append(paging);
@@ -302,6 +302,7 @@
 </head>
 <body>
 	
+	<jsp:include page="../layout/header.jsp"></jsp:include>
 	
 	<h1>게시글 구역</h1>
 	번호 ${review.reviewNo}<br>

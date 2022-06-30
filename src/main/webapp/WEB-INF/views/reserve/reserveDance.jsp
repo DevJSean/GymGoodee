@@ -186,11 +186,11 @@
 							else{
 								if(danceclass.reservationState == 0){
 									// (1) 내가 예약한 수업인 경우 [예약 취소] 버튼
-									tr.append($('<td>').html('<input type="button" class ="btnReserveCancel" data-classcode="'+ swimclass.classCode + '" value="예약취소">'));
+									tr.append($('<td>').html('<input type="button" class ="btnReserveCancel" data-classcode="'+ danceclass.classCode + '" value="예약취소">'));
 								}else if(danceclass.reservationState == -1 || danceclass.reservationState == 500){
 									// (2-1) 수강권이 있고, 예약하지 않은 수업에 대해서 [예약하기] 버튼
 									if(danceclass.currentCount < danceclass.locationLimit && obj.state==1){		
-										tr.append($('<td>').html('<input type="button" class ="btnReserve" data-classcode="'+ swimclass.classCode + '" value="예약하기">'));			
+										tr.append($('<td>').html('<input type="button" class ="btnReserve" data-classcode="'+ danceclass.classCode + '" value="예약하기">'));			
 									}
 									// (2-2) 수강권이 없고, 예약을 안한 강좌에 대해 [수강권 구매] 버튼
 									else if(danceclass.currentCount < danceclass.locationLimit && obj.state==0){	

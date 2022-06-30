@@ -145,6 +145,8 @@
 </style>
 </head>
 <body>
+
+	<jsp:include page="../layout/header.jsp"></jsp:include>
 	
 	<h1>공지사항 작성화면</h1>
 	<div>
