@@ -29,9 +29,12 @@
 		fnPhoneAuth();
 		fnToUpperCase();
 		fnSignUp();
+		$('#btnBack').on('click', function(){
+			location.href="${contextPath}/member/loginPage";
+		})
 	})
 	
-	// 11. 회원가입
+	// 10. 회원가입
 	function fnSignUp(){
 		$('#f').on('submit', function(event){
 			if(idPass == false){
@@ -58,7 +61,7 @@
 		})
 	}
 	
-	// 10. SMS 인증코드 검증
+	// 9. SMS 인증코드 검증
 	let authCodePassSMS = false;
 	function fnVerifyAuthCodeSMS(authCodeSMS){  
 		$('#btnVerifyAuthCodeSMS').on('click', function(){
@@ -72,10 +75,6 @@
 		})
 	}
 	
-	// 9. 연락처 정규식 체크
-	function fnPhoneCheck(){
-
-	}
 	
 	// 8. SMS 인증
 	function fnPhoneAuth(){
@@ -201,7 +200,7 @@
 	let pwPass = false;
 	function fnPwCheck(){
 		$('#memberPw').on('keyup', function(){
-			let regPw = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/;
+			let regPw = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*~])[a-zA-Z0-9!@#$%^&*~]{8,16}$/;
 			if(regPw.test($('#memberPw').val())==false){
 				$('#pwMsg').text('8~16자 영문, 숫자, 특수문자를 모두 사용하세요.').addClass('dont').removeClass('ok');
 				pwPass = false;
@@ -284,6 +283,7 @@
 		</label><br><br>
 		
 		성별
+		<label for="sex"><input type="radio" name="memberGender" value="N" id="sex" checked>선택안함</label>
 		<label for="male"><input type="radio" name="memberGender" value="M" id="male">남</label>
 		<label for="female"><input type="radio" name="memberGender" value="F" id="female">여</label><br><br>
 		
@@ -305,7 +305,7 @@
 			<input type="button" value="인증하기" id="btnVerifyAuthCodeEmail"><br><br>
 		</label><br><br>
 		
-		<input type="button" value="취소하기" onclick="location.href='${contextPath}/member/login'">
+		<input type="button" value="취소하기" id="btnBack">
 		<button>가입하기</button>
 	
 	</form>

@@ -690,31 +690,37 @@ public class MemberServiceImpl implements MemberService {
 	public void changePw(HttpServletRequest request, HttpServletResponse response) {
 		
 		String memberId = request.getParameter("memberId");
-		String memberPw = SecurityUtils.sha256(request.getParameter("memberPw"));
+		
+		MemberDTO originMember = memberMapper.selectMemberById(memberId);
+		
+		String savedPw = originMember.getMemberPw();
+		
+		String newPw = SecurityUtils.sha256(request.getParameter("memberPw"));
 		
 		MemberDTO member = MemberDTO.builder()
 				.memberId(memberId)
-				.memberPw(memberPw)
+				.memberPw(newPw)
 				.build();
 		
-		int res = memberMapper.updatePw(member);
+		
 		
 		try {
 			response.setContentType("text/html");
 			PrintWriter out = response.getWriter();
-			if(res == 1) {
+			if(newPw.equals(savedPw)) {
+				out.println("<script>");
+				out.println("alert('동일한 비밀번호로 변경할 수 없습니다.')");
+				out.println("history.back()");
+				out.println("</script>");
+				out.close();
+			} else {
+				memberMapper.updatePw(member);
 				out.println("<script>");
 				out.println("alert('비밀번호가 수정되었습니다.')");
 				out.println("location.href='" + request.getContextPath() + "/member/loginPage'");
 				out.println("</script>");
 				out.close();
-			} else {
-				out.println("<script>");
-				out.println("alert('비밀번호가 수정되지 않았습니다.')");
-				out.println("history.back()");
-				out.println("</script>");
-				out.close();
-			}
+			} 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
