@@ -444,7 +444,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	@Override
-	public void removeNoticeFileAttach(Long noticeFileAttachNo) {
+	public Map<String, Object> removeNoticeFileAttach(Long noticeFileAttachNo) {
 		NoticeFileAttachDTO noticeFileAttach = boardMapper.selectNoticeFileAttachByNo(noticeFileAttachNo);
 		
 		if(noticeFileAttach != null) {
@@ -465,7 +465,12 @@ public class BoardServiceImpl implements BoardService {
 				e.printStackTrace();
 			}
 		}
-		boardMapper.deleteNoticeFileAttach(noticeFileAttachNo);
+		int res = boardMapper.deleteNoticeFileAttach(noticeFileAttachNo);
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("res", res); 
+		
+		return map;
 	}
 	
 	@Override
@@ -489,9 +494,10 @@ public class BoardServiceImpl implements BoardService {
 		}
 		if(column.equals("NOTICE_TITLE")) {
 			result.put("column", "noticeTitle");
-		} else if(column.equals("NOTICE_CONTENT")) {
+		} 
+		/*else if(column.equals("NOTICE_CONTENT")) {
 			result.put("column", "noticeContent");
-		}
+		} */
 		return result;
 	}
 	
@@ -588,11 +594,12 @@ public class BoardServiceImpl implements BoardService {
 		}
 		if(column.equals("QUESTION_TITLE")) {
 			result.put("column", "questionTitle");
-		} else if(column.equals("MEMBER_ID")) {
+		} 
+		/*else if(column.equals("MEMBER_ID")) {
 			result.put("column", "memberId");
 		} else if(column.equals("QUESTION_CONTENT")) {
 			result.put("column", "questionContent");
-		}
+		}*/
 		return result;
 	}
 	
@@ -851,11 +858,12 @@ public class BoardServiceImpl implements BoardService {
 			result.put("column", "reviewTitle");
 		} else if(column.equals("REVIEW_SUBJECT")) {
 			result.put("column", "reviewSubject");
-		} else if(column.equals("MEMBER_ID")) {
+		} 
+		/*else if(column.equals("MEMBER_ID")) {
 			result.put("column", "memberId");
 		} else if(column.equals("REVIEW_CONTENT")) {
 			result.put("column", "reviewContent");
-		}
+		}*/
 		return result;
 	}
 	

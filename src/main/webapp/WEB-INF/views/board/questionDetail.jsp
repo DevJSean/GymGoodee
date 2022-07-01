@@ -6,7 +6,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
+<title>QnA 상세보기</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script>
 	
@@ -89,7 +90,9 @@
 </head>
 <body>
 
-	<jsp:include page="../layout/header.jsp"></jsp:include>
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>
 
 	<input type="button" value="QnA 목록" id="btnList">
 	<c:if test="${loginMember.memberId eq question.memberId || loginMember.memberId eq 'admin'}">

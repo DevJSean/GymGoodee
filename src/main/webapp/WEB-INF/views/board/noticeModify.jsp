@@ -6,7 +6,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
+<title>공지사항 수정</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script>
@@ -49,10 +50,29 @@
 		$('#btnList').on('click', function(){
 			location.href='${contextPath}/board/noticeList';
 		})
+		
+		$('.fa-x').on('click', function(){
+			$.ajax({
+				url: '${contextPath}/board/removeNoticeFileAttach',
+				type: 'get',
+				data: 'noticeFileAttachNo=' + $(this).prev().val(),
+				success: function(obj) {
+					if(obj.res == 1) {
+						alert('첨부파일이 삭제되었습니다.');
+						location.href='${contextPath}/board/noticeModifyPage?noticeNo=${notice.noticeNo}';
+					}
+				},
+				error: function(jqXHR) {
+					alert(jqXHR.responseText);
+				}
+			})
+		})
+		
 	})
 	
 	function fnImagePreview(event){
 		$('#attached').empty();
+		$('#newAttached').removeClass('blind');
 		for(var image of event.target.files){
 			var reader = new FileReader();
 			
@@ -75,13 +95,17 @@
 	.blind {
 		display: none;
 	}
+	.fa-x {
+		cursor: pointer;
+	}
 </style>
 </head>
 <body>
 
-	<jsp:include page="../layout/header.jsp"></jsp:include>
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>
 	
-	<h1>공지사항 수정 화면</h1>
 	<form id="f" action="${contextPath}/board/noticeModify" method="post" enctype="multipart/form-data">
 		번호 ${notice.noticeNo}<br>
 		작성일 ${notice.noticeCreated}<br>
@@ -99,15 +123,17 @@
 	<c:if test="${not empty noticeFileAttaches}">
 		<h3>첨부파일 삭제</h3>
 		<c:forEach var="noticeFileAttach" items="${noticeFileAttaches}">
-			<span>${noticeFileAttach.noticeFileAttachOrigin}</span> 
-			<a href="${contextPath}/board/removeNoticeFileAttach?noticeFileAttachNo=${noticeFileAttach.noticeFileAttachNo}&noticeNo=${noticeFileAttach.noticeNo}"><i class="fa-solid fa-x"></i></a>	
+			<span>${noticeFileAttach.noticeFileAttachOrigin}</span>
+			<input type="hidden" value="${noticeFileAttach.noticeFileAttachNo}">
+			<i class="fa-solid fa-x"></i>
 			<div><img alt="${noticeFileAttach.noticeFileAttachOrigin}" src="${contextPath}/board/noticeDisplay?noticeFileAttachNo=${noticeFileAttach.noticeFileAttachNo}" width="300px"></div>
 		</c:forEach>
-	</c:if>	
-	<c:if test="${not empty noticeFileAttaches}">
+	</c:if>
+	
+	<div id="newAttached" class="blind">
 		<h3>새로 첨부된 파일</h3>
 		<div id="attached"></div>
-	</c:if>	
+	</div>
 	
 </body>
 </html>

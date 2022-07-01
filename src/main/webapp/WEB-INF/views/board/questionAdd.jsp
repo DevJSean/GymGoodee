@@ -6,7 +6,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
+<title>QnA 작성</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script src="../resources/summernote-0.8.18-dist/summernote-lite.js"></script>
 <script src="../resources/summernote-0.8.18-dist/lang/summernote-ko-KR.js"></script>
@@ -75,9 +76,9 @@
 </head>
 <body>
 
-	<jsp:include page="../layout/header.jsp"></jsp:include>
-
-	<h1>질문 작성화면</h1>
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>
 
 	<form id="f" action="${contextPath}/board/questionAdd" method="post">
 		<input type="text" name="writer" value="${loginMember.memberId}" readonly><br>

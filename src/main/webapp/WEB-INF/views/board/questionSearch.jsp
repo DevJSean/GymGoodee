@@ -6,7 +6,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
+<title>QnA</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script>
 
@@ -53,7 +54,7 @@
 			}
  			var regId = /^[a-z0-9]{2,20}$/;  
 			if( column.val() == 'MEMBER_ID' && regId.test(query.val()) == false) {
-				alert('영문 소문자, 숫자, 특수기호(-_)를 포함하여 2자 이상 20자 이하로 입력해주세요.');
+				alert('영문 소문자, 숫자를 이용하여 2자 이상 20자 이하로 입력해주세요.');
 				query.focus();
 				return;
 			}

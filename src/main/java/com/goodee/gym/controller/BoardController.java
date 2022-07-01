@@ -85,10 +85,10 @@ public class BoardController {
 	public void change(MultipartHttpServletRequest multipartRequest, HttpServletResponse response) {
 		boardService.noticeModify(multipartRequest, response);
 	}
-	@GetMapping(value="/board/removeNoticeFileAttach")
-	public String removeNoticeFileAttach(@RequestParam Long noticeFileAttachNo, @RequestParam Long noticeNo) {
-		boardService.removeNoticeFileAttach(noticeFileAttachNo);
-		return "redirect:/board/noticeModifyPage?noticeNo=" + noticeNo;
+	@ResponseBody
+	@GetMapping(value="/board/removeNoticeFileAttach", produces="application/json")
+	public Map<String, Object> removeNoticeFileAttach(@RequestParam Long noticeFileAttachNo) {
+		return boardService.removeNoticeFileAttach(noticeFileAttachNo);
 	}
 
 	
