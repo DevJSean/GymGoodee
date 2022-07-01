@@ -9,9 +9,7 @@
 <link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
 <title>QnA 작성</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
-<script src="../resources/summernote-0.8.18-dist/summernote-lite.js"></script>
-<script src="../resources/summernote-0.8.18-dist/lang/summernote-ko-KR.js"></script>
-<link rel="stylesheet" href="../resources/summernote-0.8.18-dist/summernote-lite.css"/>
+
 <script>
 	$(function(){
 		fnSubmit();
@@ -79,6 +77,10 @@
 	<header>
 		<jsp:include page="../layout/header.jsp"></jsp:include>
 	</header>
+	
+	<script src="../resources/summernote-0.8.18-dist/summernote-lite.js"></script>
+	<script src="../resources/summernote-0.8.18-dist/lang/summernote-ko-KR.js"></script>
+	<link rel="stylesheet" href="../resources/summernote-0.8.18-dist/summernote-lite.css"/>
 
 	<form id="f" action="${contextPath}/board/questionAdd" method="post">
 		<input type="text" name="writer" value="${loginMember.memberId}" readonly><br>

@@ -24,7 +24,7 @@ body {
 }
 
 article,aside,details,figcaption,figure,
-footer,header,hgroup,menu,nav,section {
+footer,header,hgroup,menu,nav {
     display:block;
 }
 
@@ -107,18 +107,18 @@ div {
 
 
 /* 폰트 초기화 */
-body, input, textarea, select, button, table {
+body, input, textarea, select, option, button, table {
 	font-family: 'NanumSquareRound';
 	font-weight: 700;
 	color: rgb(70, 70, 70);
 }
 
-
 /* 
-jsp(html)파일에 적용할 웹폰트 링크 태그를 먼저 넣습니다.
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/reset.css">
 <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
-위 폰트는 나눔고딕코딩,
-폰트를 적용하려면 css(style)에 font-family를 적용하면 됨.
+css 초기화문과 jsp(html)파일에 적용할 웹폰트 링크 태그를 넣습니다.
+위 폰트는 나눔스퀘어라운드
+폰트를 적용하려면 font-family를 적용하면 됨.
 font-family: 'NanumSquareRoundLight';
 font-family: 'NanumSquareRound';		** 사용중 font-weight: 700
 font-family: 'NanumSquareRoundBold';
@@ -128,7 +128,7 @@ font-family: 'NanumSquareRoundExtraBold';
 reset.css 파일을 import한 본인의 css 파일을 그 아래에 external 방식으로 적용하면 폰트도 적용이 됩니다.
 
 
-이 reset.css 파일을 자신의 css파일에 적용하려면, 맨 윗줄에
+이 reset.css 파일을 css 폴더에 위치한 자신의 css파일에 적용하려면, 맨 윗줄에
 @import "reset.css";
 넣으면 됩니다.
 */

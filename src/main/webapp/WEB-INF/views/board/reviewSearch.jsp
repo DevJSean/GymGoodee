@@ -9,6 +9,7 @@
 <link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
 <title>리뷰</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script>
 
 	$(function(){
@@ -16,6 +17,20 @@
 		fnSearchAll();	
 		fnSearch();
 		fnAutoComplete();
+		$('#begin').datepicker({	
+			'showOn' : 'focus',		
+			'dateFormat': "yy-mm-dd",
+			'minDate': 0, 
+			'maxDate' : "+1M",
+			'showAnim' : 'slideDown'
+		})
+		$('#end').datepicker({	
+			'showOn' : 'focus',		
+			'dateFormat': "yy-mm-dd",
+			'minDate': 0, 
+			'maxDate' : "+1M",
+			'showAnim' : 'slideDown'
+		})
 	})
 
 	function fnAreaChoice(){
@@ -103,6 +118,8 @@
 	
 	<%@ include file="reviewList.jsp" %>
 
+	<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
+
 	<form id="f" method="get">
 		<select name="column" id="column">
 			<option value="REVIEW_TITLE">제목</option>
@@ -116,9 +133,9 @@
 			<datalist id="autoComplete"></datalist>
 		</span>
 		<span id="rangeArea">
-			<input type="text" name="begin" id="begin">
+			<input type="text" name="begin" id="begin" autocomplete="off">
 			~
-			<input type="text" name="end" id="end">
+			<input type="text" name="end" id="end" autocomplete="off">
 		</span>
 		<input type="button" value="검색" id="btnSearch">
 		<input type="button" value="전체조회" id="btnSearchAll">

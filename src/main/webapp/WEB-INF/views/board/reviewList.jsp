@@ -10,7 +10,6 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
 <title>리뷰</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <style>
 	* {
 		box-sizing: border-box;
@@ -31,15 +30,14 @@
 	table {
 		border-collapse: collapse;
 	}
-	td:nth-of-type(1) { width: 70px; }
-	td:nth-of-type(2) { width: 300px; }
-	td:nth-of-type(3) { width: 200px; }
-	td:nth-of-type(4) { width: 200px; }
-	td:nth-of-type(5) { width: 100px; }
-	td:nth-of-type(6) { width: 100px; }
-	td {
+	#list td:nth-of-type(1) { width: 70px; }
+	#list td:nth-of-type(2) { width: 300px; }
+	#list td:nth-of-type(3) { width: 200px; }
+	#list td:nth-of-type(4) { width: 200px; }
+	#list td:nth-of-type(5) { width: 120px; }
+	#list td:nth-of-type(6) { width: 100px; }
+	#list td {
 		padding: 5px;
-		border: 1px solid silver;
 		text-align: center;
 	}
 	tfoot td {
@@ -75,6 +73,11 @@
 	section {
 		display: flex;
 	}
+	
+	#newImage{
+  		width : 30px;
+  		height: 30px;
+  	}
 		
 </style>
 </head>
@@ -98,7 +101,7 @@
 			<input type="button" value="글 작성" onclick="location.href='${contextPath}/board/reviewAddPage'">
 		</c:if>
 		
-		<table>
+		<table id="list">
 			<thead>
 				<tr>
 					<td>글 번호</td>
@@ -123,7 +126,7 @@
 							<fmt:parseNumber var="createdDate" value="${startDate.time / (1000*60*60*24)}" integerOnly="true" />
 							<fmt:parseNumber var="todayDate" value="${endDate.time / (1000*60*60*24)}" integerOnly="true" /> 
 							<c:if test="${todayDate - createdDate le 1}">
-								<i class="fa-solid fa-circle-check"></i>
+								<img id="newImage" alt="새글" src="../resources/images/new.png">
 							</c:if>
 						</td> 
 						<td>
