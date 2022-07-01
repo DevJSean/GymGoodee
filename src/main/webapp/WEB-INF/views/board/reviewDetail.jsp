@@ -6,7 +6,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
+<title>리뷰 상세보기</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script>
@@ -97,7 +98,11 @@
 					$('#replies').append($(tr));
 				} else {
 					let tr = '<tr>';
-					tr += '<td>' + reply.memberId + '</td>';
+					if(reply.memberId == '${review.memberId}'){
+						tr += '<td>글쓴이</td>';
+					} else {
+						tr += '<td>' + reply.memberId + '</td>';
+					}
 					if(reply.reviewDepth > 1) {
 						tr += '<td>';
 						for(let i = 0; i < reply.reviewDepth; i++){
@@ -301,10 +306,11 @@
 </style>
 </head>
 <body>
+
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>	
 	
-	<jsp:include page="../layout/header.jsp"></jsp:include>
-	
-	<h1>게시글 구역</h1>
 	번호 ${review.reviewNo}<br>
 	반정보 ${review.classCode}<br>
 	제목 ${review.reviewTitle}<br>

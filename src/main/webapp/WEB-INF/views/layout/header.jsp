@@ -17,8 +17,19 @@
       
 		// 현 위치를 알아내고 날씨 알아내기
 		fnGetTodayWeather();
+		// 시계 달기
+		fnClock();
+		setInterval(fnClock, 1000);
 	})
    
+	function fnClock() {
+	    const date = new Date();
+	    let hours = String(date.getHours()).padStart(2, "0");
+	    let min = String(date.getMinutes()).padStart(2, "0");
+	    let sec = String(date.getSeconds()).padStart(2, "0");
+	    $('#clock').text(hours + ':' + min + ':' + sec);
+	}
+	
    // 예약일시 타임스탬프 날짜 형태로 수정
     function fnGetDate(date){
        var date = new Date(date);
@@ -132,13 +143,24 @@
 		  const lng = position.coords.longitude;
 		  const location = DFStoXY(lat, lng);
 		  let today = new Date();
-		  let year = today.getFullYear(); 
-		  let month = today.getMonth() + 1
+		  let fDate = today.getFullYear(); 
+		  let month = today.getMonth() + 1;
+		  if (month < 10) {
+			  fDate += "0";
+		  }
+		  fDate += month;
 		  let date = today.getDate();
+		  if (date < 10) {
+			  fDate += "0";
+		  }
+		  fDate += date;
+/* 		  
+		  let hours = String(date.getHours()).padStart(2, "0");
+		  
 		  $.ajax({  
-				url: '${contextPath}/forecast',
+				url: '${contextPath}/forecastNow',
 				type: 'get',
-				data: 'fDate=' + year + '0' + month + date + '&x=' + location.x + '&y=' + location.y,
+				data: 'fDate=' + fDate + 'fTime=' + hours + '00' + '&x=' + location.x + '&y=' + location.y,
 				dataType: 'json',
 				success: function(obj){
 					let item = obj.response.body.items.item;
@@ -187,7 +209,62 @@
 					} else if(item[41].fcstValue == 4 && item[42].fcstValue == 4) {
 						let i = '<i class="wi wi-sleet" style="color:#8AAAE5;"></i>';
 						$('#todayWeather').append($(i));
-					} 
+					}
+				}
+		  }) */
+		  $.ajax({  
+				url: '${contextPath}/forecast',
+				type: 'get',
+				data: 'fDate=' + fDate + '&x=' + location.x + '&y=' + location.y,
+				dataType: 'json',
+				success: function(obj){
+					let item = obj.response.body.items.item;
+					if(item[41].fcstValue == 1 && item[42].fcstValue == 0) {
+						let i = '<i class="wi wi-day-sunny" style="color:#8AAAE5;"></i>';
+						$('#todayWeather').append($(i));
+					} else if(item[41].fcstValue == 1 && item[42].fcstValue == 1) {
+						let i = '<i class="wi wi-day-rain" style="color:#8AAAE5;"></i>';
+						$('#todayWeather').append($(i));
+					} else if(item[41].fcstValue == 1 && item[42].fcstValue == 2) {
+						let i = '<i class="wi wi-day-rain-mix" style="color:#8AAAE5;"></i>';
+						$('#todayWeather').append($(i));
+					} else if(item[41].fcstValue == 1 && item[42].fcstValue == 3) {
+						let i = '<i class="wi wi-day-snow" style="color:#8AAAE5;"></i>';
+						$('#todayWeather').append($(i));
+					} else if(item[41].fcstValue == 1 && item[42].fcstValue == 4) {
+						let i = '<i class="wi wi-day-showers" style="color:#8AAAE5;"></i>';
+						$('#todayWeather').append($(i));
+					} else if(item[41].fcstValue == 3 && item[42].fcstValue == 0) {
+						let i = '<i class="wi wi-cloudy" style="color:#8AAAE5;"></i>';
+						$('#todayWeather').append($(i));
+					} else if(item[41].fcstValue == 3 && item[42].fcstValue == 1) {
+						let i = '<i class="wi wi-rain" style="color:#8AAAE5;"></i>';
+						$('#todayWeather').append($(i));
+					} else if(item[41].fcstValue == 3 && item[42].fcstValue == 2) {
+						let i = '<i class="wi wi-rain-mix" style="color:#8AAAE5;"></i>';
+						$('#todayWeather').append($(i));
+					} else if(item[41].fcstValue == 3 && item[42].fcstValue == 3) {
+						let i = '<i class="wi wi-snow" style="color:#8AAAE5;"></i>';
+						$('#todayWeather').append($(i));
+					} else if(item[41].fcstValue == 3 && item[42].fcstValue == 4) {
+						let i = '<i class="wi wi-showers" style="color:#8AAAE5;"></i>';
+						$('#todayWeather').append($(i));
+					} else if(item[41].fcstValue == 4 && item[42].fcstValue == 0) {
+						let i = '<i class="wi wi-fog" style="color:#8AAAE5;"></i>';
+						$('#todayWeather').append($(i));
+					} else if(item[41].fcstValue == 4 && item[42].fcstValue == 1) {
+						let i = '<i class="wi wi-rain" style="color:#8AAAE5;"></i>';
+						$('#todayWeather').append($(i));
+					} else if(item[41].fcstValue == 4 && item[42].fcstValue == 2) {
+						let i = '<i class="wi wi-rain-mix" style="color:#8AAAE5;"></i>';
+						$('#todayWeather').append($(i));
+					} else if(item[41].fcstValue == 4 && item[42].fcstValue == 3) {
+						let i = '<i class="wi wi-snow" style="color:#8AAAE5;"></i>';
+						$('#todayWeather').append($(i));
+					} else if(item[41].fcstValue == 4 && item[42].fcstValue == 4) {
+						let i = '<i class="wi wi-sleet" style="color:#8AAAE5;"></i>';
+						$('#todayWeather').append($(i));
+					}
 					if(item[331].fcstValue == 1 && item[332].fcstValue == 0) {
 						let i = '<i class="wi wi-day-sunny" style="color:#8AAAE5;"></i>';
 						$('#tomorrowWeather').append($(i));
@@ -250,6 +327,9 @@
    
 </script>
 <style>
+   header {
+      padding-top: 30px;
+   }
    .indexNav {
       display: flex;
       flex-direction: row;
@@ -288,8 +368,8 @@
 				<td id="tomorrowWeather"></td>
 			</tr>
 			<tr>
-				<td>오늘 날씨</td>
-				<td>내일 날씨</td>
+				<td id="clock"></td>
+				<td>Tomorrow</td>
 			</tr>
 		</tbody>
 	</table>

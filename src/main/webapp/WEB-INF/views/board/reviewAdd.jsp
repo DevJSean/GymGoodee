@@ -7,7 +7,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
+<title>리뷰 작성</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script>
 	
@@ -34,9 +35,9 @@
 </head>
 <body>
 
-	<jsp:include page="../layout/header.jsp"></jsp:include>
-	
-	<h3>리뷰 작성</h3>
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>
 	
 	<form action="${contextPath}/board/reviewAdd" method="post" id="f">
 		작성자 <input type="text" name="writer" value="${loginMember.memberId}" readonly><br>

@@ -30,7 +30,7 @@ public interface BoardService {
 	// 공지사항 수정
 	public void noticeModify(MultipartHttpServletRequest multipartRequest, HttpServletResponse response);
 	// 공지사항 파일 삭제
-	public void removeNoticeFileAttach(Long noticeFileAttachNo);
+	public Map<String, Object> removeNoticeFileAttach(Long noticeFileAttachNo);
 	
 	
 	// 질문 전체조회

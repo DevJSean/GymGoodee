@@ -6,7 +6,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
+<title>공지사항 작성</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script>
 	
@@ -146,9 +147,10 @@
 </head>
 <body>
 
-	<jsp:include page="../layout/header.jsp"></jsp:include>
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>
 	
-	<h1>공지사항 작성화면</h1>
 	<div>
 		제목 : <input type="text" name="title" id="title"><br>
 		내용<br><textarea rows="30" cols="80" name="content" id="content" class="content"></textarea><br>

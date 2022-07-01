@@ -22,6 +22,12 @@ public class IndexController {
 		return ForecastService.forecast(request);
 	}
 	
+	@ResponseBody
+	@GetMapping(value = "/forecastNow", produces="application/json")
+	public String forecastNow(HttpServletRequest request) {
+		return ForecastService.forecastNow(request);
+	}
+	
 	@GetMapping("/about/center")
 	public String center() {
 		return "about/center";
