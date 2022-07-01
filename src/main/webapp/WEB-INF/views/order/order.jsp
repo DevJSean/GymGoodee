@@ -10,10 +10,9 @@ pageEncoding="UTF-8"%>
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
-    <title>결제창 데모</title>
+    <title>결제정보 수정</title>
 
     <script src="../resources/js/jquery-3.6.0.js"></script>
-
 
 	<script>
 	$(document).ready(function () {
@@ -57,7 +56,10 @@ pageEncoding="UTF-8"%>
 </head>
 <body>
 
-	<jsp:include page="../layout/header.jsp"></jsp:include>
+    
+    <header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>
 
     <form id="orderForm" name="orderForm">
         <h2>| 주문 정보 설정</h2>
@@ -106,7 +108,7 @@ pageEncoding="UTF-8"%>
 				<tr>
 					<th>결제금액</th>
 					<td>
-						<input type="hidden" name="ticketPrice" id="ticketPrice" value="100">
+						<input type="hidden" name="ticketPrice" id="ticketPrice" value="1000">
 						${ticket.ticketPrice}원
 						<div>※ 실 결제는 1000원으로 통일됩니다.</div>
 					</td>

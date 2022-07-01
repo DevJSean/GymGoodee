@@ -11,8 +11,10 @@
 <title>Insert title here</title>
 </head>
 <body>
-	
-	<jsp:include page="../layout/header.jsp"></jsp:include>
+
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>
 	
 	<h1>운동정보</h1>	
 
@@ -116,7 +118,7 @@
 			</tr>
 			<tr>
 				<td colspan="2">
-					전신거울과 신체 안정화와 체형교정으로 균형적인 전신근육을 강화하며 <br>
+					신체 안정화와 체형교정으로 균형적인 전신근육을 강화하며<br>
 					스트레스 완화와 통증 완화에 있어 효과적인 운동입니다.<br>
 					※ 필라테스 칼로리 소모량 : 시간당 약 350kcal
 				</td>
@@ -145,9 +147,9 @@
 			</tr>
 			<tr>
 				<td colspan="2">
-					커다란 스피커에서 나오는 음악으로 스트레스, 우울증 등을 떨쳐낼 수 있는<br>
-					가장 재밌게 즐길 수 있는 운동입니다<br>
-					※ 필라테스 칼로리 소모량 : 시간당 약 350kcal
+					음악과 함께 상대방과 호흡을 맞추며 스트레스, 우울증 등을 떨쳐낼 수 있는<br>
+					저희 체육관에서 가장 쉽고 재밌게 즐길 수 있는 운동입니다<br>
+					※ 스포츠댄스 칼로리 소모량 : 시간당 약 500kcal
 				</td>
 			</tr>
 			<tr>

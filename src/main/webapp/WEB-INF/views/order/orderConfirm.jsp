@@ -18,6 +18,7 @@
 <!-- payple js 호출. 테스트/운영 선택 -->
 <script src="https://democpay.payple.kr/js/cpay.payple.1.0.1.js"></script> <!-- TEST (테스트) -->
 
+
 <script>
 	$(document).ready(
 		function() {
@@ -29,7 +30,7 @@
 				$form.attr('action', url);
 				$form.attr('method', 'post');
 				$.each(res, function(key, val) {
-					var input = $('<input type="text" name="' + key + '" value="' + val + '">');
+					var input = $('<input type="hidden" name="' + key + '" value="' + val + '">');
 					$form.append(input);
 				});
 				
@@ -86,7 +87,9 @@
 
 <body>
 
-	<jsp:include page="../layout/header.jsp"></jsp:include>
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>
 
 	<h2>| 결제 정보 확인</h2>
 	<table border="1">

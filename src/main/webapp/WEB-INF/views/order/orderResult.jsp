@@ -9,16 +9,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
-    <title>결제요청 결과</title>
+    <title>결제 내역</title>
   </head>
 
 <body>
 
-	<jsp:include page="../layout/header.jsp"></jsp:include>
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>
+
 
 	<c:if test="${payDate == null}">
 		<h1>결제 취소</h1>
-		<input type="button" value="다시 예약하기" id=""  onclick="location.href='${contextPath}/phg'">
+		<input type="button" value="다시 예약하기" id=""  onclick="location.href='${contextPath}/pay/paySwim'">
 	</c:if>
 
 	<c:if test="${payDate != null}">
