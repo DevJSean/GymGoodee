@@ -20,7 +20,7 @@ time, mark, audio, video {
 }
 
 body {
-    line-height:1;
+    background-color: #F5F6F7;
 }
 
 article,aside,details,figcaption,figure,
@@ -93,20 +93,36 @@ input, select {
     vertical-align:middle;
 }
 
+div {
+	backgound-color: #FFFFFF;
+}
+
+/*
+	배경 #F5F6F7
+	버튼 #BADFC4
+	선택 #63B47B
+	추가 rgb(233, 233, 233)
+	폰트 #FFFFFF OR rgb(70, 70, 70)
+*/
+
+
 /* 폰트 초기화 */
 body, input, textarea, select, button, table {
-	font-family: 'NanumGothicCoding', 'Nanum Gothic', AppleSDGothicNeo-Regular, 'Malgun Gothic', '맑은 고딕', dotum, '돋움', sans-serif;
+	font-family: 'NanumSquareRound';
+	font-weight: 700;
+	color: rgb(70, 70, 70);
 }
+
 
 /* 
 jsp(html)파일에 적용할 웹폰트 링크 태그를 먼저 넣습니다.
-<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-gothic-coding.css" rel="stylesheet">
+<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
 위 폰트는 나눔고딕코딩,
 폰트를 적용하려면 css(style)에 font-family를 적용하면 됨.
-font-family: 'NanumGothicCodingLigature';
-font-family: 'NanumGothicCodingLigatureBold';
-font-family: 'NanumGothicCoding';
-font-family: 'NanumGothicCodingBold';
+font-family: 'NanumSquareRoundLight';
+font-family: 'NanumSquareRound';		** 사용중 font-weight: 700
+font-family: 'NanumSquareRoundBold';
+font-family: 'NanumSquareRoundExtraBold';
 
 웹폰트 링크 태그를 작업하는 jsp(html)파일에 작성하고, 그 아래에 reset.css 파일을 external 방식으로 적용하거나,
 reset.css 파일을 import한 본인의 css 파일을 그 아래에 external 방식으로 적용하면 폰트도 적용이 됩니다.

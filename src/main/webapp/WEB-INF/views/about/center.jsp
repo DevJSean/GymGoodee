@@ -45,7 +45,9 @@
 </head>
 <body>
 
-	<jsp:include page="../layout/header.jsp"></jsp:include>
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>
 	
 	<h1>센터소개</h1>
 	
@@ -63,11 +65,11 @@
 		<tbody>
 			<tr>
 				<td><h2>평일</h2></td>
-				<td><h2>06:00 ~ 22:00</h2></td>
+				<td><h2>08:30 ~ 22:00</h2></td>
 			</tr>
 			<tr>
 				<td><h2>주말</h2></td>
-				<td><h2>08:00 ~ 21:00</h2></td>
+				<td><h2>08:30 ~ 12:00</h2></td>
 			</tr>
 		</tbody>
 	</table>

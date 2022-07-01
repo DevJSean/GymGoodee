@@ -323,9 +323,9 @@
 </head>
 <body>
 
-	<h1>수강내역</h1>
-	
-	<jsp:include page="../layout/header.jsp"></jsp:include>
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>	
 	
 	<section>
 	
@@ -338,51 +338,47 @@
 		</nav>
 	
 		<div>
-			<div id="btn-mapper">
-			</div>
-	
+			<div id="btn-mapper"></div>
 
-		<table border="1">
-			<caption>- 다가올 수업 <span id="commingTotalCount"></span>개 -</caption>
-			<thead>
+			<table border="1">
+				<caption>- 다가올 수업 <span id="commingTotalCount"></span>개 -</caption>
+				<thead>
+					<tr>
+						<td>순번</td>
+						<td>날짜</td>		
+						<td>시간</td>		
+						<td>종목</td>		
+						<td>예약일시</td>		
+					</tr>
+				</thead>
+				<tbody id="commingReservationsList"></tbody>
+			</table>
+			
+			<br><br>
+			
+			<table border="1">
+				<caption>- 지난 수업 <span id="overTotalCount"></span>개 -</caption>
+				<thead>
+					<tr>
+						<td>번호</td>
+						<td>날짜</td>		
+						<td>시간</td>		
+						<td>종목</td>		
+						<td>예약일시</td>		
+					</tr>
+				</thead>
+				<tbody id="overReservations"></tbody>
+				<tfoot>	
 				<tr>
-					<td>순번</td>
-					<td>날짜</td>		
-					<td>시간</td>		
-					<td>종목</td>		
-					<td>예약일시</td>		
+					<td colspan="5">
+						<div id="paging"></div>
+					</td>
 				</tr>
-			</thead>
-			<tbody id="commingReservationsList"></tbody>
-		</table>
-		
-		<br><br>
-		
-		<table border="1">
-			<caption>- 지난 수업 <span id="overTotalCount"></span>개 -</caption>
-			<thead>
-				<tr>
-					<td>번호</td>
-					<td>날짜</td>		
-					<td>시간</td>		
-					<td>종목</td>		
-					<td>예약일시</td>		
-				</tr>
-			</thead>
-			<tbody id="overReservations"></tbody>
-			<tfoot>	
-			<tr>
-				<td colspan="5">
-					<div id="paging"></div>
-				</td>
-			</tr>
-		</tfoot>
-		</table>
-		
-		<!-- 검색 -->
-		
+			</tfoot>
+			</table>
 		
 		</div>
 	</section>
+	
 </body>
 </html>

@@ -8,6 +8,8 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="${contextPath}/resources/js/jquery-3.6.0.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/reset.css">
+<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
 <!-- 날씨 아이콘 가져오기 -->
 <link rel="stylesheet" type="text/css" href="${contextPath}/resources/weather-icons-master/css/weather-icons.min.css">
 <script>
@@ -250,6 +252,9 @@
    
 </script>
 <style>
+	body {
+		background-color: #F5F6F7;
+	}
    .indexNav {
       display: flex;
       flex-direction: row;
@@ -257,17 +262,18 @@
       list-style-type: none;
    }
    .indexItem {
-      background-color: teal; 
+      background-color: #BADFC4; 
       padding: 15px;
       cursor: pointer;
    }
    .indexItem a {
       text-align: center;
       text-decoration: none;
-      color: white;
+      color: #343434;
+      font-weight: 600;
    }
    .indexItem:hover {
-      background-color: navy;
+      background-color: #63B47B;
    }
    #weatherTable {
    		position: absolute;

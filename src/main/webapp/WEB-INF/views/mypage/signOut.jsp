@@ -58,28 +58,28 @@
 	  height: 32px;
 	  font-size: 15px;
 	  border: 0;
-	  border-radius: 15px;
+	  border-radius: 5px;
 	  outline: none;
 	  padding-left: 10px;
 	  background-color: rgb(233, 233, 233);
-	}
-	#btnPwChange {
-		width: 300px;
-		padding: 16px 0px 15px;
-		margin-top: 10px;
-		background-color: green;
-		color: white;
-		border: none;
-		border-radius: 15px;
 	}
 	button {
 		width: 300px;
 		padding: 16px 0px 15px;
 		margin-top: 10px;
-		background-color: lightgrey;
-		color: white;
+		background-color: #BADFC4;
 		border: none;
-		border-radius: 15px;
+		border-radius: 5px;
+		font-size: 15px;
+	}
+	#btnCancle {
+		width: 300px;
+		padding: 16px 0px 15px;
+		margin-top: 10px;
+		background-color: lightgrey;
+		border: none;
+		border-radius: 5px;
+		font-size: 15px;
 	}
 	.ok {
 		color: limegreen;
@@ -91,9 +91,9 @@
 </head>
 <body>
 
-	<h1>수강내역</h1>
-	
-	<jsp:include page="../layout/header.jsp"></jsp:include>
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>	
 	
 	<section>
 	

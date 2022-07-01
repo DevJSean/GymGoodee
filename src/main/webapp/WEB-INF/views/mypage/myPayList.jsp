@@ -45,11 +45,9 @@
 </head>
 <body>
 
-	<h1>결제내역</h1>
-	
-	<jsp:include page="../layout/header.jsp"></jsp:include>
-	
-	<section>
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>	
 		
 		<nav>
 			<ul class="myPageNav">

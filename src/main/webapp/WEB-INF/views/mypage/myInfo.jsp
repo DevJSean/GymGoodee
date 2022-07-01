@@ -27,15 +27,6 @@
 			$(this).css('display', 'none');
 			$('#btnGetAuthCodeSMS').css('display', 'inline');
 		})
-		// 인증번호 받기
-		$('#btnGetAuthCodeEmail').on('click', function() {
-			$('#authCodeEmail').css('display', 'inline');
-			$('#btnVerifyAuthCodeEmail').css('display', 'inline');
-		})
-		$('#btnGetAuthCodeSMS').on('click', function() {
-			$('#authCodeSMS').css('display', 'inline');
-			$('#btnVerifyAuthCodeSMS').css('display', 'inline');
-		})
 		fnEmailAuth();
 		fnPhoneAuth();
 		fnToUpperCase();
@@ -72,7 +63,7 @@
 		})
 	}
 	
-	// 1. SMS 인증코드 검증
+	// SMS 인증코드 검증
 	let authCodePassSMS = false;
 	function fnVerifyAuthCodeSMS(authCodeSMS){  
 		$('#btnVerifyAuthCodeSMS').on('click', function(){
@@ -86,31 +77,42 @@
 		})
 	}
 	
-	// 2. SMS 인증
+	// 연락처 정규식 확인
+	function fnPhoneCheck() {
+		let regPhone = /^01[0169]-[0-9]{3,4}-[0-9]{4}$/; 
+		if(regPhone.test($('#memberPhone').val())==false){
+			alert('잘못된 형식의 연락처입니다.');
+			return false;
+		}
+		$('#phoneMsg').text('').addClass('ok').removeClass('dont');
+		$('#authCodeSMS').prop('readonly', false);
+		$('#authCodeSMS').css('display', 'inline');
+		$('#btnVerifyAuthCodeSMS').css('display', 'inline');
+		return true;
+	}
+	
+	// SMS 인증
 	function fnPhoneAuth(){
 		$('#btnGetAuthCodeSMS').on('click', function(){
-			let regPhone = /^01[0169]-[0-9]{3,4}-[0-9]{4}$/; 
-			if(regPhone.test($('#memberPhone').val())==false){
-				alert('잘못된 형식의 핸드폰 번호입니다.');
-				return;
+			if(fnPhoneCheck()) {
+				$.ajax({
+					url: '${contextPath}/member/sendAuthCodeSMS',
+					type: 'get',
+					data: 'memberPhone=' + $('#memberPhone').val(),
+					dataType: 'json',
+					success: function(obj){  
+						alert('인증코드를 발송했습니다. 핸드폰을 확인하세요.');
+						fnVerifyAuthCodeSMS(obj.authCodeSMS);  
+					},
+					error: function(){
+						alert('인증코드 발송이 실패했습니다.');
+					}
+				})
 			}
-			$.ajax({
-				url: '${contextPath}/member/sendAuthCodeSMS',
-				type: 'get',
-				data: 'memberPhone=' + $('#memberPhone').val(),
-				dataType: 'json',
-				success: function(obj){  
-					alert('인증코드를 발송했습니다. 핸드폰을 확인하세요.');
-					fnVerifyAuthCodeSMS(obj.authCodeSMS);  
-				},
-				error: function(){
-					alert('인증코드 발송이 실패했습니다.');
-				}
-			})
 		})
 	}
 	
-	// 3. 입력을 무조건 대문자로 처리
+	// 입력을 무조건 대문자로 처리
 	function fnToUpperCase(){
 		$('#authCodeEmail').on('keyup', function(){
 			$('#authCodeEmail').val($('#authCodeEmail').val().toUpperCase());
@@ -120,7 +122,7 @@
 		})
 	}
 	
-	// 4. 인증코드 검증
+	// 인증코드 검증
 	let authCodePassEmail = false;
 	function fnVerifyAuthCodeEmail(authCodeEmail){  
 		$('#btnVerifyAuthCodeEmail').on('click', function(){
@@ -134,7 +136,7 @@
 		})
 	}
 	
-	// 5. 이메일 중복체크
+	// 이메일 중복체크
 	function fnEmailCheck(){
 		return new Promise(function(resolve, reject) {
 			let regEmail = /^[a-zA-Z0-9-_]+@[a-zA-Z0-9]+(\.[a-zA-Z]{2,}){1,2}$/;  
@@ -149,6 +151,10 @@
 				dataType: 'json',
 				success: function(obj){
 					if(obj.res == null){
+						$('#emailMsg').text('').addClass('ok').removeClass('dont');
+						$('#authCodeEmail').prop('readonly', false);
+						$('#authCodeEmail').css('display', 'inline');
+						$('#btnVerifyAuthCodeEmail').css('display', 'inline');
 						resolve();     
 					} else {
 						reject(2000);  
@@ -158,7 +164,7 @@
 		});
 	}
 	
-	// 6. 이메일 인증
+	// 이메일 인증
 	function fnEmailAuth(){
 		$('#btnGetAuthCodeEmail').on('click', function(){
 			fnEmailCheck().then(
@@ -220,34 +226,32 @@
 		display: flex;
 		display: 
 	}
-	#btnPwChange {
+	#btnPwChange, button{
 		width: 300px;
 		padding: 16px 0px 15px;
 		margin-top: 10px;
-		background-color: green;
-		color: white;
+		background-color: #BADFC4;
 		border: none;
-		border-radius: 15px;
+		border-radius: 5px;
+		font-size: 15px;
 	}
 	#btnEmailChange, #btnPhoneChange {
-		background-color: green;
+		background-color: #BADFC4;
 		width: 50px;
 		height: 32px;
-		color: white;
 		border: none;
-		border-radius: 15px;
+		border-radius: 5px;
 	}
-	#btnPwChange:hover, #btnEmailChange:hover, #btnPhoneChange:hover
+	#btnPwChange:hover, #btnEmailChange:hover, #btnPhoneChange:hover                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 	, #btnGetAuthCodeEmail:hover, #btnGetAuthCodeSMS:hover, #btnVerifyAuthCodeEmail:hover, #btnVerifyAuthCodeSMS:hover {
 		cursor: pointer;
 	}
 	#btnGetAuthCodeEmail, #btnGetAuthCodeSMS, #btnVerifyAuthCodeEmail, #btnVerifyAuthCodeSMS {
-		background-color: green;
-		width: 70px;
+		background-color: #BADFC4;
+		width: 100px;
 		height: 32px;
-		color: white;
 		border: none;
-		border-radius: 15px;
+		border-radius: 5px;
 		display: none;
 	}
 	input[type=text] {
@@ -255,7 +259,7 @@
 	  height: 32px;
 	  font-size: 15px;
 	  border: 0;
-	  border-radius: 15px;
+	  border-radius: 5px;
 	  outline: none;
 	  padding-left: 10px;
 	  background-color: rgb(233, 233, 233);
@@ -270,8 +274,10 @@
 </head>
 <body>
 
-	<jsp:include page="../layout/header.jsp"></jsp:include>
-	
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>	
+		
 	<section>
 	
 		<nav>

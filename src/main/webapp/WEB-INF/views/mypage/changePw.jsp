@@ -140,9 +140,9 @@
 </head>
 <body>
 
-	<h1>수강내역</h1>
-	
-	<jsp:include page="../layout/header.jsp"></jsp:include>
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>	
 	
 	<section>
 	

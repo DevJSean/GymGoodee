@@ -100,7 +100,9 @@
 	
 	<h1>메인 페이지</h1>
 	
-	<jsp:include page="./layout/header.jsp"></jsp:include>
+	<header>
+		<jsp:include page="./layout/header.jsp"></jsp:include>
+	</header>
 	
 	<a href="${contextPath}/reserve/swimPage">수영 예약페이지</a><br>
 	<a href="${contextPath}/reserve/pilatesPage">필라테스 예약페이지</a><br>
