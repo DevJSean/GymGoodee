@@ -30,15 +30,14 @@
 	table {
 		border-collapse: collapse;
 	}
-	td:nth-of-type(1) { width: 70px; }
-	td:nth-of-type(2) { width: 300px; }
-	td:nth-of-type(3) { width: 150px; }
-	td:nth-of-type(4) { width: 100px; }
-	td:nth-of-type(5) { width: 100px; }
-	td:nth-of-type(6) { width: 100px; }
-	td {
+	#list td:nth-of-type(1) { width: 70px; }
+	#list td:nth-of-type(2) { width: 300px; }
+	#list td:nth-of-type(3) { width: 200px; }
+	#list td:nth-of-type(4) { width: 120px; }
+	#list td:nth-of-type(5) { width: 100px; }
+	#list td:nth-of-type(6) { width: 100px; }
+	#list td {
 		padding: 5px;
-		border: 1px solid silver;
 		text-align: center;
 	}
 	tfoot td {
@@ -97,7 +96,7 @@
 		<c:if test="${loginMember ne null && loginMember.memberId ne 'admin'}">
 			<input type="button" value="글 작성" onclick="location.href='${contextPath}/board/questionAddPage'">
 		</c:if>
-		<table>
+		<table id="list">
 			<thead>
 				<tr>
 					<td>글 번호</td>

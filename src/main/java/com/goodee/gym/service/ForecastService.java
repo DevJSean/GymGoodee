@@ -56,7 +56,7 @@ public class ForecastService {
     	String x = request.getParameter("x");
     	String y = request.getParameter("y");
     	try {
-    		StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"); /*URL*/
+    		StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst"); /*URL*/
     		urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=lkYJjFhNdh0yOa1pzlWsCt6Bw%2FxTOpBVa6vuiQNOjpZUtlkXKYbTkAhL4KDaY97SmQucM4J42kl0cBNDthXb0A%3D%3D"); /*Service Key*/
     		urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
     		urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("1000", "UTF-8")); /*한 페이지 결과 수*/

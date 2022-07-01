@@ -299,7 +299,6 @@
 		cursor: pointer;
 	}
 	.now_page {
-		border: 1px solid gray;
 		color: limegreen;
 		font-weight: 900;
 	}
