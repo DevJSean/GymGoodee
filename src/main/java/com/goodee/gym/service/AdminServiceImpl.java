@@ -256,6 +256,10 @@ public class AdminServiceImpl implements AdminService {
 		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
 		int page = Integer.parseInt(opt.orElse("1"));
 		
+		// 수강관리를 누르면 => classCode를 받는다
+		String classCode = request.getParameter("classCode");
+		//System.out.println("classCode : " + classCode);
+		
 		// PageEntity
 		PageUtils pageUtils = new PageUtils();
 		pageUtils.setPageEntity(totalRecord, page);
@@ -268,6 +272,8 @@ public class AdminServiceImpl implements AdminService {
 		// 목록 가져오기
 		List<ReservationDTO> reservations = adminMapper.selectReserveList(map);
 		
+		
+		model.addAttribute("classCode", classCode);
 		model.addAttribute("reservations", reservations);
 		model.addAttribute("totalRecord", totalRecord);
 		model.addAttribute("paging", pageUtils.getPaging(request.getContextPath() + "/admin/reserveList"));
@@ -284,5 +290,34 @@ public class AdminServiceImpl implements AdminService {
 
 		return map;
 	}
-
+	
+	// 예약 목록 검색
+	@Override
+	public void findReserves(HttpServletRequest request, Model model) {
+		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+		int page = Integer.parseInt(opt.orElse("1"));
+		
+		String column = request.getParameter("column");
+		String query = request.getParameter("query");
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("column", column);
+		map.put("query", query);
+		
+		int findRecord = adminMapper.selectReservationCount(map);
+		
+		//System.out.println("findRecord : " + findRecord);
+		PageUtils pageUtils = new PageUtils();
+		pageUtils.setPageEntity(findRecord, page);
+		map.put("beginRecord", pageUtils.getBeginRecord());
+		map.put("endRecord", pageUtils.getEndRecord());
+		
+		List<ReservationDTO> reserves = adminMapper.selectReservationList(map);
+		//System.out.println("reserves : " + reserves);
+		
+		model.addAttribute("reservations",reserves);
+		model.addAttribute("beginNo", findRecord - pageUtils.getRecordPerPage() * (page - 1));
+		
+		model.addAttribute("paging", pageUtils.getPaging(request.getContextPath() + "/admin/reserveSearch?column=" + column + "&query=" + query));
+	}
 }

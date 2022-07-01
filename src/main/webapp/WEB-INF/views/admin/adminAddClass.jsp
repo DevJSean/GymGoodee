@@ -66,7 +66,9 @@
 	    var date = new Date();
 	    var hour = date.getHours();
 	    hour = hour >= 10? hour : '0' + hour;
-	    return hour+':'+ date.getMinutes();
+	    var minute = date.getMinutes();
+	    minute = minute >=10? minute : '0' + minute;
+	    return hour+':'+ minute;
 	}
 	
 	
@@ -141,6 +143,12 @@
 				return false;
 			}
 			
+			// $('#classDate').val() 에서 substring으로 indexOf(",") 앞부분만 잘라와서
+			var pickerVal = $('#classDate').val();
+			var dayOfWeek = pickerVal.substring(0,pickerVal.indexOf(","));			// 요일
+			var classDate = pickerVal.substring(pickerVal.indexOf(",")+2);			// 날짜
+			
+			
 			if($('#classDate').val() == ''){
 				alert('날짜 선택은 필수 입니다.');
 				fnInit();
@@ -148,7 +156,7 @@
 				return false;
 			}
 			
-			if($('#classDate').val() < fnGetToday()){
+			if(classDate < fnGetToday()){
 				alert('지난 날짜에는 강좌 개설을 할 수 없습니다.');
 				fnInit();
 				ev.preventDefault();
@@ -171,22 +179,15 @@
 				realTime = "20:30";
 				break;
 			}
-			if(realTime < fnGetTime() && $('#classDate').val() == fnGetToday()){
-				console.log('realTime : ' , realTime);
-				console.log('fnGetTime : ' , fnGetTime());
-				console.log('classDate : ' , $('#classDate').val());
-				console.log('fnGetToday : ' , fnGetToday());
-				
+			
+			
+			if(realTime < fnGetTime() && classDate == fnGetToday()){
 				alert('시간이 지나 강좌를 개설할 수 없습니다.');
 				fnInit();
 				ev.preventDefault();
 				return false;
 			}
 			
-			// $('#classDate').val() 에서 substring으로 indexOf(",") 앞부분만 잘라와서
-			var pickerVal = $('#classDate').val();
-			var dayOfWeek = pickerVal.substring(0,pickerVal.indexOf(","));			// 요일
-			var classDate = pickerVal.substring(pickerVal.indexOf(",")+2);			// 날짜
 			
 			// Sunday이면 개설 불가!
 			if(dayOfWeek == 'Sun'){
@@ -420,7 +421,7 @@
 				<li class="navItem nowPage">강좌개설</li>
 				<li class="navItem"><a href="${contextPath}/admin/classList">개설강좌</a></li>
 				<li class="navItem"><a href="${contextPath}/admin/reserveList">예약내역</a></li>
-				<li class="navItem"><a href="${contextPath}/adminr/payList">결제내역</a></li>
+				<li class="navItem"><a href="${contextPath}/admin/payList">결제내역</a></li>
 			</ul>	
 		</nav>
 		
@@ -491,6 +492,9 @@
 				</tfoot>
 			</table>
 		</div>
+		
+		
+		
 	
 	</section>
 	

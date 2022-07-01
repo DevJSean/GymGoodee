@@ -75,7 +75,8 @@
 <style>
 
 	#calendar {
-	    max-width: 800px;
+	    width: 700px;
+  		height: 660px;
 	    margin: 0 auto;
   	}
   	
@@ -86,7 +87,14 @@
   		margin: auto;
   	}
   	
-  	
+   	 #wrapper{
+  		background-color : white;
+  		width : 800px;
+  		height: 900px;
+  		margin : auto;
+  		border-radius : 50px;
+  		margin : 50px auto;
+  	} 	
 
 </style>
 </head>
@@ -96,11 +104,11 @@
 		<jsp:include page="../layout/header.jsp"></jsp:include>
 	</header>
 		
-	<div><img id="PilatesImage" alt="필라테스" src="../resources/images/pilates.png"></div>
-	
-	
-	
-	<div id="calendar"></div>
+		
+	<div id="wrapper">
+		<div><img id="PilatesImage" alt="필라테스" src="../resources/images/pilates.png"></div>
+		<div id="calendar"></div>
+	</div>
 	
 	
 	

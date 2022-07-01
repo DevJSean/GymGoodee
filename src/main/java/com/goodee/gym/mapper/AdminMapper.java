@@ -44,4 +44,8 @@ public interface AdminMapper {
 	
 	public int updateReservation(String reservationCode);
 	public int updateRemainTicket(@Param(value="memberId") String memberId, @Param(value="remainTicketSubject") String remainTicketSubject);
+
+	// 검색
+	public int selectReservationCount(Map<String, Object> map);
+	public List<ReservationDTO> selectReservationList(Map<String, Object> map);
 }

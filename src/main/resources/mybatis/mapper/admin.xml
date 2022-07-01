@@ -103,6 +103,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   		  		  	    	INNER JOIN TEACHER T
   		  		    ON C.TEACHER_NO = T.TEACHER_NO) A
  		 WHERE A.RN BETWEEN #{beginRecord} AND #{endRecord}
+ 		 ORDER BY A.CLASS_DATE DESC, A.LOCATION_CODE, A.CLASS_TIME
 	</select>
 	
 	<!-- 결제 -->
@@ -151,8 +152,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 목록 -->
 	<select id="selectReserveList" parameterType="Map" resultType="ReservationDTO">
-        SELECT A.RN, A.RESERVATION_CODE, A.MEMBER_NO, A.CLASS_CODE, A.RESERVATION_DATE, A.RESERVATION_STATE, A.MEMBER_ID  
-		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY R.RESERVATION_DATE DESC) AS RN, R.RESERVATION_CODE, M.MEMBER_NO, R.CLASS_CODE, R.RESERVATION_DATE, R.RESERVATION_STATE, M.MEMBER_ID  
+        SELECT A.RN, A.RESERVATION_CODE, A.MEMBER_NO, A.MEMBER_ID, A.MEMBER_NAME, A.CLASS_CODE, A.RESERVATION_DATE, A.RESERVATION_STATE  
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY R.RESERVATION_DATE DESC) AS RN, R.RESERVATION_CODE, M.MEMBER_NO, M.MEMBER_ID , M.MEMBER_NAME, R.CLASS_CODE, R.RESERVATION_DATE, R.RESERVATION_STATE 
 		 		  FROM MEMBER M INNER JOIN RESERVATION R
                     ON M.MEMBER_NO = R.MEMBER_NO) A
          WHERE A.RN BETWEEN #{beginRecord} AND #{endRecord}
@@ -173,5 +174,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 WHERE MEMBER_ID = #{memberId}
 		   AND REMAIN_TICKET_SUBJECT = #{remainTicketSubject}
 	</update>
+	
+	
+	<!-- 테스트 -->
+	<!-- 예약내역 검색된 레코드 갯수 -->
+	<select id="selectReservationCount" parameterType="Map" resultType="Integer">
+		SELECT COUNT(A.RESERVATION_CODE)
+		  FROM (SELECT R.RESERVATION_CODE, M.MEMBER_NAME, R.CLASS_CODE 
+		 		  FROM MEMBER M INNER JOIN RESERVATION R
+                    ON M.MEMBER_NO = R.MEMBER_NO ) A
+		<where>
+			<choose>
+		 		<when test="column == 'CLASS_CODE'">UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+		 		<when test="column == 'MEMBER_NAME'">UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+		 	</choose>
+		</where>
+	</select>
+	<!-- 예약내역 검색 -->
+	<select id="selectReservationList" parameterType="Map" resultType="ReservationDTO">
+		SELECT A.RN, A.RESERVATION_CODE, A.MEMBER_NO, A.MEMBER_ID, A.MEMBER_NAME, A.CLASS_CODE, A.RESERVATION_DATE, A.RESERVATION_STATE  
+		  FROM (SELECT ROW_NUMBER() OVER(ORDER BY R.RESERVATION_DATE DESC) AS RN, R.RESERVATION_CODE, M.MEMBER_NO, M.MEMBER_ID , M.MEMBER_NAME, R.CLASS_CODE, R.RESERVATION_DATE, R.RESERVATION_STATE 
+		 		  FROM MEMBER M INNER JOIN RESERVATION R
+                    ON M.MEMBER_NO = R.MEMBER_NO
+				<where>
+					<choose>
+				 		<when test="column == 'CLASS_CODE'">UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+				 		<when test="column == 'MEMBER_NAME'">UPPER(${column}) LIKE '%' || UPPER(#{query}) || '%'</when>
+				 	</choose>
+				</where>) A
+         WHERE A.RN BETWEEN #{beginRecord} AND #{endRecord}
+	</select>
 
 </mapper>

@@ -56,7 +56,8 @@
 	    day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
 	    var hour = date.getHours();
 	    hour = hour = hour >= 10? hour : '0' + hour;
-        var minute = date.getMinutes();
+	    var minute = date.getMinutes();
+	    minute = minute >=10? minute : '0' + minute;
 	    return  year + '' + month + '' + day +'' +hour+''+minute;      
 	}
 	
@@ -125,7 +126,7 @@
 						tr.append($('<td>').text(spinningclass.currentCount + "/" + spinningclass.locationLimit));
 						// 2-1) 관리자의 경우 => [예약 관리] 버튼
 						if(memberId == 'admin'){
-							tr.append($('<td>').html('<input type="button" class ="btnAdminReservation" data-classcode="'+ swimclass.classCode + '" value="예약관리">'));
+							tr.append($('<td>').html('<input type="button" class ="btnAdminReservation" data-classcode="'+ spinningclass.classCode + '" value="예약관리">'));
 						}
 						// 2-2) 고객의 경우
 						else{
@@ -151,7 +152,7 @@
 							else if(today == spinningclass.classDate){
 								if(spinningclass.reservationState == 0){
 									// (1) 내가 예약한 수업이 당일 수업인 경우 [예약 확정] 버튼
-									tr.append($('<td>').html('<input type="button" class ="btnReserveConfirm" data-classcode="'+ swimclass.classCode + '" value="예약확정">'));																		
+									tr.append($('<td>').html('<input type="button" class ="btnReserveConfirm" data-classcode="'+ spinningclass.classCode + '" value="예약확정">'));																		
 								} 
 								else if(spinningclass.reservationState == 1){
 									// (2) 수강이 끝난 후
@@ -166,7 +167,7 @@
 									if(nowDateTime < classDateTime){
 										// (2-1-1) 자리가 남아 [예약하기]
 										if(spinningclass.currentCount < spinningclass.locationLimit && obj.state==1){		
-											tr.append($('<td>').html('<input type="button" class ="btnReserve" data-classcode="'+ swimclass.classCode + '" value="예약하기">'));			
+											tr.append($('<td>').html('<input type="button" class ="btnReserve" data-classcode="'+ spinningclass.classCode + '" value="예약하기">'));			
 										}
 										// (2-1-2) 인원이 다 차 마감된 경우 [예약마감]
 										else if(spinningclass.currentCount == spinningclass.locationLimit){

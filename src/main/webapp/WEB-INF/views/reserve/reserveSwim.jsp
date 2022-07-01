@@ -61,7 +61,8 @@
 	    day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
 	    var hour = date.getHours();
 	    hour = hour = hour >= 10? hour : '0' + hour;
-        var minute = date.getMinutes();
+	    var minute = date.getMinutes();
+	    minute = minute >=10? minute : '0' + minute;
 	    return  year + '' + month + '' + day +'' +hour+''+minute;      
 	}
 	
@@ -358,7 +359,8 @@
 	// 8. [관리자] 예약관리 버튼 
 	function fnAdminReservation(){
 		$('body').on('click','.btnAdminReservation',function(){
-			window.opener.location.href='${contextPath}/member/reserveList';	// 부모창에서 새로운 경로로 이동
+			var classCode = $(this).data('classcode');
+			window.opener.location.href='${contextPath}/admin/reserveList?classCode=' + classCode;	// 부모창에서 새로운 경로로 이동
 			window.close();
 		})
 	}

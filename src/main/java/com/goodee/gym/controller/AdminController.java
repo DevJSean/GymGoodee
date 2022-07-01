@@ -59,7 +59,7 @@ public class AdminController {
 	@GetMapping("/admin/reserveList")
 	public String reserveList(HttpServletRequest request, Model model) {
 		adminService.reserveList(request, model);
-		return "admin/reserveList";
+		return "admin/reserveSearch";
 	}
 	
 	@ResponseBody
@@ -112,6 +112,15 @@ public class AdminController {
 	public Map<String, Object> ClassList(int page){
 		return adminService.getClasses(page);
 	}
+	
+	
+	// 예약 목록 검색
+	@GetMapping(value="/admin/reserveSearch")
+	public String noticeSearch(HttpServletRequest request, Model model) {
+		adminService.findReserves(request, model);
+		return "admin/reserveSearch";
+	}
+	
 	
 
 	
