@@ -9,8 +9,9 @@
 <head>
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
+<link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css">
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/reset.css">
 <title>GymGoodee : 로그인</title>
-
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" integrity="sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://momentjs.com/downloads/moment-with-locales.js"></script>
@@ -26,64 +27,8 @@
 		fnPhoneAuth();
 		fnToUpperCase();
 		fnChangePw();
+		fnInit();
 
-
-		$('#remember_id').on('click', function(){
-			$('.input_remember').prop('checked', true);
-			if($('#remember_id').is(':checked')){
-				$('.input_remember').addClass('check');
-			} else {
-				$('.input_remember').removeClass('check');
-			}
-		})
-		
-		$('.remember_text').on('click', function(){
-			$(this).toggleClass('remember_check');
-			
-		})
-		
-		$('#findId').on('click', function(){
-			$('.authAreaSMS').css('display', 'none');
-			$('.authArea').css('display', 'block');
-			$('.titlePw').css('display', 'none');
-			$('.titleId').css('display', 'block');
-			$('#modal.modal-overlay').css('display', 'flex');
-		})
-		
-		$('#findPw').on('click', function(){
-			$('.authArea').css('display', 'none');
-			$('.authAreaSMS').css('display', 'block');
-			$('.titleId').css('display', 'none');
-			$('.titlePw').css('display', 'block');
-			$('#modal.modal-overlay').css('display', 'flex');
-		})
-		
-		$('#btnClose1').on('click', function(){
-			$('#modal.modal-overlay').css('display', 'none');
-		})
-		
-		$('#btnClose2').on('click', function(){
-			$('#modal.modal-overlay').css('display', 'none');
-		})
-		
-		$('#btnClose3').on('click', function(){
-			$('#modal.modal-overlay').css('display', 'none');
-		})
-		
-		$('#btnClose4').on('click', function(){
-			$('#modal.modal-overlay').css('display', 'none');
-		})
-		
-		$('#btnFindPw').on('click', function(){
-			$('.changeArea').css('display', 'none');
-			$('.authAreaSMS').css('display', 'block');
-			$('.titleId').css('display', 'none');
-			$('.titlePw').css('display', 'block');
-		})
-		
-		$('#btnSignUp').on('click', function(){
-			location.href="${contextPath}/member/agreePage";
-		})
 	})
 	
 	moment.locale('ko');
@@ -111,9 +56,11 @@
 		if(rememberId != ''){
 			$('#memberId').val(rememberId);
 			$('#rememberId').prop('checked', true);
+			$('.remember_text').addClass('remember_check');
 		} else {
 			$('#memberId').val('');
 			$('#rememberId').prop('checked', false);
+			$('.remember_text').removeClass('remember_check');
 		}
 	}
 	
@@ -153,7 +100,7 @@
 	let pwPass = false;
 	function fnPwCheck(){
 		$('#changeMemberPw').on('keyup', function(){
-			let regPw = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/;
+			let regPw = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*~])[a-zA-Z0-9!@#$%^&*~]{8,16}$/;
 			if(regPw.test($('#changeMemberPw').val())==false){
 				$('#pwMsg').text('8~16자 영문, 숫자, 특수문자를 모두 사용하세요.').addClass('dont').removeClass('ok');
 				pwPass = false;
@@ -232,6 +179,7 @@
 		$('#btnVerifyAuthCodeSMS').on('click', function(){
 			if($('#authCodeSMS').val() == authCodeSMS){
 				alert('인증되었습니다.');
+				$('.titlePw').css('display', 'none');
 				$('.authAreaSMS').css('display', 'none');
 				$('.changePw').css('display', 'block');
 				authCodePassSMS = true;
@@ -266,13 +214,75 @@
 		})
 	}
 	
+	// 11. fnInit()
+	function fnInit(){
+		$('#memberName').val('');
+		$('#memberEmail').val('');
+		$('#confirmMemberId').val('');
+		$('#memberPhone').val('');
+		$('#authCodeSMS').val('');
+		$('#changeMemberPw').val('');
+		$('#pwConfirm').val('');
+		$('.authArea').css('display', 'block');
+		$('.chaneArea').css('display', 'none');
+		$('.authAreaSMS').css('display', 'none');
+		$('.changePw').css('display', 'none');
+		$('.titlePw').css('display', 'none');
+		$('.titleId').css('display', 'block');
+	}
+	
+	$(function(){
+		$('#remember_id').on('click', function(){
+			$('.input_remember').prop('checked', true);
+			if($('#remember_id').is(':checked')){
+				$('.input_remember').addClass('remember_check');
+			} else {
+				$('.input_remember').removeClass('remember_check');
+			}
+		})
+		
+		$('.remember_text').on('click', function(){
+			$(this).toggleClass('remember_check');
+			
+		})
+		
+		$('#findId').on('click', function(){
+			fnInit();
+			$('.authArea').css('display', 'block');
+			$('.titlePw').css('display', 'none');
+			$('.titleId').css('display', 'block');
+			$('#modal.modal-overlay').css('display', 'flex');
+		})
+		
+		$('#findPw, #btnFindPw').on('click', function(){
+			$('.authArea').css('display', 'none');
+			$('.changeArea').css('display', 'none');
+			$('.authAreaSMS').css('display', 'block');
+			$('.titleId').css('display', 'none');
+			$('.titlePw').css('display', 'block');
+			$('#modal.modal-overlay').css('display', 'flex');
+		})
+		
+		$('#btnClose1, #btnClose2, #btnClose3, #btnClose4').on('click', function(){
+			$('#modal.modal-overlay').css('display', 'none');
+			fnInit();
+		})
+
+		$('#btnSignUp').on('click', function(){
+			fnInit();
+			location.href="${contextPath}/member/agreePage";
+		})
+	})
+	
+	
 </script>
 <style>
+		
       	.changeArea, .authAreaSMS, .changePw, #modal .titlePw h2 {
 		display: none;
 		}
+		
 		#modal.modal-overlay {
-			
 		    width: 100%;
 		    height: 100%;
 		    position: absolute;
@@ -303,13 +313,13 @@
 	        position: relative;
 	        padding: 10px;
 	    }
-	    #modal .titleId, .titlePw {
+	    #modal .titleId, #modal .titlePw {
 	        padding-left: 10px;
 	        display: inline;
 	        text-shadow: 1px 1px 2px gray;
 	        color: white;
 	    }
-	    #modal .titleId h2, .titlePw h2 {
+	    #modal .titleId h2, #modal .titlePw h2 {
 	        display: inline;
 	    }
 	    #modal .close-area {
@@ -353,7 +363,7 @@
 	    #btnClose3, #btnGetAuthCodeSMS, #btnVerifyAuthCodeSMS {
 	    	position: relative;
 	    	left: 250px;
-	    	bottom: 145px;
+	    	bottom: 165px;
 	    	background-color: lightgrey;
 			width: 120px;
 			height: 40px;
@@ -363,7 +373,7 @@
 	    }
 	    #btnClose4, #btnChangePw {
 	    	position: relative;
-	    	left: 125px;
+	    	left: 130px;
 	    	bottom: -10px;
 	    	background-color: lightgrey;
 			width: 120px;
@@ -389,7 +399,6 @@
         body {
             height: 100%;
             color: #222;
-            background-color: #fff;
         }
         a {
             text-decoration: none;
@@ -500,23 +509,21 @@
 			display: none;
 		}
         .id_remember_wrap {
-            margin-top: 13px;
+            margin-top: 10px;
             padding-right: 90px;
             position: relative;
         }
         .remember_text {
         	font-size: 14px;
-        	font-weight: 500;
-        	line-height: 17px;
         	color: #777;
- 			padding-left: 25px;
+ 			padding-left: 30px;
+ 			padding-bottom: 5px;
 			background-image: url(../resources/images/uncheck.png);
-			background-size: 18px 18px;
+			background-size: 16px 16px;
 			background-repeat: no-repeat;
         }
         .remember_check {
             background-image: url(../resources/images/check.png);
-            background-color: #90c2ff;
         }
         .btn_login_wrap {
             margin-top: 38px;
@@ -573,6 +580,9 @@
 		}
 		.ok {
 			color: limegreen;
+		}
+	 	#findId:hover, #findPw:hover {
+		cursor: pointer;
 		}
 </style>
 </head>
@@ -631,7 +641,6 @@
     
 	
 	<div id="wrap" class="wrap">
-
         <header class="header">
             <div class="header_inner">
                 <a href="${contextPath}" class="logo">
@@ -693,14 +702,12 @@
 			        </form>
 			    </div>
 				<ul class="find_wrap" id="find_wrap">
-			        <li><a href="${contextPath}/member/agreePage">회원가입</a></li>
-			        <!-- <li><a href="${contextPath}/member/findIdPage">아이디 찾기</a></li> -->
-			        <li><a id="findId">아이디 찾기</a></li>
-			        <!-- <li><a href="${contextPath}/member/findPwPage">비밀번호 찾기</a></li>  -->
-			        <li><a id="findPw">비밀번호 찾기</a></li>
+			        <li><a href="${contextPath}/member/agreePage" class="find_text">회원가입</a></li>
+			        <li><a id="findId" class="find_text">아이디 찾기</a></li>
+			        <li><a id="findPw" class="find_text">비밀번호 찾기</a></li>
 			    </ul>
-	    	</div>  <!-- content -->
-	    </div>  <!-- container -->	
+	    	</div> 
+	    </div>  
     </div>	
 </body>
 </html>
