@@ -53,7 +53,7 @@
 			<ul class="myPageNav">
 				<li class="navItem"><a href="${contextPath}/mypage/myReserveList">수강내역</a></li>
 				<li class="navItem nowPage">결제내역</li>
-				<li class="navItem"><a href="${contextPath}/mypage/myInfo">개인정보</a></li>
+				<li class="navItem"><a href="${contextPath}/mypage/pwCheckPage">개인정보</a></li>
 			</ul>	
 		</nav>
 		

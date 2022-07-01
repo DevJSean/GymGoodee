@@ -83,6 +83,10 @@
 		if(regPhone.test($('#memberPhone').val())==false){
 			alert('잘못된 형식의 연락처입니다.');
 			return false;
+		} 
+		if($('#memberPhone').val() == '${loginMember.memberPhone}') {
+			alert('동일한 연락처입니다.');
+			return false;
 		}
 		$('#phoneMsg').text('').addClass('ok').removeClass('dont');
 		$('#authCodeSMS').prop('readonly', false);

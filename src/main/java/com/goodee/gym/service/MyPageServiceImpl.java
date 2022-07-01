@@ -27,17 +27,26 @@ public class MyPageServiceImpl implements MyPageService {
 	@Autowired
 	private MyPageMapper myPageMapper;
 	
-	// 잔여수강권 조회
+	// 잔여수강권 조회 (헤더용)
 	@Override
-	public Map<String, Object> getRemainTicketsById(HttpServletRequest request, Model model) {
+	public Map<String, Object> getRemainTicketsById(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
 		String memberId = loginMember.getMemberId();
-		Map<String, Object> map = new HashMap<>();
 		
-		model.addAttribute("remainTickets", myPageMapper.selectTicketsById(memberId));
+		Map<String, Object> map = new HashMap<>();
 		map.put("remainTickets", myPageMapper.selectTicketsById(memberId));
 		return map;
+	}
+	
+	// 잔여수강권 조회
+	@Override
+	public void getMyTicketsById(HttpServletRequest request, Model model) {
+		HttpSession session = request.getSession();
+		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
+		String memberId = loginMember.getMemberId();
+		
+		model.addAttribute("myTickets", myPageMapper.selectTicketsById(memberId));
 	}
 
 	// 다가올 수업 내역 조회
@@ -162,32 +171,55 @@ public class MyPageServiceImpl implements MyPageService {
 		}
 	}
 	
+	@Override
+	// 비밀번호 확인
+	public Map<String, Object> pwCheck(HttpServletRequest request, HttpServletResponse response) {
+		
+		HttpSession session = request.getSession();
+		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
+		Long memberNo = loginMember.getMemberNo();
+		
+		String memberPw = SecurityUtils.sha256(request.getParameter("memberPw"));
+		String savedPw = myPageMapper.selectMemberPwByNo(memberNo);
+		
+		Map<String, Object> map = new HashMap<>();
+		
+		boolean res;
+		if(memberPw.equals(savedPw)) {
+			res = true;
+		} else {
+			res = false;
+		}
+		
+		map.put("res", res);
+		return map;
+	}
+	
 	// 비밀번호 변경
 	@Override
 	public void changePw(HttpServletRequest request, HttpServletResponse response) {
-		int res = 0;
-		
-		Optional<String> opt = Optional.ofNullable(request.getParameter("memberNo"));
-		Long memberNo = Long.parseLong(opt.orElse("0"));
+
+		HttpSession session = request.getSession();
+		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
+		Long memberNo = loginMember.getMemberNo();
 		String newPw = SecurityUtils.sha256(request.getParameter("newPw"));
+		
+		// 현재 비밀번호
+		String savedPw = myPageMapper.selectMemberPwByNo(memberNo);
 		
 		MemberDTO member = MemberDTO.builder()
 				.memberNo(memberNo)
 				.memberPw(newPw)
 				.build();
-		
-		// 현재 비밀번호가 일치하는 지 확인
-		String currentPw = SecurityUtils.sha256(request.getParameter("currentPw"));
-		String memberPw = myPageMapper.selectMemberPwByNo(memberNo);
-		
+
 		response.setContentType("text/html");
-		if(currentPw.equals(memberPw)) {
-			res = myPageMapper.updatePw(member);
-		} else {
+		
+		// 수정한 비밀번호가 기존 비밀번호와 동일할 경우
+		if(newPw.equals(savedPw)) {
 			try {
 				PrintWriter out = response.getWriter();
 				out.println("<script>");
-				out.println("alert('비밀번호가 일치하지 않습니다.')");
+				out.println("alert('동일한 비밀번호로 변경할 수 없습니다.')");
 				out.println("history.back()");
 				out.println("</script>");
 				out.close();
@@ -196,6 +228,8 @@ public class MyPageServiceImpl implements MyPageService {
 			}
 		}
 		
+		// 비밀번호 변경 실행
+		int res = myPageMapper.updatePw(member);
 		if(res > 0) {
 			try {
 				PrintWriter out = response.getWriter();
@@ -216,8 +250,9 @@ public class MyPageServiceImpl implements MyPageService {
 	public void changeMyInfo(HttpServletRequest request, HttpServletResponse response) {
 		int res = 0;
 		
-		Optional<String> opt = Optional.ofNullable(request.getParameter("memberNo"));
-		Long memberNo = Long.parseLong(opt.orElse("0"));
+		HttpSession session = request.getSession();
+		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
+		Long memberNo = loginMember.getMemberNo();
 		String memberEmail = SecurityUtils.xss(request.getParameter("memberEmail"));
 		String memberPhone = SecurityUtils.xss(request.getParameter("memberPhone"));
 		
@@ -229,7 +264,7 @@ public class MyPageServiceImpl implements MyPageService {
 		
 		res = myPageMapper.updateMyInfo(member);
 		
-		MemberDTO loginMember = myPageMapper.selectMemberById(memberNo);
+		MemberDTO savedMember = myPageMapper.selectMemberById(memberNo);
 		
 		try {
 			response.setContentType("text/html");
@@ -241,8 +276,7 @@ public class MyPageServiceImpl implements MyPageService {
 				out.println("</script>");
 				out.close();
 				// 세션값 재설정
-				HttpSession session = request.getSession();
-			    session.setAttribute("loginMember", loginMember);
+			    session.setAttribute("loginMember", savedMember);
 			} else {
 				out.println("<script>");
 				out.println("alert('개인정보 변경에 실패하였습니다.')");
@@ -260,8 +294,9 @@ public class MyPageServiceImpl implements MyPageService {
 	public void signOut(HttpServletRequest request, HttpServletResponse response) {
 		int res = 0;
 		
-		Optional<String> opt = Optional.ofNullable(request.getParameter("memberNo"));
-		Long memberNo = Long.parseLong(opt.orElse("0"));
+		HttpSession session = request.getSession();
+		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
+		Long memberNo = loginMember.getMemberNo();
 		
 		// 탈퇴를 위해 입력한 비밀번호가 일치하는 지 확인
 		String confirmPw = SecurityUtils.sha256(request.getParameter("confirmPw"));

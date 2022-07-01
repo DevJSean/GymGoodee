@@ -28,11 +28,16 @@ public class MyPageController {
 		return "mypage/myReserveList";
 	}
 	
+	// 헤더용
 	@ResponseBody
 	@GetMapping(value="/remainTickets", produces="application/json")
-	public Map<String, Object> remainTickets(HttpServletRequest request, Model model) {
-		return myPageService.getRemainTicketsById(request, model);
-		
+	public Map<String, Object> remainTickets(HttpServletRequest request) {
+		return myPageService.getRemainTicketsById(request);
+	}
+	
+	@GetMapping("/myTickets")
+	public void myTickets(HttpServletRequest request, Model model) {
+		myPageService.getMyTicketsById(request, model);
 	}
 	
 	@ResponseBody
@@ -46,6 +51,7 @@ public class MyPageController {
 	public Map<String, Object> getMembers(HttpServletRequest request, @RequestParam int page){
 		return myPageService.getOverReservationsByNo(request, page);
 	}
+	
 	@ResponseBody
 	@GetMapping(value="/reserveCancle", produces="application/json")
 	public Map<String, Object> remove(@RequestParam String reservationCode, @RequestParam String memberId, @RequestParam String remainTicketSubject) {
@@ -56,6 +62,17 @@ public class MyPageController {
 	public String myPayList(HttpServletRequest request, Model model) {
 		myPageService.getMyPayListByNo(request, model);
 		return "mypage/myPayList";
+	}
+	
+	@GetMapping("/mypage/pwCheckPage")
+	public String pwCheckPage() {
+		return "mypage/pwCheck";
+	}
+	
+	@ResponseBody
+	@PostMapping(value="/mypage/pwCheck", produces="application/json")
+	public Map<String, Object> pwCheck(HttpServletRequest request, HttpServletResponse response) {
+		return myPageService.pwCheck(request, response); 
 	}
 	
 	@GetMapping("/mypage/myInfo")
@@ -85,7 +102,8 @@ public class MyPageController {
 	}
 	
 	@GetMapping("/mypage/signOutPage")
-	public String signOutPage() {
+	public String signOutPage(HttpServletRequest request, Model model) {
+		myPageService.getMyTicketsById(request, model);
 		return "mypage/signOut";
 	}
 	
@@ -100,5 +118,6 @@ public class MyPageController {
 	public Map<String, Object> pwModifiedCheck(HttpServletRequest request) {
 		return myPageService.getPwModified(request);
 	}
+
 	
 }

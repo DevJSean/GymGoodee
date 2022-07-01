@@ -13,62 +13,36 @@
 <script>
 
 	$(function() {
-		fnNewPwCheck();
-		fnNewPwConfirm();
-		fnChangePw();
-	})
-	
-	/* 함수 */
-	
-	// 1. 비밀번호 정규식
-	let pwPass = false;
-	function fnNewPwCheck(){
-		// 비밀번호 정규식 검사
-		$('#newPw').on('keyup', function(){
-			let regPw = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*~])[a-zA-Z0-9!@#$%^&*~]{8,16}$/;
-			if(regPw.test($('#newPw').val())==false){
-				$('#pwMsg').text('8~16자 영문, 숫자, 특수문자를 모두 사용하세요.').addClass('dont').removeClass('ok');
-				pwPass = false;
-			} else {
-				$('#pwMsg').text('사용 가능한 비밀번호입니다.').addClass('ok').removeClass('dont');
-				pwPass = true;
-			}
-		})
-	}
-	
-	// 2. 비밀번호 입력확인
-	let rePwPass = false;
-	function fnNewPwConfirm(){
-		$('#newPwConfirm').on('keyup', function(){
-			if($('#newPwConfirm').val() != '' && $('#newPw').val() != $('#newPwConfirm').val()){
-				$('#pwConfirmMsg').text('비밀번호를 확인하세요.').addClass('dont').removeClass('ok');
-				rePwPass = false;
-			} else {
-				$('#pwConfirmMsg').text('');
-				rePwPass = true;
-			}
-		})
-	}
-	
-	// 3. 비밀번호 변경
-	function fnChangePw(){
-		$('#f').on('submit', function(event){
-			if(pwPass == false || rePwPass == false){
-				alert('비밀번호를 확인하세요.');
-				fnInit();
+	/* 	$('#f').on('submit', function(event){
+			if($('#memberPw').val() == '') {
+				alert('비밀번호를 입력하세요.');
 				event.preventDefault();
 				return false;
 			}
 			return true;
+		} */
+		// 개인정보페이지 들어오면 비밀번호 확인
+		$('#btnCheck').on('click', function() {
+			if($('#memberPw').val() == '') {
+				alert('비밀번호를 입력하세요.');
+				return;
+			}
+			$.ajax({
+				url: '${contextPath}/mypage/pwCheck',
+				data: 'memberPw=' + $('#memberPw').val(),
+				type: 'post',
+				dataType: 'json',
+				success: function(obj) {
+					if(obj.res){
+						location.href='${contextPath}/mypage/myInfo';
+					} else {
+						alert('비밀번호가 일치하지 않습니다.');
+					}
+				}
+			})
 		})
-	}
+	})
 	
-	function fnInit() {
-		$('#newPw').val('');
-		$('#newPwConfirm').val('');
-		$('#pwMsg').text('');
-		$('#pwConfirmMsg').text('');
-	}
 </script>
 <style>
 	.myPageNav {
@@ -145,25 +119,16 @@
 			<ul class="myPageNav">
 				<li class="navItem"><a href="${contextPath}/mypage/myReserveList">수강내역</a></li>
 				<li class="navItem"><a href="${contextPath}/mypage/myPayList">결제내역</a></li>
-				<li class="navItem"><a href="${contextPath}/mypage/myInfo">개인정보</a></li>
+				<li class="navItem"><a href="${contextPath}/mypage/pwCheckPage">개인정보</a></li>
 			</ul>	
 		</nav>
 	
-		<form id="f" action="${contextPath}/mypage/changePw" method="post">
-			<label for="newPW">
-				새 비밀번호
-				<input type="password" name="newPw" id="newPw"><br>
-				<span id="pwMsg"></span>
-			</label><br>
-			<label for="newPwConfirm">
-				새 비밀번호 확인
-				<input type="password" id="newPwConfirm"><br>
-				<span id="pwConfirmMsg"></span>
-			</label><br>
-			
-			<button>확인</button><br>
+		<label for="memberPw">
+			비밀번호를 입력하세요.<br>
+			<input type="password" name="memberPw" id="memberPw"><br><br>
+		</label>
+			<input type="button" value="확인" id="btnCheck"> 
 			<input type="button" value="취소" id="btnCancle" onclick='history.back()'>
-		</form>
 		
 	</section>
 	

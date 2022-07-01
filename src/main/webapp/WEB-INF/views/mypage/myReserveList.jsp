@@ -333,7 +333,7 @@
 			<ul class="myPageNav">
 				<li class="navItem nowPage">수강내역</li>
 				<li class="navItem"><a href="${contextPath}/mypage/myPayList">결제내역</a></li>
-				<li class="navItem"><a href="${contextPath}/mypage/myInfo">개인정보</a></li>
+				<li class="navItem"><a href="${contextPath}/mypage/pwCheckPage">개인정보</a></li>
 			</ul>	
 		</nav>
 	

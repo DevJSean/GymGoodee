@@ -15,11 +15,6 @@
 	$(function() {
 		$('#f').on('submit', function(event){
 			if(confirm('정말로 탈퇴하시겠습니까 ?')) {
-				if($('#confirmPw').val() == '') {
-					alert('비밀번호를 입력하세요.');
-					event.preventDefault();
-					return false;
-				}
 				return true;
 			}
 		})
@@ -63,7 +58,7 @@
 	  padding-left: 10px;
 	  background-color: rgb(233, 233, 233);
 	}
-	button {
+	#btnSignOut {
 		width: 300px;
 		padding: 16px 0px 15px;
 		margin-top: 10px;
@@ -105,16 +100,19 @@
 			</ul>	
 		</nav>
 	
-		<form id="f" action="${contextPath}/mypage/signOut" method="post">
-			<input type="hidden" name="memberNo" value="${loginMember.memberNo}">
-			<label for="confirmPw">
-				비밀번호 확인
-				<input type="password" name="confirmPw" id="confirmPw"><br><br>
-			</label>
+		<div>
+			<c:forEach items="${remainTickets}" var="remainTicket">
+				보유하신 수강권 ${remainTicket.remainTicketSubject}이 있습니다.		
+			</c:forEach>
+		
+		</div>
 			
-			<button>회원탈퇴</button><br>
+		<div>
+			<input type="checkbox" value="agree" id="agree"> 위의 내용에 모두 동의합니다.
 			<input type="button" value="취소" id="btnCancle" onclick='history.back()'>
-		</form>
+			<input type="button" value="회원탈퇴" id="btnSignOut">
+		</div>
+
 		
 	</section>
 	
