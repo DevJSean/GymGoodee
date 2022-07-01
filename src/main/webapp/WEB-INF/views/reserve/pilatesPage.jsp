@@ -8,6 +8,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
 <title>PILATES</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
@@ -84,13 +85,17 @@
   		display : block;
   		margin: auto;
   	}
+  	
+  	
 
 </style>
 </head>
 <body>
 
-	<jsp:include page="../layout/header.jsp"></jsp:include>
-	
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>
+		
 	<div><img id="PilatesImage" alt="필라테스" src="../resources/images/pilates.png"></div>
 	
 	

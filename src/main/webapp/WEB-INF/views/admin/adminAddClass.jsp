@@ -9,7 +9,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>강좌 개설</title>
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
+<title>관리자페이지 - 강좌 개설</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -23,9 +24,10 @@
 		// 개설 날짜 선택하기
 		$('#classDate').datepicker({	// 달력 나타나서 날짜 선택하기!
 			'showOn' : 'focus',		// both 쓰면 옆에 버튼 생길 수 있다! / focus, button, both
-			'dateFormat': "yymmdd",
+			'dateFormat': "D, yymmdd",		// DD는 요일
 			'minDate': 0, 
-			'maxDate' : "+1M"
+			'maxDate' : "+1M",
+			'showAnim' : 'slideDown'
 		})
 		
 		// radio 선택 시 어떤 것을 선택했는지 알 수 있다.
@@ -62,7 +64,9 @@
 	// 0. 시 분 가져오기
 	function fnGetTime(){
 	    var date = new Date();
-	    return date.getHours()+':'+ date.getMinutes();
+	    var hour = date.getHours();
+	    hour = hour >= 10? hour : '0' + hour;
+	    return hour+':'+ date.getMinutes();
 	}
 	
 	
@@ -167,20 +171,46 @@
 				realTime = "20:30";
 				break;
 			}
-			if(realTime < fnGetTime()){
+			if(realTime < fnGetTime() && $('#classDate').val() == fnGetToday()){
+				console.log('realTime : ' , realTime);
+				console.log('fnGetTime : ' , fnGetTime());
+				console.log('classDate : ' , $('#classDate').val());
+				console.log('fnGetToday : ' , fnGetToday());
+				
 				alert('시간이 지나 강좌를 개설할 수 없습니다.');
 				fnInit();
 				ev.preventDefault();
 				return false;
 			}
 			
+			// $('#classDate').val() 에서 substring으로 indexOf(",") 앞부분만 잘라와서
+			var pickerVal = $('#classDate').val();
+			var dayOfWeek = pickerVal.substring(0,pickerVal.indexOf(","));			// 요일
+			var classDate = pickerVal.substring(pickerVal.indexOf(",")+2);			// 날짜
+			
+			// Sunday이면 개설 불가!
+			if(dayOfWeek == 'Sun'){
+				alert('일요일은 강좌를 개설할 수 없습니다.');
+				fnInit();
+				ev.preventDefault();
+				return false;
+			}
+
+			// Saturday 일 때 C,D 시간대면 개설 불가!
+			if(dayOfWeek == 'Sat' && (strTime == 'C' || strTime == 'D')){
+				alert('토요일은 오전 시간대 강좌만 개설 가능합니다.');
+				fnInit();
+				ev.preventDefault();
+				return false;
+			}
+
 			$.ajax({
 				url : '${contextPath}/admin/addClass',
 				data: JSON.stringify(
 					{
 						'teacherNo': $('#teachers option:selected').val(),
 						'locationCode':$('#locations option:selected').val(),
-						'classDate': $('#classDate').val(),
+						'classDate': classDate,
 						'classTime': $('#classTime option:selected').val()
 					}
 				),
@@ -367,9 +397,11 @@
 
 	<h1>관리자페이지</h1>
 	
-	<jsp:include page="../layout/header.jsp"></jsp:include>
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>
+	
 	<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
-
 		
 
 	<!-- 강좌 선택하면 해당 강좌 선생님과, 해당 강좌 장소 보여주기 -->
@@ -425,10 +457,10 @@
 				
 				시간 선택
 				<select id="classTime" name="classTime">
-					<option value="A">A</option>
-					<option value="B">B</option>
-					<option value="C">C</option>
-					<option value="D">D</option>
+					<option value="A">A(09:00)</option>
+					<option value="B">B(10:00)</option>
+					<option value="C">C(19:30)</option>
+					<option value="D">D(20:30)</option>
 				</select>
 				<br><br>
 				<input type="button" value="강좌 개설하기" id="btnAdd">

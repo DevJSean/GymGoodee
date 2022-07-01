@@ -8,6 +8,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
 <title>SWIM</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
@@ -84,20 +85,32 @@
   		display : block;
   		margin: auto;
   	}
+  	
+  	#wrapper{
+  		background-color : white;
+  		width : 800px;
+  		height: 900px;
+  		margin : auto;
+  		border-radius : 50px;
+  	}
+  	
+  	#calendar{
+  		width: 700px;
+  		height: 660px;
+  	}
 
 </style>
 </head>
 <body>
 	
-	<jsp:include page="../layout/header.jsp"></jsp:include>
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>	
 	
-	
-	<div><img id="swimImage" alt="수영" src="../resources/images/swim.png"></div>
-	
-	
-	
-	<div id="calendar"></div>
-	
+	<div id="wrapper">
+		<div><img id="swimImage" alt="수영" src="../resources/images/swim.png"></div>		
+		<div id="calendar"></div>
+	</div>
 	
 	
 	

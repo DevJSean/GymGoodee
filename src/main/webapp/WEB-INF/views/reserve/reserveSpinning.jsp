@@ -9,6 +9,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
 <title>스피닝 예약창</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
@@ -54,6 +55,7 @@
 	    var day = date.getDate();                   //d
 	    day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
 	    var hour = date.getHours();
+	    hour = hour = hour >= 10? hour : '0' + hour;
         var minute = date.getMinutes();
 	    return  year + '' + month + '' + day +'' +hour+''+minute;      
 	}
