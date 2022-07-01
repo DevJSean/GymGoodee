@@ -8,6 +8,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
 <title>DANCE</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
@@ -84,12 +85,16 @@
   		display : block;
   		margin: auto;
   	}
+  	
+  	
 
 </style>
 </head>
 <body>
-
-	<jsp:include page="../layout/header.jsp"></jsp:include>
+	
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>
 	
 	<div><img id="DanceImage" alt="스포츠댄스" src="../resources/images/dance.png"></div>
 	

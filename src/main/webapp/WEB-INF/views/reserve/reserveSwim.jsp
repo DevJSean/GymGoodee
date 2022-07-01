@@ -10,9 +10,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
 <title>수영 예약창</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 <script>
 
@@ -30,6 +32,9 @@
 		fnbtnClassEnd();
 		
 		fnAdminReservation();
+		
+		// 테스트
+		//cancelReserve();
 	})
 	
 	/* 함수 */
@@ -55,6 +60,7 @@
 	    var day = date.getDate();                   //d
 	    day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
 	    var hour = date.getHours();
+	    hour = hour = hour >= 10? hour : '0' + hour;
         var minute = date.getMinutes();
 	    return  year + '' + month + '' + day +'' +hour+''+minute;      
 	}
@@ -231,7 +237,9 @@
 				success : function(obj){
 					//console.log('버튼 ',obj);
 					if(obj.state == 501){
-						alert('동일 날짜, 동일 시간대 강좌가 이미 예약되어 있습니다.');
+						swal('예약 실패!',"동일 날짜, 동일 시간대 강좌가 이미 예약되어 있습니다",'warning');
+						
+						//alert('동일 날짜, 동일 시간대 강좌가 이미 예약되어 있습니다.');
 						return false;
 					}
 					if(obj.res == 1){
@@ -276,6 +284,7 @@
 	function fnCancelReserve(){
 		$('body').on('click','.btnReserveCancel',function(){
 			var classCode = $(this).data('classcode');
+			
 			
 			if(confirm('예약을 취소하시겠습니까?')){
 				$.ajax({

@@ -144,7 +144,7 @@ public class ReserveServiceImpl implements ReserveService {
 		// 일치하는 것이 있으면 같은 날짜, 같은 시간에 이미 예약했으므로 
 		// 예약불가!
 		String originCode = classCode.substring(0,classCode.lastIndexOf("_"));
-		System.out.println("originCode : " + originCode);
+		//System.out.println("originCode : " + originCode);
 		for(int i = 0; i<classCodes.size();i++) {
 			int codeIndex = classCodes.get(i).lastIndexOf("_");
 			String tmpCode = classCodes.get(i).substring(0,codeIndex);	// '날짜_시간'
