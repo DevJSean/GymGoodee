@@ -165,7 +165,6 @@
 			가입 당시 연락처<br>
 			<input type="text" id="memberPhone" placeholder="-를 포함하여 입력">
 			<input type="button" value="인증번호받기" id="btnGetAuthCodeSMS"><br>
-			<span id="emailMsg"></span><br>
 			<input type="text" id="authCodeSMS" placeholder="인증코드 입력">
 			<input type="button" value="인증하기" id="btnVerifyAuthCodeSMS"><br><br>
 		</div>

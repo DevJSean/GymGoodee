@@ -20,6 +20,13 @@
 	$(function(){
 		fnLogin();
 		fnDisplayRememberId();
+		fnFindId();
+		fnPwCheck();
+		fnPwConfirm();
+		fnPhoneAuth();
+		fnToUpperCase();
+		fnChangePw();
+
 
 		$('#remember_id').on('click', function(){
 			$('.input_remember').prop('checked', true);
@@ -34,8 +41,52 @@
 			$(this).toggleClass('remember_check');
 			
 		})
+		
+		$('#findId').on('click', function(){
+			$('.authAreaSMS').css('display', 'none');
+			$('.authArea').css('display', 'block');
+			$('.titlePw').css('display', 'none');
+			$('.titleId').css('display', 'block');
+			$('#modal.modal-overlay').css('display', 'flex');
+		})
+		
+		$('#findPw').on('click', function(){
+			$('.authArea').css('display', 'none');
+			$('.authAreaSMS').css('display', 'block');
+			$('.titleId').css('display', 'none');
+			$('.titlePw').css('display', 'block');
+			$('#modal.modal-overlay').css('display', 'flex');
+		})
+		
+		$('#btnClose1').on('click', function(){
+			$('#modal.modal-overlay').css('display', 'none');
+		})
+		
+		$('#btnClose2').on('click', function(){
+			$('#modal.modal-overlay').css('display', 'none');
+		})
+		
+		$('#btnClose3').on('click', function(){
+			$('#modal.modal-overlay').css('display', 'none');
+		})
+		
+		$('#btnClose4').on('click', function(){
+			$('#modal.modal-overlay').css('display', 'none');
+		})
+		
+		$('#btnFindPw').on('click', function(){
+			$('.changeArea').css('display', 'none');
+			$('.authAreaSMS').css('display', 'block');
+			$('.titleId').css('display', 'none');
+			$('.titlePw').css('display', 'block');
+		})
+		
+		$('#btnSignUp').on('click', function(){
+			location.href="${contextPath}/member/agreePage";
+		})
 	})
 	
+	moment.locale('ko');
 	
 	// 1. 로그인
 	function fnLogin(){
@@ -66,8 +117,263 @@
 		}
 	}
 	
+	// 3. 아이디 찾기
+	function fnFindId(){
+		$('#btnFindId').click(function(){
+			let regEmail = /^[a-zA-Z0-9-_]+@[a-zA-Z0-9]+(\.[a-zA-Z]{2,}){1,2}$/;  // 실제 서비스에서 그대로 사용 가능.
+			if (regEmail.test($('#memberEmail').val()) == false) {
+				alert('이메일 형식을 확인하세요.');
+				$('#findIdMsg').text('');
+				return;
+
+			}
+			$.ajax({
+				url: '${contextPath}/member/findId',
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify({
+					memberName: $('#memberName').val(),
+					memberEmail: $('#memberEmail').val()
+				}),
+				dataType: 'json',
+				success: function(obj) {
+					if (obj.findMember != null) {
+						$('.authArea').css('display', 'none');
+						$('.changeArea').css('display', 'block');
+						$('#findIdMsg').html('회원님의 아이디는<br>' + obj.findMember.memberId + '입니다.<br>가입일<br>' + moment(obj.findMember.memberSignUp).format("YYYY년 MM월 DD일 a h:mm:ss"));
+					} else {
+						$('#findIdMsg').html('일치하는 회원이 없습니다. 입력 정보를 확인하세요.');
+					}
+				}
+			});
+		});
+	}
+	
+	// 4. 비밀번호 정규식
+	let pwPass = false;
+	function fnPwCheck(){
+		$('#changeMemberPw').on('keyup', function(){
+			let regPw = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/;
+			if(regPw.test($('#changeMemberPw').val())==false){
+				$('#pwMsg').text('8~16자 영문, 숫자, 특수문자를 모두 사용하세요.').addClass('dont').removeClass('ok');
+				pwPass = false;
+			} else {
+				$('#pwMsg').text('사용 가능한 비밀번호입니다.').addClass('ok').removeClass('dont');
+				pwPass = true;
+			}
+		})
+	}
+	
+	// 5. 비밀번호 입력확인
+	let rePwPass = false;
+	function fnPwConfirm(){
+		$('#pwConfirm').on('keyup', function(){
+			if($('#pwConfirm').val() != '' && $('#changeMemberPw').val() != $('#pwConfirm').val()){
+				$('#rePwMsg').text('비밀번호를 확인하세요.').addClass('dont').removeClass('ok');
+				rePwPass = false;
+			} else {
+				$('#rePwMsg').text('');
+				rePwPass = true;
+			}
+		})
+	}
+	
+	// 6. 아이디 + 연락처 일치하는 회원 확인
+	function fnIdPhoneCheck(){
+		return new Promise(function(resolve, reject){
+			let regPhone = /^01[0169]-[0-9]{3,4}-[0-9]{4}$/; 
+			if(regPhone.test($('#memberPhone').val())==false){
+				alert('잘못된 형식의 핸드폰 번호입니다.');
+				return;
+			}
+			$.ajax({
+				url: '${contextPath}/member/idPhoneCheck',
+				type: 'get',
+				data: 'memberId=' + $('#confirmMemberId').val() + '&memberPhone=' + $('#memberPhone').val(),
+				dataType: 'json',
+				success: function(obj){
+					if(obj.findMember != null){  
+						resolve();
+					} else {
+						reject(401);
+					}
+				}
+			})
+		})
+	}
+	
+	// 7. SMS 인증
+	function fnPhoneAuth(){
+		$('#btnGetAuthCodeSMS').on('click', function(){
+			fnIdPhoneCheck()
+				.then(function(){
+					$.ajax({
+						url: '${contextPath}/member/sendAuthCodeSMS',
+						type: 'get',
+						data: 'memberPhone=' + $('#memberPhone').val(),
+						dataType: 'json',
+						success: function(obj){  
+							alert('인증코드를 발송했습니다. 핸드폰을 확인하세요.');
+							fnVerifyAuthCodeSMS(obj.authCodeSMS); 
+						},
+						error: function(){
+							alert('인증코드 발송이 실패했습니다.');
+						}
+					})
+				}).catch(function(errorCode){
+					alert('회원 정보를 찾을 수 없습니다.');
+				})
+		})
+	}
+	
+	// 8. 인증코드 검증
+	let authCodePassSMS = false;
+	function fnVerifyAuthCodeSMS(authCodeSMS){ 
+		$('#btnVerifyAuthCodeSMS').on('click', function(){
+			if($('#authCodeSMS').val() == authCodeSMS){
+				alert('인증되었습니다.');
+				$('.authAreaSMS').css('display', 'none');
+				$('.changePw').css('display', 'block');
+				authCodePassSMS = true;
+			} else {
+				alert('인증에 실패했습니다.');
+				authCodePassSMS = false;
+			}
+		})
+	}
+	
+	// 9. 입력을 무조건 대문자로 처리
+	function fnToUpperCase(){
+		$('#authCodeSMS').on('keyup', function(){
+			$('#authCodeSMS').val($('#authCodeSMS').val().toUpperCase());
+		})
+	}
+	
+	// 10. 비밀번호 변경
+	function fnChangePw(){
+		$('#f2').on('submit', function(event){
+			if(pwPass == false || rePwPass == false){
+				alert('비밀번호를 확인하세요.');
+				event.preventDefault();
+				return false;
+			}
+			else if(authCodePassSMS == false){
+				alert('연락처 인증을 받아야 합니다.');
+				event.preventDefault();
+				return false;
+			}
+			return true;
+		})
+	}
+	
 </script>
 <style>
+      	.changeArea, .authAreaSMS, .changePw, #modal .titlePw h2 {
+		display: none;
+		}
+		#modal.modal-overlay {
+			
+		    width: 100%;
+		    height: 100%;
+		    position: absolute;
+		    left: 0;
+		    top: 0;
+		    display: flex;
+		    flex-direction: column;
+		    align-items: center;
+		    justify-content: center;
+		    background: rgba(255, 255, 255, 0.25);
+		    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+		    backdrop-filter: blur(1.5px);
+		    -webkit-backdrop-filter: blur(1.5px);
+		    border-radius: 10px;
+		    border: 1px solid rgba(255, 255, 255, 0.18);
+		    display:none;
+		    z-index: 2;
+		}
+	    #modal .modal-window {
+	        background: rgba( 69, 139, 197, 0.70 );
+	        box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+	        backdrop-filter: blur( 13.5px );
+	        -webkit-backdrop-filter: blur( 13.5px );
+	        border-radius: 10px;
+	        border: 1px solid rgba( 255, 255, 255, 0.18 );
+	        width: 400px;
+	        height: 200px;
+	        position: relative;
+	        padding: 10px;
+	    }
+	    #modal .titleId, .titlePw {
+	        padding-left: 10px;
+	        display: inline;
+	        text-shadow: 1px 1px 2px gray;
+	        color: white;
+	    }
+	    #modal .titleId h2, .titlePw h2 {
+	        display: inline;
+	    }
+	    #modal .close-area {
+	        display: inline;
+	        float: right;
+	        padding-right: 10px;
+	        cursor: pointer;
+	        text-shadow: 1px 1px 2px gray;
+	        color: white;
+	    }
+	    
+	    #modal .authArea, .changeArea, .authAreaSMS, .changePw {
+	        margin-top: 20px;
+	        padding: 0px 10px;
+	        text-shadow: 1px 1px 2px gray;
+	        color: white;
+	    }
+	    #btnClose1, #btnFindId {
+	    	position: relative;
+	    	left: 220px;
+	    	bottom: 120px;
+	    	background-color: lightgrey;
+			width: 120px;
+			height: 40px;
+			color: grey;
+			border: none;
+			border-radius: 5px;
+	    }
+	    
+	    #btnClose2, #btnFindPw, #btnSignUp {
+	    	position: relative;
+	    	left: 250px;
+	    	bottom: 145px;
+	    	background-color: lightgrey;
+			width: 120px;
+			height: 40px;
+			color: grey;
+			border: none;
+			border-radius: 5px;
+	    }
+	    #btnClose3, #btnGetAuthCodeSMS, #btnVerifyAuthCodeSMS {
+	    	position: relative;
+	    	left: 250px;
+	    	bottom: 145px;
+	    	background-color: lightgrey;
+			width: 120px;
+			height: 40px;
+			color: grey;
+			border: none;
+			border-radius: 5px;
+	    }
+	    #btnClose4, #btnChangePw {
+	    	position: relative;
+	    	left: 125px;
+	    	bottom: -10px;
+	    	background-color: lightgrey;
+			width: 120px;
+			height: 40px;
+			color: grey;
+			border: none;
+			border-radius: 5px;
+	    }
+	    
+	    
         html, body, button, dd, dl, dt, fieldset, form,
         h1, h2, h3, h4, h5, h6, input, legend, 
         li, ol, p, select, table, td, textarea, th, ul,
@@ -131,7 +437,7 @@
         }
         .panel_wrap {
             margin-top: -8px;
-            z-index: 3; 
+            z-index: 1; 
             position: relative;
         }
         .panel_item {
@@ -203,13 +509,14 @@
         	font-weight: 500;
         	line-height: 17px;
         	color: #777;
- 			padding-left: 20px;
+ 			padding-left: 25px;
 			background-image: url(../resources/images/uncheck.png);
 			background-size: 18px 18px;
 			background-repeat: no-repeat;
         }
         .remember_check {
             background-image: url(../resources/images/check.png);
+            background-color: #90c2ff;
         }
         .btn_login_wrap {
             margin-top: 38px;
@@ -220,7 +527,7 @@
             padding: 13px 0;
             border: 1px solid rgba(0,0,0,0.15);
             border-radius: 6px;
-            background-color: #03c75a;
+            background-color: #90c2ff;
         }
         .btn_login .btn_text {
             font-size: 20px;
@@ -261,9 +568,67 @@
             top: 3px;
             left: 3px;
         }
+		.dont {
+		color: red;
+		}
+		.ok {
+			color: limegreen;
+		}
 </style>
 </head>
 <body>
+	
+    <div id="modal" class="modal-overlay">
+        <div class="modal-window">
+            <div class="titleId">
+                <h2>아이디 찾기</h2>
+            </div>
+            <div class="authArea">
+           		이름<br>
+           		<input type="text" name="memberName" id="memberName"><br><br>
+            	이메일 주소<br>
+				<input type="text" name="memberEmail" id="memberEmail"><br><br>
+                <input type="button" value="아이디찾기" id="btnFindId"><br><br>
+                <input type="button" value="나가기" id="btnClose1">
+            </div>
+		   	<div class="changeArea">
+				<div id="findIdMsg"></div><br><br>
+				
+				<div>
+					<input type="button" value="비밀번호찾기" id="btnFindPw"><br><br>
+					<input type="button" value="회원가입" id="btnSignUp"><br><br>
+					<input type="button" value="나가기" id="btnClose2">
+				</div>
+			</div>
+            <div class="titlePw">
+                <h2>비밀번호 찾기</h2>
+            </div>
+			<form id="f2" action="${contextPath}/member/changePw" method="post">
+				<div class="authAreaSMS">
+					아이디<br>
+					<input type="text" name="memberId" id="confirmMemberId"><br><br>
+					가입 당시 연락처<br>
+					<input type="text" id="memberPhone" placeholder="-를 포함하여 입력"><br><br>
+					<input type="text" id="authCodeSMS" placeholder="인증코드 입력"><br>
+					<input type="button" value="인증번호받기" id="btnGetAuthCodeSMS"><br><br>
+					<input type="button" value="인증하기" id="btnVerifyAuthCodeSMS"><br><br>
+					<input type="button" value="나가기" id="btnClose3">
+				</div>
+				<div class="changePw">
+					비밀번호<br>
+					<input type="password" name="memberPw" id="changeMemberPw" placeholder="새 비밀번호"><br>
+					<span id="pwMsg"></span><br>
+					비밀번호 확인<br>
+					<input type="password" id="pwConfirm" placeholder="새 비밀번호 확인"><br>
+					<span id="rePwMsg"></span><br>
+					<input type="button" value="나가기" id="btnClose4">
+					<button id="btnChangePw">비밀번호 변경하기</button>
+				</div>
+			</form>
+        </div>
+    </div>
+    
+    
 	
 	<div id="wrap" class="wrap">
 
@@ -303,7 +668,7 @@
 				                    </div>
 				                    <div class="id_remember_wrap">
 				                        <div class="remember">
-			                            	<label for="rememberId" class="remember_text">로그인 상태 유지</label>
+			                            	<label for="rememberId" class="remember_text">아이디 저장</label>
 			                            	<input type="checkbox" id="rememberId" class="input_remember blindCheck">
 				                        </div>
 			                        </div>
@@ -329,8 +694,10 @@
 			    </div>
 				<ul class="find_wrap" id="find_wrap">
 			        <li><a href="${contextPath}/member/agreePage">회원가입</a></li>
-			        <li><a href="${contextPath}/member/findIdPage">아이디 찾기</a></li>
-			        <li><a href="${contextPath}/member/findPwPage">비밀번호 찾기</a></li>
+			        <!-- <li><a href="${contextPath}/member/findIdPage">아이디 찾기</a></li> -->
+			        <li><a id="findId">아이디 찾기</a></li>
+			        <!-- <li><a href="${contextPath}/member/findPwPage">비밀번호 찾기</a></li>  -->
+			        <li><a id="findPw">비밀번호 찾기</a></li>
 			    </ul>
 	    	</div>  <!-- content -->
 	    </div>  <!-- container -->	
