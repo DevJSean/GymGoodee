@@ -329,15 +329,9 @@
    
 </script>
 <style>
-<<<<<<< HEAD
-	body {
-		background-color: #F5F6F7;
-	}
-=======
    header {
       padding-top: 30px;
    }
->>>>>>> jsh
    .indexNav {
       display: flex;
       flex-direction: row;
