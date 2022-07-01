@@ -41,6 +41,10 @@ public interface AdminService {
 	public Map<String, Object> reserveCancle(String reservationCode, String memberId, String remainTicketSubject);
 
 	
+	// 예약 목록 검색
+	public void findReserves(HttpServletRequest request, Model model);
+	
+	
 	
 	
 

@@ -75,7 +75,8 @@
 <style>
 
 	#calendar {
-	    max-width: 800px;
+	    width: 700px;
+  		height: 660px;
 	    margin: 0 auto;
   	}
   	
@@ -84,6 +85,15 @@
   		height: 150px;
   		display : block;
   		margin: auto;
+  	}
+  	
+  	 #wrapper{
+  		background-color : white;
+  		width : 800px;
+  		height: 900px;
+  		margin : auto;
+  		border-radius : 50px;
+  		margin : 50px auto;
   	}
 
 </style>
@@ -94,11 +104,10 @@
 		<jsp:include page="../layout/header.jsp"></jsp:include>
 	</header>
 	
-	<div><img id="SpinningImage" alt="스피닝" src="../resources/images/spinning.png"></div>
-	
-	
-	
-	<div id="calendar"></div>
+	<div id="wrapper">
+		<div><img id="SpinningImage" alt="스피닝" src="../resources/images/spinning.png"></div>
+		<div id="calendar"></div>	
+	</div>
 	
 	
 	

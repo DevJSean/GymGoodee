@@ -17,6 +17,7 @@ private String subject;
 
 private String reservationCode;
 private Long memberNo;
+private String memberName;
 private String classCode;
 private Timestamp reservationDate;
 private Integer reservationState;

@@ -75,7 +75,8 @@
 <style>
 
 	#calendar {
-	    max-width: 800px;
+	    width: 700px;
+  		height: 660px;
 	    margin: 0 auto;
   	}
   	
@@ -92,12 +93,9 @@
   		height: 900px;
   		margin : auto;
   		border-radius : 50px;
+  		margin : 50px auto;
   	}
-  	
-  	#calendar{
-  		width: 700px;
-  		height: 660px;
-  	}
+
 
 </style>
 </head>
