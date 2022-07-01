@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>센터소개</title>
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a2eaaee1257d5ccec0e423f47ffb938a"></script>
 	<script src="../resources/js/jquery-3.6.0.js"></script>
 	<script>
