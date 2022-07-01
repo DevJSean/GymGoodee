@@ -1,13 +1,11 @@
 package com.goodee.gym.service;
 
-import java.io.PrintWriter;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,23 +30,8 @@ public class TicketServiceImpl implements TicketService {
 	private MyPageMapper myPageMapper;
 	
 	@Override
-	public void findTicketByNo(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public void findTicketByNo(HttpServletRequest request, Model model) {
 	
-		try {
-			if(request.getSession().getAttribute("loginMember") == null) {
-				response.setContentType("text/html");
-				PrintWriter out = response.getWriter();
-				out.println("<script>");
-				out.println("alert('로그인 후 구매해주세요.')");
-				out.println("location.href='" + request.getContextPath() + "/lsh'");
-				out.println("</script>");
-				out.close();
-				return;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
 		Optional<String> opt = Optional.ofNullable(request.getParameter("ticketNo"));
 		Long ticketNo = Long.parseLong(opt.orElse("0"));
 		

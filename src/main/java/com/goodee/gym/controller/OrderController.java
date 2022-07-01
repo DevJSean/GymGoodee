@@ -1,7 +1,6 @@
 package com.goodee.gym.controller;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +39,8 @@ public class OrderController extends Payple {
 	
 	// order.jsp : 주문 페이지
 	@GetMapping(value = "/order/order")
-	public String order(HttpServletRequest request, HttpServletResponse response, Model model) {
-		ticketService.findTicketByNo(request, response, model);
+	public String order(HttpServletRequest request, Model model) {
+		ticketService.findTicketByNo(request, model);
 		return "order/order";
 	}
 	

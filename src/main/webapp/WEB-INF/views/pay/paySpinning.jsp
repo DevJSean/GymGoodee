@@ -8,11 +8,15 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>스피닝 결제</title>
 </head>
 <body>
 		
-	<jsp:include page="../layout/header.jsp"></jsp:include>
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>
+
+	
 		
 	<h1>수강권 구매</h1><br>
 	<h3>아래 버튼을 클릭하여 선택해 주세요</h3>
@@ -24,8 +28,8 @@
 	
 	<ul class="paymentNav">
 		<li class="paySwim"><a href="${contextPath}/pay/paySwim">수영</a></li>
-		<li class="paySpinning">스피닝</li>
 		<li class="payPilates"><a href="${contextPath}/pay/payPliates">필라테스</a></li>
+		<li class="paySpinning">스피닝</li>
 		<li class="payDance"><a href="${contextPath}/pay/payDance">스포츠 댄스</a></li>
 	</ul>
 	

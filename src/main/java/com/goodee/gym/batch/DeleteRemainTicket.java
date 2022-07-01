@@ -2,7 +2,6 @@ package com.goodee.gym.batch;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class DeleteRemainTicket {
 			String endDate = remainTicket.get(i).getRemainTicketEndDate().toString(); 
 			if (endDate.equals(now)) {
 				ticketMapper.deleteRemainTicket(remainTicket.get(i).getRemainTicketNo());
-				System.out.println("만료일이 지난 수강권을 삭제했습니다.");
+				// System.out.println("만료일이 지난 수강권을 삭제했습니다.");
 			}
 		}
 		
