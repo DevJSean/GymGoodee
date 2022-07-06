@@ -125,7 +125,7 @@
     }
     ul.myMenu {
     	display: flex;
-    	width: 900px;
+    	width: 850px;
     	margin: 0 auto;
     }
     ul.myMenu > li { 

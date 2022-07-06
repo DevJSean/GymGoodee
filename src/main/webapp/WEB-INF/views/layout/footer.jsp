@@ -78,7 +78,7 @@
     	display: inline-block;
     	width: 250px;
     	height: 150px;
-    	background-image: url(../resources/images/location.png);
+    	background-image: url(${contextPath}/resources/images/location.png);
     	background-size: 250px 150px;
         background-repeat: no-repeat;
         background-position: center;

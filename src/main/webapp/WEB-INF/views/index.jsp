@@ -425,11 +425,11 @@
 	/* 날씨 CSS */
    /* Slideshow container */
 	.slideshow-container {
-		max-width: 30%;
+		max-width: 50%;
 		position: relative;
 		top : 30px;
 		left : 30px;
-		height: 137px;
+		height: 143.33px;
  		margin: 30px auto 70px auto;
 	}
 	.mySlideDiv {
@@ -495,6 +495,7 @@
          margin: auto;
          padding: auto;
          flex-direction: row;
+         margin-bottom: 30px;
    }
    #indexWrapper > div{
          display: inline-block;
@@ -563,9 +564,7 @@
 </style>
 </head>
 <body>
-	
-	<h1>메인 페이지</h1>
-	
+		
 	<header>
 		<jsp:include page="./layout/header.jsp"></jsp:include>
 	</header>
