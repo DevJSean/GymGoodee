@@ -13,6 +13,8 @@ pageEncoding="UTF-8"%>
     <title>결제정보 수정</title>
 
     <script src="../resources/js/jquery-3.6.0.js"></script>
+	<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../resources/css/reset.css">
 
 	<script>
 	$(document).ready(function () {
@@ -52,24 +54,94 @@ pageEncoding="UTF-8"%>
 		});	
 	});
 	</script>
+	
+	
+	<style>
+	
+	#orderForm {
+		background-color : white;
+		width : 800px;
+		height: 650px;
+		margin : auto;
+		border-radius : 50px;
+		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
+	}
+	
+	#titleName{
+        font-size: 2.75em;
+        padding: 40px 0 0 0;
+        margin: 40px;
+     }
+	
+	#orderTable {
+		width: 700px;
+		margin: 50px 0 30px 50px;
+		border: 1px;
+		line-height: 35px;
+		border-collapse: separate;
+	}
+	th {
+		width: 25%;
+		text-align: left;
+		padding: 5px 0 5px 20px;
+		background-color: #2C3E50;
+		opacity: 0.65;
+		color: #F5F6F7;
+		border-top: 1px solid lightgrey;
+		border-right: 1px solid lightgrey;
+	}
+	td{
+		padding: 5px 0 5px 10px;
+		width: 75%;
+		border-top: 1px solid grey;
+	}
+	.last {
+		border-bottom: 1px solid grey;
+	}
+	
+	input, select {
+		width:200px;
+		height: 25px;
+		padding: 0;
+	}
+	.tag {
+		margin-left: 10px;
+		line-height: 0;
+		font-size: 0.5em;
+	}
+	
+	
+	button {
+		font-size: 1.0625em;
+		background-color : lightgrey;
+		border : 1px solid lightgrey;
+		border-radius : 3px;
+		cursor: pointer;
+		float : right;
+		margin: 10px 80px 0 0;
+		width: 100px;
+		height: 30px;
+   }
+   
+   button:hover{
+		background-color : #2C3E50;
+		border : 1px solid #2C3E50;
+		color: #F5F6F7;
+   } 
+	
+	</style>
+	
 
 </head>
 <body>
 
-    
-    <header>
+	<header>
 		<jsp:include page="../layout/header.jsp"></jsp:include>
 	</header>
 
     <form id="orderForm" name="orderForm">
-        <h2>| 주문 정보 설정</h2>
-        <table border="1">
-        	<thead>
-				<tr>
-					<th>항목</th>
-					<th>값</th>
-				</tr>
-        	</thead>
+        <div id="titleName">| 주문 정보 설정</div>
+        <table id="orderTable" border="1">
         	<tbody>
 				<tr>
 					<th>이름</th>
@@ -87,7 +159,7 @@ pageEncoding="UTF-8"%>
 				<tr>
 					<th>이메일</th>
 					<td>
-						<input type="text" name="memberEmail" id="memberEmail" value="" placeholder="(선택)">
+						<input type="text" name="memberEmail" id="memberEmail" value="" placeholder="이메일을 입력해주세요(선택)">
 					</td>
 				</tr>
 				<tr>
@@ -108,9 +180,8 @@ pageEncoding="UTF-8"%>
 				<tr>
 					<th>결제금액</th>
 					<td>
-						<input type="hidden" name="ticketPrice" id="ticketPrice" value="1000">
-						${ticket.ticketPrice}원
-						<div>※ 실 결제는 1000원으로 통일됩니다.</div>
+						<input type="hidden" name="ticketPrice" id="ticketPrice" value="1000">${ticket.ticketPrice}원
+						<span class="tag">※ 실 결제는 1000원으로 통일됩니다.</span>
 					</td>
 				</tr>
 				<tr>
@@ -124,8 +195,8 @@ pageEncoding="UTF-8"%>
 					</td>
 				</tr>
 				<tr>
-					<th>결제수단</th>
-					<td>
+					<th class="last">결제수단</th>
+					<td class="last">
 						<span>
 							<select id="pay_type" name="pay_type">
 								<option value="transfer">계좌이체결제</option>
@@ -142,7 +213,12 @@ pageEncoding="UTF-8"%>
 				</tr>
         	</tbody>
 		</table>
+		<br>
+		<button id="orderFormSubmit">상품구매</button>
 	</form>
-	<button id="orderFormSubmit">상품구매</button>
+	
+	<footer>
+		<jsp:include page="../layout/footer.jsp"></jsp:include>
+	</footer>
 </body>
 </html>

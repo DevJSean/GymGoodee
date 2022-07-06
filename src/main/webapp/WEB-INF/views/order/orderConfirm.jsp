@@ -17,6 +17,8 @@
 
 <!-- payple js 호출. 테스트/운영 선택 -->
 <script src="https://democpay.payple.kr/js/cpay.payple.1.0.1.js"></script> <!-- TEST (테스트) -->
+	<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="../resources/css/reset.css">
 
 
 <script>
@@ -83,6 +85,70 @@
 			});
 		});
 </script>
+
+
+	<style>
+	
+	#orderConfirmForm {
+		background-color : white;
+		width : 800px;
+		height: 650px;
+		margin : auto;
+		border-radius : 50px;
+		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
+	}
+	
+	#titleName{
+        font-size: 2.75em;
+        padding: 40px 0 0 0;
+        margin: 40px;
+     }
+	
+	#orderConfirmTable {
+		width: 700px;
+		margin: 50px 0 30px 50px;
+		border: 1px;
+		line-height: 35px;
+		border-collapse: separate;
+	}
+	th {
+		width: 25%;
+		text-align: left;
+		padding: 5px 0 5px 20px;
+		background-color: #2C3E50;
+		opacity: 0.65;
+		color: #F5F6F7;
+		border-top: 1px solid lightgrey;
+		border-right: 1px solid lightgrey;
+	}
+	td{
+		padding: 5px 0 5px 10px;
+		width: 75%;
+		border-top: 1px solid grey;
+	}
+	.last {
+		border-bottom: 1px solid grey;
+	}
+	
+	button {
+		font-size: 1.0625em;
+		background-color : lightgrey;
+		border : 1px solid lightgrey;
+		border-radius : 3px;
+		cursor: pointer;
+		float : right;
+		margin: 10px 80px 0 0;
+		width: 100px;
+		height: 30px;
+   }
+   
+   button:hover{
+		background-color : #2C3E50;
+		border : 1px solid #2C3E50;
+		color: #F5F6F7;
+   } 
+	</style>
+
 </head>
 
 <body>
@@ -91,56 +157,58 @@
 		<jsp:include page="../layout/header.jsp"></jsp:include>
 	</header>
 
-	<h2>| 결제 정보 확인</h2>
-	<table border="1">
-		<thead>
-			<tr>
-				<th>항목</th>
-				<th>요청변수</th>
-			</tr>
-		<thead>
-		<tbody>
-			<tr>
-				<th>결제자 이름</th>
-				<td>${memberName}</td>
-			</tr>
-			<tr>
-				<th>결제자 연락처</th>
-				<td>${memberPhone}</td>
-			</tr>
-			<tr>
-				<th>결제자 이메일</th>
-				<td>${memberEmail}</td>
-			</tr>
-			<tr>
-				<th>회원아이디</th>
-				<td>${memberId}</td>
-			</tr>
-			<tr>
-				<th>구매상품</th>
-				<td>${ticketName}</td>
-			</tr>
-			<tr>
-				<th>결제금액</th>
-				<td>${ticketPrice}</td>
-			</tr>
-			<tr>
-				<th>결제 수단</th>
-				<td>
-					<c:if test="${pay_type == 'transfer' and card_ver == '01'}">
-						계좌이체 결제
-					</c:if>
-					<c:if test="${pay_type == 'card' and card_ver == '01'}">
-						신용카드 간편결제
-					</c:if>
-					<c:if test="${pay_type == 'card' and card_ver == '02'}">
-						앱카드 결제
-					</c:if>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-	<br>
-	<button id="payAction">결제하기</button>
+	<div id="orderConfirmForm">
+		<div id="titleName">| 결제 정보 확인</div>
+		<table id="orderConfirmTable">
+			<tbody>
+				<tr>
+					<th>결제자 이름</th>
+					<td>${memberName}</td>
+				</tr>
+				<tr>
+					<th>결제자 연락처</th>
+					<td>${memberPhone}</td>
+				</tr>
+				<tr>
+					<th>결제자 이메일</th>
+					<td>${memberEmail}</td>
+				</tr>
+				<tr>
+					<th>회원아이디</th>
+					<td>${memberId}</td>
+				</tr>
+				<tr>
+					<th>구매상품</th>
+					<td>${ticketName}</td>
+				</tr>
+				<tr>
+					<th>결제금액</th>
+					<td>${ticketPrice}</td>
+				</tr>
+				<tr>
+					<th class="last">결제 수단</th>
+					<td class="last">
+						<c:if test="${pay_type == 'transfer' and card_ver == '01'}">
+							계좌이체 결제
+						</c:if>
+						<c:if test="${pay_type == 'card' and card_ver == '01'}">
+							신용카드 간편결제
+						</c:if>
+						<c:if test="${pay_type == 'card' and card_ver == '02'}">
+							앱카드 결제
+						</c:if>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<br>
+		<button id="payAction">결제하기</button>
+	
+	</div>
+
+	<footer>
+		<jsp:include page="../layout/footer.jsp"></jsp:include>
+	</footer>
+	
 </body>
 </html>

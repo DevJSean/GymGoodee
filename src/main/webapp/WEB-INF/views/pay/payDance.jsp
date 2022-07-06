@@ -3,20 +3,16 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>수영 결제</title>
 	<script src="../resources/js/jquery-3.6.0.js"></script>
+	<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="../resources/css/reset.css">
 </head>
 <body>
-	
-	<header>
-		<jsp:include page="../layout/header.jsp"></jsp:include>
-	</header>
-
 	
 	<h1>수강권 구매</h1><br>
 	<h3>아래 버튼을 클릭하여 선택해 주세요</h3>
