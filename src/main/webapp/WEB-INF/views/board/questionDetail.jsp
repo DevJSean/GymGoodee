@@ -8,10 +8,26 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
 <title>QnA 상세보기</title>
+<%
+ String strReferer = request.getHeader("referer"); //이전 URL 가져오기
+ 
+ if(strReferer == null){
+%>
+ <script type="text/javascript">
+  	alert("url 입력을 통한 접근은 불가합니다.");
+  	history.back();
+ </script>
+<%
+  return;
+ }
+%>
+<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="../resources/css/reset.css">
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script>
 	
 	$(function(){
+		
 		fnRemoveQuestion();
 		fnQuestionList();
 		fnRemoveAnswer();
@@ -80,12 +96,80 @@
 	}	
 </script>
 <style>
-	div.content {
-	    width: 1000px;
-	    height: 600px;
-	    border: 1px solid #dcdcdc;
-	    overflow-y: auto;
+	* {
+		box-sizing: border-box;
 	}
+	article {
+		text-align: center;
+		background-color : white;
+		width: 50%;
+  		border-radius : 50px;
+  		position : absolute;
+  		top : 200px;
+  		left: 50%;
+  		transform: translate(-50%, 0%);
+  		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
+  		padding: 0 0 30px 0;
+	}	
+	.pageName {
+		margin: 30px auto;
+		font-size: 30px;
+		font-weight: 900;
+	}
+	#divNo {
+		margin: 30px auto 0 auto;
+		width: 75%;
+		text-align: left;
+		font-size: 20px;
+	}
+	#divTitle, #divWriter, #divCreated {
+		font-size: 20px;	
+		margin: 5px auto 0 auto;
+		width: 75%;
+		text-align: left;		
+	}
+	.content {
+		margin: 30px auto 0 auto;
+	    width: 75%;
+	    text-align: left;
+	    font-size: 20px;
+	}
+	#content {
+		margin-top : 10px;
+	    border: 2px solid #2C3E50; 
+	    overflow-x: auto;
+	    height: 300px;
+		padding: 10px;
+		border-radius: 30px;
+		font-size: 16px;
+	}
+	#btnList, #btnRemove, #btnAddAnswer, #btnRemoveAnswer {
+		background-color: #2C3E50; 
+ 		padding: 10px;
+		cursor: pointer;
+		text-align: center;
+		text-decoration: none;
+		color: #F5F6F7;
+		border: none;
+		border-radius : 10px;
+	}
+	#btnList:hover, #btnRemove:hover, #btnAddAnswer:hover, #btnRemoveAnswer:hover {
+		background-color: #2C3E50; opacity: 0.65;
+	}
+	
+	textarea {
+		width: 75%;
+		height: 300px;
+		padding: 10px;
+		border: solid 2px #2C3E50;
+		border-radius: 30px;
+		font-size: 16px;
+		resize: none;
+	}		
+	.divBtn {
+		margin: 20px auto;
+	}
+				
 </style>
 </head>
 <body>
@@ -94,31 +178,55 @@
 		<jsp:include page="../layout/header.jsp"></jsp:include>
 	</header>
 
-	<input type="button" value="QnA 목록" id="btnList">
-	<c:if test="${loginMember.memberId eq question.memberId || loginMember.memberId eq 'admin'}">
-		<input type="button" value="삭제" id="btnRemove">
-	</c:if>
-	<br>
-	게시글번호: ${question.questionNo}<br>
-	작성자: ${question.memberId}<br>
-	제목: ${question.questionTitle}<br>
-	최초작성일: ${question.questionCreated}<br>
-	내용
-	<div class="content" contenteditable="false">${question.questionContent}</div>
-	
-	<hr>
-	
-	<h3>답변</h3>
-	<div>
-		<c:if test="${loginMember.memberId ne 'admin'}">
-			<textarea rows="10" cols="70" name="answerContent" id="answerContent" readonly>${answer.answerContent}</textarea>
-		</c:if>
-		<c:if test="${loginMember.memberId eq 'admin'}">
-			<textarea rows="10" cols="70" name="answerContent" id="answerContent">${answer.answerContent}</textarea>
-			<input type="button" value="답변 등록" id="btnAddAnswer">
-			<input type="button" value="답변 삭제" id="btnRemoveAnswer">
-		</c:if>
-	</div>
+	<article>
+		
+		<div class="pageName">
+			질문
+		</div>
+		<div id="divNo">
+			게시글번호 : ${question.questionNo}
+		</div>
+		<div id="divWriter">
+			작성자 : ${question.memberId}
+		</div>
+		<div id="divTitle">
+			제목 : ${question.questionTitle}
+		</div>
+		<div id="divCreated">
+			최초작성일 : ${question.questionCreated}
+		</div>
+		<div class="content" contenteditable="false">
+			내용<div id="content">${question.questionContent}</div>
+		</div>
+		<div class="divBtn">
+			<input type="button" value="QnA 목록" id="btnList">
+			<c:if test="${loginMember.memberId eq question.memberId || loginMember.memberId eq 'admin'}">
+				<input type="button" value="삭제" id="btnRemove">
+			</c:if>
+		</div>
+		
+		
+		<hr>
+		<div class="pageName">
+			답변
+		</div>
+		<div>
+			<c:if test="${loginMember.memberId ne 'admin'}">
+				<textarea rows="10" cols="70" name="answerContent" id="answerContent" readonly>${answer.answerContent}</textarea>
+			</c:if>
+			<c:if test="${loginMember.memberId eq 'admin'}">
+				<textarea rows="10" cols="70" name="answerContent" id="answerContent">${answer.answerContent}</textarea>
+				<div class="divBtn">
+					<input type="button" value="답변 등록" id="btnAddAnswer">
+					<input type="button" value="답변 삭제" id="btnRemoveAnswer">
+				</div>
+			</c:if>
+		</div>
+	</article>
+
+	<footer>
+		<jsp:include page="../layout/footer.jsp"></jsp:include>		
+	</footer>
 	
 </body>
 </html>

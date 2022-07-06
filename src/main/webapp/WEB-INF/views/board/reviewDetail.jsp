@@ -8,11 +8,27 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
 <title>리뷰 상세보기</title>
+<%
+ String strReferer = request.getHeader("referer"); //이전 URL 가져오기
+ 
+ if(strReferer == null){
+%>
+ <script type="text/javascript">
+  	alert("url 입력을 통한 접근은 불가합니다.");
+  	history.back();
+ </script>
+<%
+  return;
+ }
+%>
+<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="../resources/css/reset.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script>
 
 	$(function(){
+		
 		$('body').on('click', '.reply_link', function(){ 
 			$('.reply_form').addClass('blind');
 	    	$(this).parent().parent().next().removeClass('blind');
@@ -77,10 +93,10 @@
 		let tr = '<tr><td colspan="4">'
 			if('${loginMember.memberId}') {
 				tr += '<form>';
-				tr += '<input type="text" name="writer" value="${loginMember.memberId}" readonly>';
-				tr += '<input type="text" name="content" class="replyContent" placeholder="내용" size="100">';
+				tr += '<input type="text" name="writer" value="${loginMember.memberId}" readonly>&nbsp;&nbsp;';
+				tr += '<input type="text" name="content" class="replyContent" placeholder="내용" size="80">&nbsp;&nbsp';
 				tr += '<input type="button" value="작성" class="btnReplySave">';
-				<!-- 원글의  Depth, GroupNo, GroupOrd -->
+				<!-- 원글의 Depth, GroupNo, GroupOrd -->
 				tr += '<input type="hidden" name="depth" value="${review.reviewDepth}">';
 				tr += '<input type="hidden" name="groupNo" value="${review.reviewGroupNo}">';
 				tr += '<input type="hidden" name="groupOrd" value="${review.reviewGroupOrd}">';
@@ -156,7 +172,7 @@
 		// 1 2 3 4 5 : 페이지 번호
 		for(let i = p.beginPage; i <= p.endPage; i++) {
 			if(i == page){
-				paging += '<div class="disable_link now_page">' + i + '</div>'			
+				paging += '<div class="disable_link now_page nowUnlinkPage">' + i + '</div>'			
 			} else {
 				paging += '<div class="enable_link" data-page="' + i + '">' + i + '</div>'
 			}
@@ -181,12 +197,12 @@
 	
 	function fnReplyAdd() {
 		$('body').on('click', '.btnReplySave', function(){
-
-/* 			if( $(this).prev().val().startsWith('?') ){
-				alert('댓글은 ?로 시작할 수 없습니다.');
+			
+			if( $(this).prev().val() == ''){
+				alert('내용은 필수입니다.');
 				event.preventDefault();
 				return false;
-			} */
+			}
 		
 			$.ajax({
 				url: '${contextPath}/board/replyAdd',
@@ -242,32 +258,101 @@
 	* {
 		box-sizing: border-box;
 	}
-	.unlink, .link {
-		display: inline-block;  /* 같은 줄에 둘 수 있고, width, height 등 크기 지정 속성을 지정할 수 있다. */
-		padding: 10px;
-		margin: 5px;
-		border: 1px solid white;
+	.blind {
+		display: none;
+	}
+	
+	article {
 		text-align: center;
-		text-decoration: none;  /* 링크 밑줄 없애기 */
-		color: gray;
+		background-color : white;
+		width: 50%;
+  		border-radius : 50px;
+  		position : absolute;
+  		top : 200px;
+  		left: 50%;
+  		transform: translate(-50%, 0%);
+  		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
+  		padding: 0 0 30px 0; 
+	}	
+	.pageName {
+		margin: 30px auto;
+		font-size: 30px;
+		font-weight: 900;
+	}	
+	#divNo {
+		margin: 30px auto 0 auto;
+		width: 95%;
+		text-align: left;
+		font-size: 20px;
+	}	
+	#divClass, #divTitle, #divHit, #divCreated {
+		margin: 5px auto 0 auto;
+		width: 95%;
+		text-align: left;	
+		font-size: 20px;	
+	}	
+	#divContent {
+		margin: 30px auto 0 auto;
+	    width: 95%;
+	    text-align: left;
+	    font-size: 20px;
 	}
-	.link:hover {
-		border: 1px solid orange;
-		color: limegreen;
+	#divContent > textarea {
+		margin-top : 10px;
+		width: 100%;
+		height: 400px;
+		padding: 10px;
+		border: solid 2px #2C3E50;
+		border-radius: 30px;
+		font-size: 16px;
+		resize: none;
 	}
- 	.removeLink:hover {
+	#divBtn {
+		margin: 20px auto;
+	}
+	#btnRemove, #btnListPage{
+		background-color: #2C3E50; 
+ 		padding: 10px;
 		cursor: pointer;
+		text-align: center;
+		text-decoration: none;
+		color: #F5F6F7;
+		border: none;
+		border-radius : 10px;
 	}
-	.reply_link:hover {
-		cursor: pointer;
+	#btnRemove:hover, #btnListPage:hover {
+		background-color: #2C3E50; opacity: 0.65;
 	}
-	table {
+	#paging{
+        display : flex;
+        justify-content: center;
+    }
+    #paging div{
+        height : 20px;
+        text-align: center;
+    }
+    .disable_link, .enable_link {
+        /* display: inline-block; */
+        padding: 10px;
+        margin: 5px;
+        border: 1px solid white;
+        text-align: center;
+        text-decoration: none; 
+        color: gray;
+        font-size: 20px;
+    }
+    .enable_link:hover, .removeLink:hover, .reply_link:hover {
+        color: #2C3E50; opacity: 0.65;
+        cursor: pointer;
+    }
+	.nowUnlinkPage{
+	    color: black;
+	}
+ 	table {
 		border-collapse: collapse;
+		width: 90%;
+		margin: 0 auto 30px auto;
 	}
-/* 	td:nth-of-type(1) { width: 200px; }
-	td:nth-of-type(2) { width: 300px; }
-	td:nth-of-type(3) { width: 100px; }
-	td:nth-of-type(4) { width: 50px; } */
 	td {
 		padding: 5px;
 		border-top: 1px solid silver;
@@ -279,29 +364,7 @@
 		border-bottom: 0;
 		text-align: center;
 	}
-	.blind {
-		display: none;
-	}
-	#paging {
-		display: flex;
-		justify-content: center;
-	}
-	#paging div {
-		width: 32px;
-		height: 20px;
-		text-align: center;
-		letter-spacing: -4px;
-	}
-	.disable_link {
-		color: lightgray;
-	}
-	.enable_link {
-		cursor: pointer;
-	}
-	.now_page {
-		color: limegreen;
-		font-weight: 900;
-	}
+		
 </style>
 </head>
 <body>
@@ -310,40 +373,58 @@
 		<jsp:include page="../layout/header.jsp"></jsp:include>
 	</header>	
 	
-	번호 ${review.reviewNo}<br>
-	반정보 ${review.classCode}<br>
-	제목 ${review.reviewTitle}<br>
-	조회수 ${review.reviewHit}<br>
-	작성일 ${review.reviewCreated}<br>
-	내용<br><textarea rows="30" cols="80" class="content" readonly>${review.reviewContent}</textarea><br>
-	<c:if test="${loginMember.memberId eq review.memberId || loginMember.memberId eq 'admin'}">
-		<input type="button" value="삭제" id="btnRemove">
-	</c:if>
-	<input type="button" value="목록" id="btnListPage">
+	<article>
+	
+		<div class="pageName">
+			리뷰
+		</div>
+		<div id="divNo">
+			번호 &nbsp;&nbsp;&nbsp;&nbsp;: ${review.reviewNo}
+		</div>
+		<div id="divClass">
+			반정보 : ${review.classCode}
+		</div>
+		<div id="divTitle">
+			제목 &nbsp;&nbsp;&nbsp;  : ${review.reviewTitle}
+		</div>
+		<div id="divHit">
+			조회수 : ${review.reviewHit}
+		</div>
+		<div id="divCreated">
+			작성일 : ${review.reviewCreated}
+		</div>
+		<div id="divContent">
+			내용<textarea rows="30" cols="80" class="content" readonly>${review.reviewContent}</textarea>
+		</div>
+		
+		<div id="divBtn">
+			<c:if test="${loginMember.memberId eq review.memberId || loginMember.memberId eq 'admin'}">
+				<input type="button" value="삭제" id="btnRemove">
+			</c:if>
+			<input type="button" value="목록" id="btnListPage">
+		</div>
 
-	<hr>
-	
-	<h3>댓글</h3>
-	<!-- 
-		전체댓글 OO개  [  등록순 최신순 답글순  ]
-		---------------------------------------------------
-		작성자    작성내용                작성일 삭제버튼
-		   └ 작성자  작성내용             작성일 삭제버튼
-	
-	 요런 식으로 구현
-	 -->
-	 <div>전체댓글 <span id="replyCount">0</span>개</div>
-	 <table>
-	 	<tbody id="replies">
-	 	</tbody>
-	 	<tfoot>
-			<tr>
-				<td colspan="4">
-					<div id="paging"></div>
-				</td>
-			</tr>
-		</tfoot>
-	 </table>
+		<hr>
+		
+		<div class="pageName">
+			<div>전체댓글 <span id="replyCount">0</span>개</div>
+		</div>
+		<table id="replyTable">
+			<tbody id="replies">
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="4">
+						<div id="paging"></div>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</article>
+
+	<footer>
+		<jsp:include page="../layout/footer.jsp"></jsp:include>
+	</footer>
 	 
 </body>
 </html>
