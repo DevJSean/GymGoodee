@@ -20,7 +20,7 @@
 		background-color : white;
 		width : 800px;
 		height: 650px;
-		margin : auto;
+		margin : 40px auto;
 		border-radius : 50px;
 		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
 	}
@@ -176,7 +176,7 @@
     </c:if>
 
 	<footer>
-		<jsp:include page="../layout/header.jsp"></jsp:include>
+		<jsp:include page="../layout/footer.jsp"></jsp:include>
 	</footer>
 
 </body>

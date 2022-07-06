@@ -54,7 +54,7 @@
 		background-color : white;
 		width : 1000px;
 		height: 2500px;
-		margin : auto;
+		margin : 0 auto 40px;
 		border-radius : 50px;
 		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
 	}
