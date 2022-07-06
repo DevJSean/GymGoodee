@@ -11,6 +11,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- 날씨 아이콘 가져오기 -->
 <link rel="stylesheet" type="text/css" href="${contextPath}/resources/weather-icons-master/css/weather-icons.min.css">
+<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/reset.css">
 <script>
 	$(function() {
 		$.ajax({
@@ -29,6 +31,10 @@
 		// 시계 달기
 		fnClock();
 		setInterval(fnClock, 1000);
+		
+		
+		$(".mySlideDiv").not(".active").hide(); //화면 로딩 후 첫번째 div를 제외한 나머지 숨김
+		setInterval(nextSlide, 5000); //5초마다 다음 슬라이드로 넘어감
 	})
 	
 	function fnModalClose() {
@@ -105,13 +111,24 @@
 			  fDate += "0";
 		  }
 		  fDate += date;
-		  let hours = String(today.getHours()).padStart(2, "0");
+		  let hours = today.getHours();
+		  let minutes = today.getMinutes();
+ 		  if (minutes < 30) {
+			  hours = hours - 1
+		  }
+		  hours = hours >= 10 ? hours : '0' + hours;
+		  minutes = minutes >= 10 ? minutes : '0' + minutes;
+		  
 		  $.ajax({  
 				url: '${contextPath}/forecastNow',
 				type: 'get',
-				data: 'fDate=' + fDate + '&fTime=' + (hours - 1) + '30' + '&x=' + location.x + '&y=' + location.y,
+				data: 'fDate=' + fDate + '&fTime=' + hours + minutes + '&x=' + location.x + '&y=' + location.y,
 				dataType: 'json',
 				success: function(obj){
+					if(obj.response.header.resultCode == "01") {
+						let i = '<i class="wi wi-refresh"></i>';
+						$('#todayWeather').append($(i));
+					}
 					let item = obj.response.body.items.item;
 					if(item[18].fcstValue == 1 && item[6].fcstValue == 0) {
 						let i = '<i class="wi wi-day-sunny"></i>';
@@ -176,10 +193,14 @@
 					} else if(item[18].fcstValue == 4 && item[6].fcstValue == 7) {
 						let i = '<i class="wi wi-snow-wind"></i>';
 						$('#todayWeather').append($(i));
-					}						
+					}
+					let span = '<span>' + item[24].fcstValue + '</span>';
+					$('#nowTemperature').append(span + '°C');
+					
 				}, error: function(){
 					let i = '<i class="wi wi-refresh"></i>';
 					$('#todayWeather').append($(i));
+					$('#nowTemperature').append($(i));
 				}
 		  })
 		  $.ajax({  
@@ -188,6 +209,10 @@
 				data: 'fDate=' + fDate + '&x=' + location.x + '&y=' + location.y,
 				dataType: 'json',
 				success: function(obj){
+					if(obj.response.header.resultCode == "01") {
+						let i = '<i class="wi wi-refresh"></i>';
+						$('#tomorrowWeather').append($(i));
+					}
 					let item = obj.response.body.items.item;
 					if(item[331].fcstValue == 1 && item[332].fcstValue == 0) {
 						let i = '<i class="wi wi-day-sunny"></i>';
@@ -240,13 +265,93 @@
 					$('#tomorrowWeather').append($(i));
 				}
 			})
+			
+			$.ajax({
+				url : 'https://dapi.kakao.com/v2/local/geo/coord2address.json?x=' + lng +'&y=' + lat,
+			    type : 'GET',
+			    headers : {
+			        'Authorization' : 'KakaoAK ef00f5bff0c5db7716477c7e3c1d9b78'
+			    },
+			    success : function(data) {
+					let p = '<p>' + data.documents[0].address.address_name + '</p>';
+					$('#todayWeather').prepend(p);
+					$('#nowTemperature').prepend(p);
+					$('#tomorrowWeather').prepend(p);
+			    },
+			    error : function(e) {
+			        console.log(e);
+			    }
+		  })
 	}
 	function onGeoError() {
 		  // 위치 에러 발생시 아예 안 띄우기
-		  $("#weatherTable").css("display", "none" );
+		  $("#weather").css("display", "none" );
 	}
 	function fnGetTodayWeather(){
 		navigator.geolocation.getCurrentPosition(onGeoOkay, onGeoError, options);
+	}
+	
+	//이전 슬라이드
+	function prevSlide() {
+		$(".mySlideDiv").hide(); //모든 div 숨김
+		var allSlide = $(".mySlideDiv"); //모든 div 객체를 변수에 저장
+		var currentIndex = 0; //현재 나타난 슬라이드의 인덱스 변수
+		
+		//반복문으로 현재 active클래스를 가진 div를 찾아 index 저장
+		$(".mySlideDiv").each(function(index,item){ 
+			if($(this).hasClass("active")) {
+				currentIndex = index;
+			}
+	        
+		});
+		
+		//새롭게 나타낼 div의 index
+		var newIndex = 0;
+	    
+		if(currentIndex <= 0) {
+			//현재 슬라이드의 index가 0인 경우 마지막 슬라이드로 보냄(무한반복)
+			newIndex = allSlide.length-1;
+		} else {
+			//현재 슬라이드의 index에서 한 칸 만큼 뒤로 간 index 지정
+			newIndex = currentIndex-1;
+		}
+
+		//모든 div에서 active 클래스 제거
+		$(".mySlideDiv").removeClass("active");
+	    
+		//새롭게 지정한 index번째 슬라이드에 active 클래스 부여 후 show()
+		$(".mySlideDiv").eq(newIndex).addClass("active");
+		$(".mySlideDiv").eq(newIndex).show();
+
+	}
+
+	//다음 슬라이드
+	function nextSlide() {
+		$(".mySlideDiv").hide();
+		var allSlide = $(".mySlideDiv");
+		var currentIndex = 0;
+		
+		$(".mySlideDiv").each(function(index,item){
+			if($(this).hasClass("active")) {
+				currentIndex = index;
+			}
+	        
+		});
+		
+		var newIndex = 0;
+		
+		if(currentIndex >= allSlide.length-1) {
+			//현재 슬라이드 index가 마지막 순서면 0번째로 보냄(무한반복)
+			newIndex = 0;
+		} else {
+			//현재 슬라이드의 index에서 한 칸 만큼 앞으로 간 index 지정
+			newIndex = currentIndex+1;
+		}
+
+		$(".mySlideDiv").removeClass("active");
+		$(".mySlideDiv").eq(newIndex).addClass("active");
+		$(".mySlideDiv").eq(newIndex).show();
+		
 	}
 
 </script>
@@ -316,17 +421,145 @@
 		border: none;
 		border-radius: 5px;
     }
-    #weatherTable {
-/*    	position: absolute;
-   		top: 30px;
-   		right: 30px;
-   		border: 1px gray solid; */
-   		width: 200px;
-   		text-align: center;
+
+	/* 날씨 CSS */
+   /* Slideshow container */
+	.slideshow-container {
+		max-width: 30%;
+		position: relative;
+		top : 30px;
+		left : 30px;
+		height: 137px;
+ 		margin: 30px auto 70px auto;
+	}
+	.mySlideDiv {
+		font-size: 50px;	
+		text-align: center;
+	}
+	.mySlideDiv  > p{
+		font-size: 20px;	
+		text-align: center;
+	}	
+	.mySlideDiv > i, .mySlideDiv > span {
+		font-size: 100px;
+		color:#8AAAE5;
+		margin-top: 20px;
+	}
+	/* effect */
+	.fade {
+		-webkit-animation-name: fade;
+		-webkit-animation-duration: 1.5s;
+		animation-name: fade;
+		animation-duration: 1.5s;
+	}
+	@-webkit-keyframes fade {
+		from {opacity: .4} 
+		to {opacity: 1}
+	}
+	@keyframes fade {
+		from {opacity: .4} 
+		to {opacity: 1}
+	}
+	/* Next & previous buttons */
+	.prev, .next {
+		cursor: pointer;
+		position: absolute;
+		top: 50%;	
+		width: auto;
+		padding: 16px;
+		margin-top: -22px;
+		color: #2C3E50;
+		font-weight: bold;
+		font-size: 18px;
+		transition: 0.6s ease;
+		border-radius: 0 3px 3px 0;
+	}
+	/* Position the "next button" to the right */
+	.next {
+		right: 0;
+		border-radius: 3px 0 0 3px;
+	}
+	/* On hover, add a black background color with a little bit see-through */
+	.prev:hover, .next:hover {
+		background-color: #2C3E50;
+		opacity: 0.65;
+		color: #F5F6F7;
+	}
+   
+	/* wrapper */
+   /* 이정민 구현 */
+   #indexWrapper{
+         display: flex;
+         width: 90%;
+         justify-content: space-between;
+         margin: auto;
+         padding: auto;
+         flex-direction: row;
    }
-   .wi {
-   		color:#8AAAE5;
+   #indexWrapper > div{
+         display: inline-block;
+         text-align: center;
+         width: 18%;
+         padding: 18px;
+         margin: auto;
+         border: 3px solid #F5F6F7;
+         border-radius: 70%;
+         
    }
+ 
+   #swimImage, #PilatesImage, #SpinningImage, #DanceImage {
+         width: 80%;   
+         object-fit: cover;
+   }
+   #swimName, #pilatesName, #spinningName, #danceName {
+         font-size: 18px;
+   }   
+   
+
+   #swim_wrapper:hover{
+        animation-name: my_animation1;          /* 애니메이션 이름 (마음대로 정한다.) */ 
+        animation-duration: 1s;                 /* 애니메이션 동작시간(초) */
+        animation-timing-function: ease;     /* 애니메이션 전환시간 배분 / ease-in : 시작은 천천히 끝은 빨리 */
+        animation-iteration-count: infinite;    /* 애니메이션 반복 횟수 */
+        animation-direction: alternate;
+   }
+   #pilates_wrapper:hover{
+        animation-name: my_animation1;          /* 애니메이션 이름 (마음대로 정한다.) */ 
+        animation-duration: 1s;                 /* 애니메이션 동작시간(초) */
+        animation-timing-function: ease;     /* 애니메이션 전환시간 배분 / ease-in : 시작은 천천히 끝은 빨리 */
+        animation-iteration-count: infinite;    /* 애니메이션 반복 횟수 */
+        animation-direction: alternate;    /* 애니메이션 반복 횟수 */
+   }
+   #spinning_wrapper:hover{
+        animation-name: my_animation1;          /* 애니메이션 이름 (마음대로 정한다.) */ 
+        animation-duration: 1s;                 /* 애니메이션 동작시간(초) */
+        animation-timing-function: ease;     /* 애니메이션 전환시간 배분 / ease-in : 시작은 천천히 끝은 빨리 */
+        animation-iteration-count: infinite;    /* 애니메이션 반복 횟수 */
+        animation-direction: alternate;    /* 애니메이션 반복 횟수 */
+   }
+   #dance_wrapper:hover{
+        animation-name: my_animation1;          /* 애니메이션 이름 (마음대로 정한다.) */ 
+        animation-duration: 1s;                 /* 애니메이션 동작시간(초) */
+        animation-timing-function: ease;     /* 애니메이션 전환시간 배분 / ease-in : 시작은 천천히 끝은 빨리 */
+        animation-iteration-count: infinite;    /* 애니메이션 반복 횟수 */
+        animation-direction: alternate;    /* 애니메이션 반복 횟수 */
+   }
+   
+   @keyframes my_animation1{
+        from{
+            /* 애니메이션 시작할 때, from 대신 0% 적는 것과 동일 */
+          width:18%;
+            
+        }
+        to{
+            /* 애니메이션 끝날 때, to 대신 100% 적는 것과 동일 */
+          width: 22%;
+          color: rgba(44,62,80,0.65);
+          border: 3px solid rgba(44,62,80,0.65);
+          box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
+        }
+    }   
+   
 </style>
 </head>
 <body>
@@ -338,25 +571,40 @@
 	</header>
 	
 	<!-- 날씨 -->
-	<table id="weatherTable">
-		<tbody>
-			<tr style="font-size: 50px;">
-				<td id="todayWeather"></td>
-				<td id="tomorrowWeather"></td>
-			</tr>
-			<tr>
-				<td><span id="clock"></span><br>Weather</td>
-				<td>Tomorrow<br>Weather</td>
-			</tr>
-		</tbody>
-	</table>
+	<div class="slideshow-container weather">
+	     <div class="mySlideDiv fade active" id="todayWeather">
+	     	현재 날씨
+	     </div>
+	     <div class="mySlideDiv fade" id="nowTemperature">
+	     	현재 기온
+	     </div>       
+	     <div class="mySlideDiv fade" id="tomorrowWeather">
+	     	내일 날씨
+	     </div>
 	
-	<a href="${contextPath}/reserve/swimPage">수영 예약페이지</a><br>
-	<a href="${contextPath}/reserve/pilatesPage">필라테스 예약페이지</a><br>
-	<a href="${contextPath}/reserve/spinningPage">스피닝 예약페이지</a><br>
-	<a href="${contextPath}/reserve/dancePage">스포츠댄스 예약페이지</a><br>
-
-	<hr>
+	     <a class="prev" onclick="prevSlide()">&#10094;</a>
+	     <a class="next" onclick="nextSlide()">&#10095;</a>
+	</div>
+	
+	<!-- 이정민 구현 -->
+   <div id="indexWrapper">
+      <div id="swim_wrapper">
+         <a href="${contextPath}/reserve/swimPage"><img id="swimImage" alt="수영" src="./resources/images/swim.png"></a><br>
+         <span id="swimName">SWIM</span>   
+      </div>
+      <div id="pilates_wrapper">
+         <a href="${contextPath}/reserve/pilatesPage"><img id="PilatesImage" alt="필라테스" src="./resources/images/pilates.png"></a><br>
+         <span id="pilatesName">PILATES</span>      
+      </div>
+      <div id="spinning_wrapper">
+         <a href="${contextPath}/reserve/spinningPage"><img id="SpinningImage" alt="스피닝" src="./resources/images/spinning.png"></a><br>
+         <span id="spinningName">SPINNING</span>      
+      </div>
+      <div id="dance_wrapper">
+         <a href="${contextPath}/reserve/dancePage"><img id="DanceImage" alt="스포츠댄스" src="./resources/images/dance.png"></a><br>
+         <span id="danceName">SPORT DANCE</span>      
+      </div>   
+   </div>
 	
 	<div id="modal" class="modal-overlay">
         <div class="modal-window">
@@ -373,7 +621,9 @@
         </div>
     </div>
     
-    <hr>
+    <footer>
+		<jsp:include page="./layout/footer.jsp"></jsp:include>    
+    </footer>
     
 	
 </body>

@@ -8,11 +8,27 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
 <title>공지사항</title>
+<%
+ String strReferer = request.getHeader("referer"); //이전 URL 가져오기
+ 
+ if(strReferer == null){
+%>
+ <script type="text/javascript">
+  	alert("url 입력을 통한 접근은 불가합니다.");
+  	history.back();
+ </script>
+<%
+  return;
+ }
+%>
+<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="../resources/css/reset.css">
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script>
 
 	$(function(){
+		
 		fnAreaChoice();
 		fnSearchAll();	
 		fnSearch();
@@ -20,15 +36,11 @@
 		$('#begin').datepicker({	
 			'showOn' : 'focus',		
 			'dateFormat': "yy-mm-dd",
-			'minDate': 0, 
-			'maxDate' : "+1M",
 			'showAnim' : 'slideDown'
 		})
 		$('#end').datepicker({	
 			'showOn' : 'focus',		
 			'dateFormat': "yy-mm-dd",
-			'minDate': 0, 
-			'maxDate' : "+1M",
 			'showAnim' : 'slideDown'
 		})
 	})
@@ -106,32 +118,41 @@
 			})
 		})
 	}
+
 </script>
 </head>
 <body>
 	
-	<%@ include file="noticeList.jsp" %>
+<%@ include file="noticeList.jsp" %>
 
-	<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
+ 				<div id="searchForm">
+					<form id="f" method="get">
+						<select name="column" id="column">
+							<option value="NOTICE_TITLE">제목</option>
+							<option value="NOTICE_CONTENT">내용</option>
+							<option value="NOTICE_CREATED">작성일</option>
+						</select>
+						<span id="equalArea">
+							<input type="text" name="query" id="query" list="autoComplete">
+							<datalist id="autoComplete"></datalist>
+						</span>
+						<span id="rangeArea">
+							<input type="text" name="begin" id="begin" autocomplete="off">
+							~
+							<input type="text" name="end" id="end" autocomplete="off">
+						</span>
+						&nbsp;&nbsp;&nbsp;<input type="button" value="검색" id="btnSearch">
+						<input type="button" value="전체조회" id="btnSearchAll">
+					</form>
+				</div>
+			</table>	
+		</article>
+	</div>
 
-	<form id="f" method="get">
-		<select name="column" id="column">
-			<option value="NOTICE_TITLE">제목</option>
-			<option value="NOTICE_CONTENT">내용</option>
-			<option value="NOTICE_CREATED">작성일</option>
-		</select>
-		<span id="equalArea">
-			<input type="text" name="query" id="query" list="autoComplete">
-			<datalist id="autoComplete"></datalist>
-		</span>
-		<span id="rangeArea">
-			<input type="text" name="begin" id="begin" autocomplete="off">
-			~
-			<input type="text" name="end" id="end" autocomplete="off">
-		</span>
-		<input type="button" value="검색" id="btnSearch">
-		<input type="button" value="전체조회" id="btnSearchAll">
-	</form>
+	<footer>
+		<jsp:include page="../layout/footer.jsp"></jsp:include>
+	</footer>
 
 </body>
 </html>

@@ -8,6 +8,21 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
 <title>공지사항 작성</title>
+<%
+ String strReferer = request.getHeader("referer"); //이전 URL 가져오기
+ 
+ if(strReferer == null){
+%>
+ <script type="text/javascript">
+  	alert("url 입력을 통한 접근은 불가합니다.");
+  	history.back();
+ </script>
+<%
+  return;
+ }
+%>
+<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="../resources/css/reset.css">
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script>
 	
@@ -89,7 +104,6 @@
 						alert('공지사항이 등록되었습니다.');
 						if(obj.noticeFileAttachResult > 0) {
 							alert('파일이 첨부되었습니다.');
-							//fnAttached(obj);
 							location.href="${contextPath}/board/noticeList";
 						} else {
 							alert('파일은 등록되지 않았습니다.');
@@ -98,20 +112,10 @@
 					} else {
 						alert('공지사항이 등록되지 않았습니다.');
 					}
-					//fnInit();
 				}
 			})
 		})
 	}
-	
-/* 	function fnAttached(obj) {
-		$('#attached').empty();
-		let result = '';
-		for(let i = 0; i < obj.thumbnails.length; i++) { 
-			result += '<div><img src="${contextPath}/board/display/?path=' + encodeURIComponent(obj.path) + '&thumbnail=' + obj.thumbnails[i] + '"></div>';
-		}
-		$('#attached').append(result);
-	} */
 	
 	function fnImagePreview(event){
 		$('.attached').removeClass('blind');
@@ -143,6 +147,84 @@
 	.blind {
 		display: none;
 	}
+	* {
+		box-sizing: border-box;
+	}
+	
+	article {
+		text-align: center;
+		background-color : white;
+		width: 50%;
+  		border-radius : 50px;
+  		position : absolute;
+  		top : 200px;
+  		left: 50%;
+  		transform: translate(-50%, 0%);
+  		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
+  		padding: 0 0 30px 0; 
+	}
+	
+	#pageName {
+		margin: 30px auto;
+		font-size: 24px;
+		font-weight: 900;
+	}
+	
+	#divTitle {
+		text-align: left;
+		margin: 30px auto;
+		width: 80%;
+		font-size: 20px;
+	}
+	#divTitle > input[type="text"] {
+		width: 90%;
+		padding: 10px;
+		border: solid 2px #2C3E50;
+		border-radius: 10px;
+		font-size: 16px;
+		resize: none;
+	}
+	#content {
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+	#divContent {
+		margin: 0 auto;
+		width: 80%;
+		text-align: left;
+		font-size: 20px;
+	}
+	#divContent > textarea {
+		width: 100%;
+		height: 400px;
+		padding: 10px;
+		border: solid 2px #2C3E50;
+		border-radius: 30px;
+		font-size: 16px;
+		resize: none;
+	}
+	#fileLabel, #btnRemoveAttached, #btnAdd, #btnList {
+		background-color: #2C3E50; 
+ 		padding: 10px;
+		cursor: pointer;
+		text-align: center;
+		text-decoration: none;
+		color: #F5F6F7;
+		border: none;
+		border-radius : 10px;
+	}
+	#fileLabel:hover, #btnRemoveAttached:hover, #btnAdd:hover, #btnList:hover {
+		background-color: #2C3E50; opacity: 0.65;	
+	}
+	#divFile {
+		margin: 20px auto;
+	}
+	#divBtn {
+		margin: 20px auto;
+	}
+	.attached {
+		margin: 20px auto;
+	}
 </style>
 </head>
 <body>
@@ -151,20 +233,33 @@
 		<jsp:include page="../layout/header.jsp"></jsp:include>
 	</header>
 	
-	<div>
-		제목 : <input type="text" name="title" id="title"><br>
-		내용<br><textarea rows="30" cols="80" name="content" id="content" class="content"></textarea><br>
-		첨부 : <input type="file" name="files" id="files" multiple="multiple" onchange="fnImagePreview(event);">
-		<input type="button" value="첨부파일 제거" id="btnRemoveAttached">
-		<br><br>
-		<input type="button" value="등록" id="btnAdd">	
-		<input type="button" value="공지사항 목록" onclick="location.href='${contextPath}/board/noticeList'">
-	</div>
+	<article>
+		<div id="pageName">
+			공지사항 작성
+		</div>
+		<div id="divTitle">
+			제목&nbsp;&nbsp;&nbsp;<input type="text" name="title" id="title">
+		</div>
+		<div id="divContent">
+			내용<textarea rows="30" cols="80" name="content" id="content" class="content"></textarea>
+		</div>
+		<div id="divFile">
+			<label id="fileLabel" for="files">파일 선택<input type="file" name="files" id="files" multiple="multiple" onchange="fnImagePreview(event);" style="display:none;"></label>
+		</div>
+		<div id="divBtn">
+			<input type="button" value="등록" id="btnAdd">	
+			<input type="button" value="공지사항 목록" id="btnList" onclick="location.href='${contextPath}/board/noticeList'">
+		</div>
+		<div class="attached">
+			<h3>첨부된 파일 확인</h3>
+			<div id="attached"></div>
+			<input type="button" value="첨부파일 제거" id="btnRemoveAttached">
+		</div>
+	</article>
 	
-	<div class="attached">
-		<h3>첨부된 파일 확인</h3>
-		<div id="attached"></div>
-	</div>
+	<footer>
+		<jsp:include page="../layout/footer.jsp"></jsp:include>
+	</footer>
 	
 </body>
 </html>
