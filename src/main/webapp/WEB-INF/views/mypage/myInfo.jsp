@@ -212,6 +212,7 @@
         list-style-type: none;
     }
     .navItem {
+        text-align: center;
         background-color: white; 
         padding: 15px;
         cursor: pointer;
@@ -219,7 +220,6 @@
         border-right: 2px solid  rgba(44, 62, 80, 0.65);
     }
     .navItem a {
-        text-align: center;
         text-decoration: none;
         color: rgb(70, 70, 70);
     }

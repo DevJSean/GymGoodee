@@ -10,6 +10,7 @@
 <meta charset="UTF-8">
 <title>비밀번호 확인</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="../resources/css/reset.css">
 <script>
@@ -84,6 +85,7 @@
         list-style-type: none;
     }
     .navItem {
+        text-align: center;
         background-color: white; 
         padding: 15px;
         cursor: pointer;
@@ -91,7 +93,6 @@
         border-right: 2px solid  rgba(44, 62, 80, 0.65);
     }
     .navItem a {
-        text-align: center;
         text-decoration: none;
         color: rgb(70, 70, 70);
     }
@@ -229,7 +230,7 @@
 		</nav>
 		
 		<div id="wrapper">
-			<h1>변경하실 비밀번호를 입력해주세요</h1>
+			<h1><i class="fa-solid fa-user-pen"></i>&nbsp;&nbsp;변경하실 비밀번호를 입력해주세요</h1>
 			<form id="f" action="${contextPath}/mypage/changePw" method="post">
 				<div class="new_pw_wrap">
 					<div class="input_row" id="pw_line">
