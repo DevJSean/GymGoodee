@@ -99,7 +99,7 @@ public class PageUtils {
 		// 페이지 번호 (1 2 3 4 5), 현재 페이지는 <a> 태그가 없다.
 		for(int p = beginPage; p <= endPage; p++) {
 			if(p == page) {
-				sb.append("<span class=\"unlink\">" + p + "</span>");
+				sb.append("<span class=\"unlink nowUnlinkPage\">" + p + "</span>");
 			} else {
 				sb.append("<a class=\"link\" href=\"" + path + "page=" + p + "\">" + p + "</a>");
 			}

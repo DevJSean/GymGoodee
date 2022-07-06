@@ -15,6 +15,9 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+
+<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/reset.css">
 <script>
 
 	/* 페이지 로드 이벤트 */
@@ -33,7 +36,6 @@
 		// radio 선택 시 어떤 것을 선택했는지 알 수 있다.
 		$(":radio[name=subject]").on('change',function(){
 			var subject = $(this).attr('id');
-			//alert(subject);
 			
 			fnGetTeacher(subject);
 			fnGetLocation(subject)
@@ -285,6 +287,7 @@
 			tr.append($('<td>').text(registclass.teacherName));
 			tr.append($('<td>').text(registclass.classDate));
 			tr.append($('<td>').text(registclass.classTime));
+			tr.append($('<td>').text(registclass.currentCount + '/' + registclass.locationLimit));
 			tr.appendTo($('#classes'));
 			
 		}) // each
@@ -316,7 +319,7 @@
 		// 1 2 3 4 5 : 페이지 번호
 		for(let i = p.beginPage; i<=p.endPage; i++){
 			if(i == page){
-				paging += '<div class="disable_link now_page">'+ i +'</div>';
+				paging += '<div class="disable_link nowUnlinkPage">'+ i +'</div>';
 			} else{
 				paging += '<div class="enable_link" data-page="'+ i +'">'+ i +'</div>';				
 			}
@@ -343,6 +346,124 @@
 	
 </script>
 <style>
+	
+	/* 왼쪽 네비게이션 */
+   .myPageNav {
+      display: flex;
+      width: 100px;
+      flex-direction: column;
+      list-style-type: none;
+      
+   }
+   .navItem {
+      background-color: white; 
+      padding: 15px;
+      cursor: pointer;
+      border-left: 2px solid  rgba(44, 62, 80, 0.65); 
+	  border-right: 2px solid  rgba(44, 62, 80, 0.65);
+   }
+   .navItem a {
+   	  text-align: center;
+      text-decoration: none;
+      color: rgb(70, 70, 70);
+   }
+   .nowPage {
+      background-color:  #2C3E50;
+      opaity: 0.65;
+      color: #F5F6F7;
+   }
+   .myPageNav .navItem:first-of-type { 
+   		border-radius : 10px 10px 0 0; 
+   		border-top: 2px solid  rgba(44, 62, 80, 0.65); 
+   	}
+   .myPageNav .navItem:last-of-type { 
+   		border-radius : 0 0 10px 10px; 
+   		border-bottom: 2px solid  rgba(44, 62, 80, 0.65); 
+   	}
+   .navItem:hover {
+      background-color:  #2C3E50;   
+   }
+   .navItem:hover > a {
+      color: #F5F6F7;
+   }
+   #listNav {
+        display: flex;
+		margin-right: 20px;
+		margin-left: 80px;
+		margin-top: 50px;
+   }
+   
+	/* wrapper 부분 css */
+	
+	section {
+		display: flex;
+	}
+	#wrapper{
+		background-color : white;
+  		width : 70%;
+  		margin : 50px auto;
+  		border-radius : 50px;
+  		padding: 30px;
+  		text-align: left;
+  		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
+	}
+	
+	#wrapper1{
+		line-height: 30px;
+		margin-left: 45px;
+	}
+	
+	table{
+		border-collapse : collapse;
+		width: 90%;
+		text-align : center;
+		margin : 0 auto;
+		vertical-align : middle;
+	}
+	
+	table caption{
+		margin: 0 auto 10px auto;	
+		text-align: left;		
+	}
+	
+	table thead tr{
+		border-top : 2px solid lightgrey;
+		border-bottom : 2px solid lightgrey;
+	}
+	table tbody tr{
+		border-bottom : 1px solid lightgrey;
+	}
+	
+	td{
+		padding: 5px;
+		text-align: center;
+	}
+	
+	input[type=button]{
+		width: 100px;
+		height: 30px;
+		background-color : lightgrey;
+		border : 1px solid lightgrey;
+		border-radius : 3px;
+		cursor: pointer;
+		margin-top: 10px;
+		
+	}
+	
+	input[type=button]:hover{
+		background-color : #2C3E50; 
+		opacity: 0.65;
+		border : 1px solid #2C3E50;
+		color:#F5F6F7;
+	
+	} 
+	
+	#text{
+		font-size: 30px;
+		margin: 0px auto 5px auto;
+	}
+	
+	/* 페이징 */
 	#paging{
 		display : flex;
 		justify-content: center;
@@ -353,50 +474,37 @@
 		height : 20px;
 		text-align: center;
 	}
-	.disable_link{
-		color: lightgray;
-	}
-	.enable_link{
-		cursor: pointer;
+
+	.disable_link, .enable_link {
+      /* display: inline-block;  */
+      padding: 10px;
+      margin: 5px;
+      border: 1px solid white;
+      text-align: center;
+      text-decoration: none; 
+      color: gray;
+      font-size: 20px;
+   }
+   .enable_link:hover {
+      color: #8AAAE5;
+      cursor: pointer;
+   }
+   
+    .nowUnlinkPage{
+   	  color: black;
+   }
+
+	#subjectImage{
+		display: hidden;
 	}
 	
-	
-	/* 형식 */
-	.myPageNav {
-		display: flex;
-		flex-direction: column;
-		width: 100px;
-		list-style-type: none;
-	}
-	.navItem {
-		background-color: teal; 
-		padding: 15px;
-		cursor: pointer;
-	}
-	.navItem a {
-		text-align: center;
-		text-decoration: none;
-		color: white;
-	}
-	.navItem:hover {
-		background-color: navy;
-	}
-	nav {
-		display: flex;
-		margin-right: 30px;
-	}
-	section {
-		display: flex;
-	}
-	td {
-		text-align: center;
-	}
+  
+   
 
 </style>
 </head>
 <body>
 
-	<h1>관리자페이지</h1>
 	
 	<header>
 		<jsp:include page="../layout/header.jsp"></jsp:include>
@@ -413,70 +521,72 @@
 		등록 버튼 눌렀을 때 pk를 위의 형태로 만들어서 insert 하는데 실패할 경우 이미 개설된 수업이므로
 		불가능!
 	-->
+		
 	<section>
-		<nav>
+		<nav id="listNav">
 			<ul class="myPageNav">
 				<li class="navItem"><a href="${contextPath}/admin/memberList">회원목록</a></li>
 				<li class="navItem"><a href="${contextPath}/admin/addTeacherPage">강사등록</a></li>
 				<li class="navItem nowPage">강좌개설</li>
-				<li class="navItem"><a href="${contextPath}/admin/classList">개설강좌</a></li>
 				<li class="navItem"><a href="${contextPath}/admin/reserveList">예약내역</a></li>
 				<li class="navItem"><a href="${contextPath}/admin/payList">결제내역</a></li>
 			</ul>	
 		</nav>
+		<div id="wrapper">
+			<div id="wrapper1">
+				
+			
+				<label for="SWIM">
+					수영<input type="radio" name="subject" id="SWIM">	
+				</label>
+				<label for="PILATES">
+					필라테스<input type="radio" name="subject" id="PILATES">	
+				</label>
+				<label for="SPINNING">
+					스피닝<input type="radio" name="subject" id="SPINNING">	
+				</label>
+				<label for="DANCE">
+					스포츠댄스<input type="radio" name="subject" id="DANCE">	
+				</label>
+				
 		
-		<div>
-			개설하고자 하는 종목을 선택하세요!<br>
-			<label for="SWIM">
-				수영<input type="radio" name="subject" id="SWIM">	
-			</label>
-			<label for="PILATES">
-				필라테스<input type="radio" name="subject" id="PILATES">	
-			</label>
-			<label for="SPINNING">
-				스피닝<input type="radio" name="subject" id="SPINNING">	
-			</label>
-			<label for="DANCE">
-				스포츠댄스<input type="radio" name="subject" id="DANCE">	
-			</label>
+				<form id="f">
+					강사 선택
+					<select id="teachers" name="teacherNo">
+					</select>
+					<br>
+					장소 선택
+					<select id="locations" name="locationCode">
+					</select>
+					<br>
+					
+					날짜 선택
+					<input type="text" name="classDate" id="classDate" autocomplete="off">
+					<br>
+					
+					시간 선택
+					<select id="classTime" name="classTime">
+						<option value="A">A(09:00)</option>
+						<option value="B">B(10:00)</option>
+						<option value="C">C(19:30)</option>
+						<option value="D">D(20:30)</option>
+					</select>
+					<br>
+					<input type="button" value="강좌 개설하기" id="btnAdd">
+				</form>
+			</div>
 			
 			<hr>
-		
-			<form id="f">
-				강사 선택
-				<select id="teachers" name="teacherNo">
-				</select>
-				<br>
-				장소 선택
-				<select id="locations" name="locationCode">
-				</select>
-				<br>
-				
-				날짜 선택
-				<input type="text" name="classDate" id="classDate" autocomplete="off">
-				<br>
-				
-				시간 선택
-				<select id="classTime" name="classTime">
-					<option value="A">A(09:00)</option>
-					<option value="B">B(10:00)</option>
-					<option value="C">C(19:30)</option>
-					<option value="D">D(20:30)</option>
-				</select>
-				<br><br>
-				<input type="button" value="강좌 개설하기" id="btnAdd">
-			</form>
 			
-			<hr>
-			
-			<h2>개설 강좌 목록</h2>
-			<table border="1">
+			<table>
+				<caption>개설 강좌 목록</caption>
 				<thead>
 					<tr>
 						<td>장소</td>
 						<td>강사명</td>
 						<td>날짜</td>
 						<td>시간</td>
+						<td>현재신청인원수</td>
 					</tr>
 				</thead>
 				<tbody id="classes">
@@ -484,7 +594,7 @@
 				</tbody>
 				<tfoot>
 					<tr>
-						<td colspan="4">
+						<td colspan="5">
 							<div id="paging"></div>
 						</td>
 					</tr>
@@ -497,6 +607,11 @@
 		
 	
 	</section>
+	
+	<footer>
+		<jsp:include page="../layout/footer.jsp"></jsp:include>
+	</footer>
+	
 	
 </body>
 </html>

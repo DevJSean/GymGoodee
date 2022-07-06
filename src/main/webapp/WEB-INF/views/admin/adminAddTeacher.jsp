@@ -15,6 +15,10 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+
+<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/reset.css">
+
 <script>
 
 	/* 페이지 로드 이벤트 */
@@ -124,61 +128,143 @@
 <style>
 
 	
-	/* 형식 */
-	.myPageNav {
-		display: flex;
-		flex-direction: column;
-		width: 100px;
-		list-style-type: none;
-	}
-	.navItem {
-		background-color: teal; 
-		padding: 15px;
-		cursor: pointer;
-	}
-	.navItem a {
-		text-align: center;
-		text-decoration: none;
-		color: white;
-	}
-	.navItem:hover {
-		background-color: navy;
-	}
-	nav {
-		display: flex;
-		margin-right: 30px;
-	}
+	/* 왼쪽 네비게이션 */
+   .myPageNav {
+      display: flex;
+      width: 100px;
+      flex-direction: column;
+      list-style-type: none;
+      
+   }
+   .navItem {
+      background-color: white; 
+      padding: 15px;
+      cursor: pointer;
+      border-left: 2px solid  rgba(44, 62, 80, 0.65); 
+	  border-right: 2px solid  rgba(44, 62, 80, 0.65);
+   }
+   .navItem a {
+   	  text-align: center;
+      text-decoration: none;
+      color: rgb(70, 70, 70);
+   }
+   .nowPage {
+      background-color:  #2C3E50;
+      opacity: 0.65;
+      color: #F5F6F7;
+   }
+   .myPageNav .navItem:first-of-type { 
+   		border-radius : 10px 10px 0 0; 
+   		border-top: 2px solid  rgba(44, 62, 80, 0.65); 
+   }
+   .myPageNav .navItem:last-of-type { 
+   		border-radius : 0 0 10px 10px; 
+   		border-bottom: 2px solid  rgba(44, 62, 80, 0.65); 
+   	}
+   .navItem:hover {
+      background-color:  #2C3E50;   
+   }
+   .navItem:hover > a {
+      color: #F5F6F7;
+   }
+   #listNav {
+        display: flex;
+		margin-right: 20px;
+		margin-left: 80px;
+		margin-top: 50px;
+   }
+   
+   
+	/* wrapper 부분 css */
+	
 	section {
 		display: flex;
 	}
-	td {
+	
+	#wrapper{
+		background-color : white;
+  		width : 70%;
+  		margin : 50px auto;
+  		border-radius : 50px;
+  		padding: 30px;
+  		text-align: left;
+  		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
+	}
+	
+	#wrapper1{
+		line-height: 30px;
+	}
+
+	
+	table{
+		border-collapse : collapse;
+		width: 90%;
+		text-align : center;
+		margin : 0 auto;
+		vertical-align : middle;
+	}
+	
+	table caption{
+		margin: 0 auto 10px auto;	
+		text-align: left;	
+	}
+	
+	table thead tr{
+		border-top : 2px solid lightgrey;
+		border-bottom : 2px solid lightgrey;
+	}
+	table tbody tr{
+		border-bottom : 1px solid lightgrey;
+	}
+	
+	td{
+		padding: 5px;
 		text-align: center;
 	}
+	
+	input[type=button]{
+		width: 80px;
+		height: 30px;
+		background-color : lightgrey;
+		border : 1px solid lightgrey;
+		border-radius : 3px;
+		cursor: pointer;
+		margin-top: 10px;
+		
+	}
+	
+	input[type=button]:hover{
+		background-color :  #2C3E50; 
+		opacity: 0.65;
+		border : 1px solid #2C3E50;
+		color:#F5F6F7;
+	
+	} 
+
+
+	
 
 </style>
 </head>
 <body>
 
-	<h1>관리자페이지</h1>
-	
 	<header>
 		<jsp:include page="../layout/header.jsp"></jsp:include>
 	</header>
 	
 	<section>
-		<nav>
+		<nav id="listNav">
 			<ul class="myPageNav">
 				<li class="navItem"><a href="${contextPath}/admin/memberList">회원목록</a></li>
 				<li class="navItem nowPage">강사등록</li>
 				<li class="navItem"><a href="${contextPath}/admin/addClassPage">강좌개설</a></li>
-				<li class="navItem"><a href="${contextPath}/admin/classList">개설강좌</a></li>
 				<li class="navItem"><a href="${contextPath}/admin/reserveList">예약내역</a></li>
 				<li class="navItem"><a href="${contextPath}/admin/payList">결제내역</a></li>
 			</ul>	
 		</nav>
 		
-		<div>
-			<div>
+		<div id="wrapper">
+			<div id="wrapper1">
 				이름 <input type="text" name="teacherName" id="teacherName"><br>
 				성별
 				<label for="M">
@@ -201,14 +287,15 @@
 				<label for="DANCE">
 					스포츠댄스<input type="radio" name="teacherSubject" value="DANCE" id="DANCE">
 				</label>
-				<br><br>
+				<br>
 				<input type="button" value="강사등록" id="btnTeacherAdd">
 			</div>
 			
 			<hr>
 			
-			<h2>강사 목록</h2>
+			
 			<table border="1">
+				<caption>강사 목록</caption>
 				<thead>
 					<tr>
 						<td>강사 이름</td>
@@ -223,6 +310,10 @@
 		
 		</div>
 	</section>
+	
+	<footer>
+		<jsp:include page="../layout/footer.jsp"></jsp:include>
+	</footer>
 	
 	
 </body>

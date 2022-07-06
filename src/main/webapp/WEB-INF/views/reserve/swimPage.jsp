@@ -16,6 +16,9 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/reset.css">
+
 <script src='../resources/fullcalendar-5.11.0/lib/main.js'></script>
 <link href='../resources/fullcalendar-5.11.0/lib/main.css' rel='stylesheet' />
 <script>
@@ -75,25 +78,40 @@
 <style>
 
 	#calendar {
-	    width: 700px;
-  		height: 660px;
+	    width: 600px;
+  		height: 550px;
 	    margin: 0 auto;
+	    font-size: 90%;
   	}
   	
-  	#swimImage{
-  		width : 150px;
-  		height: 150px;
-  		display : block;
+  	#title{
+  		/* display: flex; */
+  		margin: 0px auto 10px auto;
+  		text-align: center;
+  	}
+  	
+  	#titleName{
+  		font-size: 3.75em;
   		margin: auto;
   	}
   	
+  	#swimImage{
+  		width : 100px;
+  		height: 100px;
+  		display : block;
+  		margin: auto;
+  	}
+  
+  	
   	#wrapper{
   		background-color : white;
-  		width : 800px;
-  		height: 900px;
+  		width : 700px;
+  		height: 770px;
   		margin : auto;
   		border-radius : 50px;
-  		margin : 50px auto;
+  		margin : 30px auto;
+  		padding: 10px 10px;
+  		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
   	}
 
 
@@ -106,9 +124,17 @@
 	</header>	
 	
 	<div id="wrapper">
-		<div><img id="swimImage" alt="수영" src="../resources/images/swim.png"></div>		
+		<div id="title">
+			
+			<img id="swimImage" alt="수영" src="../resources/images/swim.png">				
+			<div id="titleName">SWIM</div>
+		</div>
 		<div id="calendar"></div>
 	</div>
+	
+	<footer>
+		<jsp:include page="../layout/footer.jsp"></jsp:include>
+	</footer>
 	
 	
 	
