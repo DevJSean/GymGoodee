@@ -9,12 +9,11 @@
 <head>
 <meta charset="UTF-8">
 <title>스피닝 결제</title>
+	<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="../resources/css/reset.css">
 </head>
 <body>
 		
-	<header>
-		<jsp:include page="../layout/header.jsp"></jsp:include>
-	</header>
 
 	
 		
