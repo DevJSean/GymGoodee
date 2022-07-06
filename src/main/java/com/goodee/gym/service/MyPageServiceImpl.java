@@ -46,7 +46,7 @@ public class MyPageServiceImpl implements MyPageService {
 		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
 		String memberId = loginMember.getMemberId();
 		
-		model.addAttribute("myTickets", myPageMapper.selectTicketsById(memberId));
+		model.addAttribute("remainTickets", myPageMapper.selectTicketsById(memberId));
 	}
 
 	// 다가올 수업 내역 조회
@@ -198,7 +198,8 @@ public class MyPageServiceImpl implements MyPageService {
 	// 비밀번호 변경
 	@Override
 	public void changePw(HttpServletRequest request, HttpServletResponse response) {
-
+		int res = 0;
+		
 		HttpSession session = request.getSession();
 		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
 		Long memberNo = loginMember.getMemberNo();
@@ -226,11 +227,16 @@ public class MyPageServiceImpl implements MyPageService {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else {
+			// 비밀번호 변경 실행
+			res = myPageMapper.updatePw(member);
 		}
-		
-		// 비밀번호 변경 실행
-		int res = myPageMapper.updatePw(member);
+		System.out.println(res);
 		if(res > 0) {
+			// session의 모든 정보(로그인 정보 포함) 제거
+			if(loginMember != null) {
+				session.invalidate();
+			}
 			try {
 				PrintWriter out = response.getWriter();
 				out.println("<script>");
@@ -298,25 +304,7 @@ public class MyPageServiceImpl implements MyPageService {
 		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
 		Long memberNo = loginMember.getMemberNo();
 		
-		// 탈퇴를 위해 입력한 비밀번호가 일치하는 지 확인
-		String confirmPw = SecurityUtils.sha256(request.getParameter("confirmPw"));
-		String memberPw = myPageMapper.selectMemberPwByNo(memberNo);
-		
-		response.setContentType("text/html");
-		if(confirmPw.equals(memberPw)) {
-			res = myPageMapper.deleteMember(memberNo);
-		} else {
-			try {
-				PrintWriter out = response.getWriter();
-				out.println("<script>");
-				out.println("alert('비밀번호가 일치하지 않습니다.')");
-				out.println("history.back()");
-				out.println("</script>");
-				out.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		res = myPageMapper.deleteMember(memberNo);
 		
 		try {
 			response.setContentType("text/html");

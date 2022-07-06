@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.goodee.gym.domain.MemberDTO;
 import com.goodee.gym.service.MyPageService;
 
 @Controller
@@ -28,16 +27,10 @@ public class MyPageController {
 		return "mypage/myReserveList";
 	}
 	
-	// 헤더용
 	@ResponseBody
 	@GetMapping(value="/remainTickets", produces="application/json")
 	public Map<String, Object> remainTickets(HttpServletRequest request) {
 		return myPageService.getRemainTicketsById(request);
-	}
-	
-	@GetMapping("/myTickets")
-	public void myTickets(HttpServletRequest request, Model model) {
-		myPageService.getMyTicketsById(request, model);
 	}
 	
 	@ResponseBody
@@ -89,11 +82,6 @@ public class MyPageController {
 	@PostMapping("/mypage/changePw")
 	public void changePW(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
 		myPageService.changePw(request, response);
-		// session의 모든 정보(로그인 정보 포함) 제거
-		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
-		if(loginMember != null) {
-			session.invalidate();
-		}
 	}
 	
 	@PostMapping("/mypage/changeInfo")
@@ -108,7 +96,7 @@ public class MyPageController {
 	}
 	
 	
-	@PostMapping("/mypage/signOut")
+	@GetMapping("/mypage/signOut")
 	public void signOut(HttpServletRequest request, HttpServletResponse response) {
 		myPageService.signOut(request, response);
 	}

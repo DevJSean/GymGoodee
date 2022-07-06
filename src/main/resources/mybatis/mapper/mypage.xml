@@ -145,7 +145,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 WHERE MEMBER_NO = #{memberNo}
 	</select>
 	
-	<!-- 소멸기간이 지나지 않은 잔여 수강권 목록 -->
+	<!-- 잔여 수강권 목록 -->
 	<select id="selectTicketsById" parameterType="String" resultType="RemainTicketDTO">
 		SELECT REMAIN_TICKET_NO, MEMBER_ID, REMAIN_TICKET_SUBJECT, REMAIN_TICKET_END_DATE, REMAIN_TICKET_REMAIN_COUNT
 		  FROM REMAIN_TICKET
