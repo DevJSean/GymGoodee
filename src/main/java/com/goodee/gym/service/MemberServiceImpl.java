@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +44,7 @@ public class MemberServiceImpl implements MemberService {
 	@Autowired
 	private MemberMapper memberMapper;
 	
+	// 관리자 생성
 	@Override
 	public void admin() {
 		if(memberMapper.selectMemberById("admin") == null) {
@@ -75,6 +75,7 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 	
+	// 아이디 중복 확인
 	@Override
 	public Map<String, Object> idCheck(String memberId) {
 		Map<String, Object> map = new HashMap<>();
@@ -83,6 +84,7 @@ public class MemberServiceImpl implements MemberService {
 		return map;
 	}
 	
+	// 이메일 중복 확인
 	@Override
 	public Map<String, Object> emailCheck(String memberEmail) {
 		Map<String, Object> map = new HashMap<>();
@@ -90,6 +92,7 @@ public class MemberServiceImpl implements MemberService {
 		return map;
 	}
 	
+	// 이메일 인증
 	@Override
 	public Map<String, Object> sendAuthCodeEmail(String memberEmail) {
 		
@@ -135,6 +138,7 @@ public class MemberServiceImpl implements MemberService {
 		
 	}
 	
+	// 휴대폰 인증
 	@Override
 	public Map<String, Object> sendAuthCodeSMS(String memberPhone) {
 		
@@ -163,6 +167,7 @@ public class MemberServiceImpl implements MemberService {
 		return map;
 	}
 	
+	// 회원가입
 	@Override
 	public void signUp(HttpServletRequest request, HttpServletResponse response) {
 		
@@ -204,13 +209,13 @@ public class MemberServiceImpl implements MemberService {
 			PrintWriter out = response.getWriter();
 			if(res == 1) {
 				out.println("<script>");
-				out.println("alert('회원 가입되었습니다.')");
+				out.println("alert('회원가입이 완료되었습니다.')");
 				out.println("location.href='" + request.getContextPath() + "'");
 				out.println("</script>");
 				out.close();
 			} else {
 				out.println("<script>");
-				out.println("alert('회원 가입에 실패했습니다.')");
+				out.println("alert('회원가입에 실패했습니다.')");
 				out.println("history.back()");
 				out.println("</script>");
 				out.close();
@@ -221,7 +226,7 @@ public class MemberServiceImpl implements MemberService {
 		
 	}
 	
-	
+	// 로그인
 	@Override
 	public MemberDTO login(HttpServletRequest request) {
 		
@@ -243,6 +248,7 @@ public class MemberServiceImpl implements MemberService {
 		
 	}
 	
+	// 네이버 로그인
 	@Override
 	public String naverLogin(HttpSession session) {
 
@@ -264,6 +270,7 @@ public class MemberServiceImpl implements MemberService {
 		return apiURL;
 	}
 	
+	// 네이버 콜백
 	@Override
 	public void naverCallback(HttpServletRequest request, HttpServletResponse response) {
 		
@@ -371,6 +378,7 @@ public class MemberServiceImpl implements MemberService {
 	    
 	}
 	
+	// 카카오 로그인
 	@Override
 	public String kakaoLogin(HttpSession session) {
 		
@@ -392,6 +400,7 @@ public class MemberServiceImpl implements MemberService {
 		return apiURL;
 	}
 	
+	// 카카오 콜백
 	@Override
 	public void kakaoCallback(HttpServletRequest request, HttpServletResponse response) {
 		String clientId = "3e6d88b955a2408ebdcace4d52b2bf99";
@@ -529,6 +538,7 @@ public class MemberServiceImpl implements MemberService {
 	    }
 	}
 	
+	// 로그아웃
 	@Override
 	public void logout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
 		MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
@@ -670,7 +680,7 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 	
-	/* 아이디 찾기 */
+	// 아이디 찾기 
 	@Override
 	public Map<String, Object> findId(MemberDTO member) {
 		Map<String, Object> map = new HashMap<>();
@@ -678,7 +688,7 @@ public class MemberServiceImpl implements MemberService {
 		return map;
 	}
 	
-	/* 비밀번호 찾기 */
+	// 비밀번호 찾기
 	@Override
 	public Map<String, Object> idPhoneCheck(MemberDTO member) {
 		Map<String, Object> map = new HashMap<>();
@@ -686,6 +696,7 @@ public class MemberServiceImpl implements MemberService {
 		return map;
 	}
 	
+	// 비밀번호 변경
 	@Override
 	public void changePw(HttpServletRequest request, HttpServletResponse response) {
 		
