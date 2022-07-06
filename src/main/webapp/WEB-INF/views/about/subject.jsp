@@ -21,7 +21,7 @@
 		background-color : white;
 		width : 1000px;
 		height: 2300px;
-		margin : auto;
+		margin : 0 auto 40px ;
 		border-radius : 50px;
 		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
 	}
@@ -92,10 +92,6 @@
 		line-height: 70px;
 		font-size: 4em;
 	}
-	.one {
-		font-size: 2em;
-		vertical-align: middle;
-	}
 	</style>
 	
 	
@@ -159,10 +155,11 @@
 					</tr>
 					<tr>
 						<th>수영 01반</th>
-						<td rowspan="2" class="last one">20명</td>
+						<td>20명</td>
 					</tr>
 					<tr>
 						<th class="last">수영 02반</th>
+						<td class="last">20명</td>
 					</tr>
 				</tbody>
 			</table>

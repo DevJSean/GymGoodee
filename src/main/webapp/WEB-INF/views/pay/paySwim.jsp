@@ -17,7 +17,7 @@
 		background-color : white;
 		width : 800px;
 		height: 950px;
-		margin : auto;
+		margin : 0 auto 40px;
 		border-radius : 50px;
 		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
 	}
