@@ -223,10 +223,10 @@
 		$('#authCodeSMS').val('');
 		$('#changeMemberPw').val('');
 		$('#pwConfirm').val('');
-		$('.authArea').css('display', 'block');
 		$('.chaneArea').css('display', 'none');
 		$('.authAreaSMS').css('display', 'none');
 		$('.changePw').css('display', 'none');
+		$('.authArea').css('display', 'block');
 		$('.titlePw').css('display', 'none');
 		$('.titleId').css('display', 'block');
 	}
@@ -246,8 +246,9 @@
 			
 		})
 		
+		// modal
 		$('#findId').on('click', function(){
-			fnInit();
+			$('.changeArea').css('display', 'none');
 			$('.authArea').css('display', 'block');
 			$('.titlePw').css('display', 'none');
 			$('.titleId').css('display', 'block');
@@ -264,8 +265,8 @@
 		})
 		
 		$('#btnClose1, #btnClose2, #btnClose3, #btnClose4').on('click', function(){
-			$('#modal.modal-overlay').css('display', 'none');
 			fnInit();
+			$('#modal.modal-overlay').css('display', 'none');
 		})
 
 		$('#btnSignUp').on('click', function(){
@@ -321,6 +322,7 @@
 	    }
 	    #modal .titleId h2, #modal .titlePw h2 {
 	        display: inline;
+	        font-size: 20px;
 	    }
 	    #modal .close-area {
 	        display: inline;
@@ -331,7 +333,13 @@
 	        color: white;
 	    }
 	    
-	    #modal .authArea, .changeArea, .authAreaSMS, .changePw {
+	    #modal .int {
+	    	margin-top: 5px;
+	    	width: 200px;
+	   	 	height: 20px;
+	    }
+	    
+	    #modal .authArea, #modal .changeArea, #modal .authAreaSMS, #modal .changePw {
 	        margin-top: 20px;
 	        padding: 0px 10px;
 	        text-shadow: 1px 1px 2px gray;
@@ -339,8 +347,9 @@
 	    }
 	    #btnClose1, #btnFindId {
 	    	position: relative;
-	    	left: 220px;
-	    	bottom: 120px;
+	    	left: 250px;
+	    	bottom: 130px;
+	    	margin: 10px 0 0;
 	    	background-color: lightgrey;
 			width: 120px;
 			height: 40px;
@@ -352,7 +361,7 @@
 	    #btnClose2, #btnFindPw, #btnSignUp {
 	    	position: relative;
 	    	left: 250px;
-	    	bottom: 145px;
+	    	bottom: 110px;
 	    	background-color: lightgrey;
 			width: 120px;
 			height: 40px;
@@ -360,10 +369,15 @@
 			border: none;
 			border-radius: 5px;
 	    }
+	    
+	    #findIdMsg {
+	    	font-size: 14px;
+	    }
+	    
 	    #btnClose3, #btnGetAuthCodeSMS, #btnVerifyAuthCodeSMS {
 	    	position: relative;
 	    	left: 250px;
-	    	bottom: 165px;
+	    	bottom: 140px;
 	    	background-color: lightgrey;
 			width: 120px;
 			height: 40px;
@@ -372,8 +386,9 @@
 			border-radius: 5px;
 	    }
 	    #btnClose4, #btnChangePw {
+	    	margin: 0 5px 0;
 	    	position: relative;
-	    	left: 130px;
+	    	left: 115px;
 	    	bottom: -10px;
 	    	background-color: lightgrey;
 			width: 120px;
@@ -412,7 +427,6 @@
             list-style-type: none;
         }
         .wrap {
-            position: relative;
             height: 100%;
             letter-spacing: -0.5px;
         }
@@ -430,7 +444,7 @@
             width: 300px;
             height: 150px;
             margin-top: 108px;
-            background-image: url(../resources/images/linkedin_banner_image_1.png);
+            background-image: url(../resources/images/linkedin_banner_image_navy.png);
             background-size: 300px 150px;
             background-repeat: no-repeat;
         }
@@ -441,6 +455,7 @@
             overflow: hidden;
         }
         .login_wrap {
+        	position: relative;
             width: 460px;
             margin: 0 auto;
         }
@@ -502,7 +517,7 @@
             letter-spacing: -0.5px;
             color: #222;
             line-height: 19px;
-            z-index: 4;  
+            z-index: 1;  
             position: relative;
         }
        	.blindCheck {
@@ -532,14 +547,14 @@
             display: block;
             width: 100%;
             padding: 13px 0;
-            border: 1px solid rgba(0,0,0,0.15);
+            border: 1px solid #2C3E50;
             border-radius: 6px;
-            background-color: #90c2ff;
+            background-color: #2C3E50;
         }
         .btn_login .btn_text {
             font-size: 20px;
             font-weight: 700;
-            color: #fff;
+            color: #F5F6F7;
             line-height: 24px;
         }
         .api_login {
@@ -587,7 +602,6 @@
 </style>
 </head>
 <body>
-	
     <div id="modal" class="modal-overlay">
         <div class="modal-window">
             <div class="titleId">
@@ -595,14 +609,14 @@
             </div>
             <div class="authArea">
            		이름<br>
-           		<input type="text" name="memberName" id="memberName"><br><br>
+           		<input type="text" name="memberName" id="memberName" class="int"><br><br>
             	이메일 주소<br>
-				<input type="text" name="memberEmail" id="memberEmail"><br><br>
+				<input type="text" name="memberEmail" id="memberEmail" class="int"><br><br>
                 <input type="button" value="아이디찾기" id="btnFindId"><br><br>
                 <input type="button" value="나가기" id="btnClose1">
             </div>
 		   	<div class="changeArea">
-				<div id="findIdMsg"></div><br><br>
+				<div id="findIdMsg" class="findIdMsg"></div><br><br>
 				
 				<div>
 					<input type="button" value="비밀번호찾기" id="btnFindPw"><br><br>
@@ -616,20 +630,20 @@
 			<form id="f2" action="${contextPath}/member/changePw" method="post">
 				<div class="authAreaSMS">
 					아이디<br>
-					<input type="text" name="memberId" id="confirmMemberId"><br><br>
+					<input type="text" name="memberId" id="confirmMemberId" class="int"><br><br>
 					가입 당시 연락처<br>
-					<input type="text" id="memberPhone" placeholder="-를 포함하여 입력"><br><br>
-					<input type="text" id="authCodeSMS" placeholder="인증코드 입력"><br>
+					<input type="text" id="memberPhone" placeholder="-를 포함하여 입력" class="int"><br>
+					<input type="text" id="authCodeSMS" placeholder="인증코드 입력" class="int"><br>
 					<input type="button" value="인증번호받기" id="btnGetAuthCodeSMS"><br><br>
 					<input type="button" value="인증하기" id="btnVerifyAuthCodeSMS"><br><br>
 					<input type="button" value="나가기" id="btnClose3">
 				</div>
 				<div class="changePw">
 					비밀번호<br>
-					<input type="password" name="memberPw" id="changeMemberPw" placeholder="새 비밀번호"><br>
+					<input type="password" name="memberPw" id="changeMemberPw" placeholder="새 비밀번호" class="int"><br>
 					<span id="pwMsg"></span><br>
 					비밀번호 확인<br>
-					<input type="password" id="pwConfirm" placeholder="새 비밀번호 확인"><br>
+					<input type="password" id="pwConfirm" placeholder="새 비밀번호 확인" class="int"><br>
 					<span id="rePwMsg"></span><br>
 					<input type="button" value="나가기" id="btnClose4">
 					<button id="btnChangePw">비밀번호 변경하기</button>
@@ -708,6 +722,10 @@
 			    </ul>
 	    	</div> 
 	    </div>  
-    </div>	
+    </div>
+    
+   	<footer>
+		<jsp:include page="../layout/footer.jsp"></jsp:include>
+	</footer>		
 </body>
 </html>

@@ -118,14 +118,28 @@ public class MemberController {
 	public String findPwPage() {
 		return "member/findPw";
 	}
+	
 	@ResponseBody
 	@GetMapping("/member/idPhoneCheck")
 	public Map<String, Object> idPhoneCheck(MemberDTO member){
 		return memberService.idPhoneCheck(member);
 	}
+	
 	@PostMapping("/member/changePw")
 	public void changePw(HttpServletRequest request, HttpServletResponse response) {
 		memberService.changePw(request, response);
 	}
 	
+	@GetMapping("/policy/service")
+	public String service() {
+		return "policy/service";
+	}
+	@GetMapping("/policy/privacy")
+	public String privacy() {
+		return "policy/privacy";
+	}
+	@GetMapping("/policy/location")
+	public String location() {
+		return "policy/location";
+	}
 }
