@@ -44,11 +44,6 @@ public class AdminController {
 		return "admin/memberList";
 	}
 	
-	@GetMapping("/admin/classList")
-	public String classList(HttpServletRequest request, Model model) {
-		adminService.classList(request, model);
-		return "admin/classList";
-	}
 	
 	@GetMapping("/admin/payList")
 	public String payList(HttpServletRequest request, Model model) {
@@ -56,10 +51,16 @@ public class AdminController {
 		return "admin/payList";
 	}
 	
+	/*
+	 * @GetMapping("/admin/reserveList") public String
+	 * reserveList(HttpServletRequest request, Model model) {
+	 * adminService.reserveList(request, model); return "admin/reserveSearch"; }
+	 */
+	// 테스트용 => 이걸로 바꿀거임!
 	@GetMapping("/admin/reserveList")
 	public String reserveList(HttpServletRequest request, Model model) {
 		adminService.reserveList(request, model);
-		return "admin/reserveSearch";
+		return "admin/reserveList";
 	}
 	
 	@ResponseBody
@@ -118,7 +119,7 @@ public class AdminController {
 	@GetMapping(value="/admin/reserveSearch")
 	public String noticeSearch(HttpServletRequest request, Model model) {
 		adminService.findReserves(request, model);
-		return "admin/reserveSearch";
+		return "admin/reserveList";
 	}
 	
 	

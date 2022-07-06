@@ -35,7 +35,6 @@ public interface AdminService {
 	
 	/* 관리자 */
 	public void memberList(HttpServletRequest request, Model model);
-	public void classList(HttpServletRequest request, Model model);
 	public void payList(HttpServletRequest request, Model model);
 	public void reserveList(HttpServletRequest request, Model model);
 	public Map<String, Object> reserveCancle(String reservationCode, String memberId, String remainTicketSubject);

@@ -16,6 +16,10 @@
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+
+<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/reset.css">
+
 <script>
 
 	// 페이지로드 이벤트
@@ -30,6 +34,7 @@
 		fnReserveConfirm();
 		fnbtnReserveEnd();
 		fnbtnClassEnd();
+		fnbtnEnd();
 		
 		fnAdminReservation();
 		
@@ -151,7 +156,8 @@
 									tr.append($('<td>').html('<input type="button" class ="btnClassEnd" value="리뷰작성">'));
 									
 								}else{
-									tr.append($('<td>').html('<input type="button" class ="btnEnd" value="종료">'));									
+									//tr.append($('<td>').html('<input type="button" class ="btnEnd" value="종료">'));									
+									tr.append($('<td>').text('종료'));									
 								}
 							}
 							// 당일
@@ -186,7 +192,8 @@
 									}
 									// (2-2) 시간대가 지나 예약이 불가능한 수업 => [종료]
 									else if(nowDateTime >= classDateTime){
-										tr.append($('<td>').html('<input type="button" class ="btnEnd" value="종료">'));																						
+										//tr.append($('<td>').html('<input type="button" class ="btnEnd" value="종료">'));	
+										tr.append($('<td>').text('종료'));	
 									}
 									
 								} // else
@@ -230,39 +237,42 @@
 		$('body').on('click','.btnReserve',function(){
 			var classCode = $(this).data('classcode');
 			//console.log(classCode);
-			$.ajax({
-				url : '${contextPath}/reserve/reserveClass',
-				type: 'POST',
-				data : 'subject=SWIM&classCode=' + classCode,
-				dataType: 'json',
-				success : function(obj){
-					//console.log('버튼 ',obj);
-					if(obj.state == 501){
-						swal('예약 실패!',"동일 날짜, 동일 시간대 강좌가 이미 예약되어 있습니다",'warning');
-						
-						//alert('동일 날짜, 동일 시간대 강좌가 이미 예약되어 있습니다.');
-						return false;
-					}
-					if(obj.res == 1){
-						fngetClasses();		// 예약 완료 후 fngetClasses() 를 실행해야 현재 페이지에 바로 반영이 된다.
-						if(confirm('예약이 완료되었습니다. 마이페이지로 이동하시겠습니까?')){
-							window.opener.location.href='${contextPath}/mypage/myReserveList';	// 부모창에서 새로운 경로로 이동
-							window.close();
-							return;
-						} else { // 예약 성공후 마이페이지로 이동x
-							window.opener.location.reload();		// 부모창 새로고침
+			if(confirm('해당 강좌를 예약하시겠습니까?')){
+				$.ajax({
+					url : '${contextPath}/reserve/reserveClass',
+					type: 'POST',
+					data : 'subject=SWIM&classCode=' + classCode,
+					dataType: 'json',
+					success : function(obj){
+						//console.log('버튼 ',obj);
+						if(obj.state == 501){
+							//swal('예약 실패!',"동일 날짜, 동일 시간대 강좌가 이미 예약되어 있습니다",'warning');
+							
+							alert('동일 날짜, 동일 시간대 강좌가 이미 예약되어 있습니다.');
+							return false;
+						}
+						if(obj.res == 1){
+							fngetClasses();		// 예약 완료 후 fngetClasses() 를 실행해야 현재 페이지에 바로 반영이 된다.
+							if(confirm('예약이 완료되었습니다. 마이페이지로 이동하시겠습니까?')){
+								window.opener.location.href='${contextPath}/mypage/myReserveList';	// 부모창에서 새로운 경로로 이동
+								window.close();
+								return;
+							} else { // 예약 성공후 마이페이지로 이동x
+								window.opener.location.reload();		// 부모창 새로고침
+								window.close();
+							}
+						}
+						else if(obj.res == 0){
+							alert('강좌 예약에 실패했습니다.');
+							window.opener.location.reload();			// 부모창 새로고침
 							window.close();
 						}
+					}, error : function(jqXHR){
+						
 					}
-					else if(obj.res == 0){
-						alert('강좌 예약에 실패했습니다.');
-						window.opener.location.reload();			// 부모창 새로고침
-						window.close();
-					}
-				}, error : function(jqXHR){
-					
-				}
-			}) // ajax
+				}) // ajax
+				
+			} // confirm
 		}) // click
 		
 	
@@ -354,9 +364,17 @@
 		})
 	}
 	
+	// 8. [종료] 버튼
+	function fnbtnEnd(){
+		$('body').on('click','.btnEnd',function(){
+			if(alert('종료된 강좌입니다.')){
+				window.close();
+			}
+		})
+	}
 	
 	
-	// 8. [관리자] 예약관리 버튼 
+	// 9. [관리자] 예약관리 버튼 
 	function fnAdminReservation(){
 		$('body').on('click','.btnAdminReservation',function(){
 			var classCode = $(this).data('classcode');
@@ -369,12 +387,72 @@
 <style>
 
 	h1{
-		margin: auto;
+		margin: 10px auto;
 		text-align : center;
+		font-size : 40px;
+	}
+	
+	div{
+		background-color : white;
+		border-radius : 20px;
+		width: 520px;
+		text-align: center;
+		margin : 10px auto;
+		padding : 8px 0 10px 0;
+		
 	}
 	
 	table{
-		margin : auto;
+		border-collapse : collapse;
+		width : 500px;
+		text-align : center;
+		margin : 0 auto;
+		vertical-align : middle;
+	}
+	
+	table caption{
+		margin: 0 auto 5px auto;
+		line-height: 25px;
+		
+	}
+	table caption a{
+		background-color : lightgrey;
+		border : 1px solid lightgrey;
+		border-radius: 3px;
+	
+	}
+	table caption a:hover{
+		cursor:pointer;
+		text-decoration: underline;
+	}
+	
+	table thead tr{
+		border-top : 2px solid lightgrey;
+		border-bottom : 2px solid lightgrey;
+	}
+	table tbody tr{
+		border-bottom : 1px solid lightgrey;
+	}
+	
+	td{
+		padding: 5px;
+	}
+	
+	input[type=button]{
+		background-color : lightgrey;
+		border : 1px solid lightgrey;
+		border-radius : 3px;
+		cursor: pointer;
+		
+	}
+	
+	input[type=button]:hover{
+		background-color : #BADFC4;
+		border : 1px solid #BADFC4;
+	} 
+	
+	.btnReserveConfirm{
+		color: blue;
 	}
 
 </style>
@@ -385,24 +463,25 @@
 	<fmt:formatDate value="${parseDateValue}" pattern="yyyy-MM-dd" var="Date"/>
 	<h1>${Date}</h1>
 	
-	<hr>	
 
-	<table border="1">
-		<caption id="table_caption"></caption>
-		<thead>
-			<tr>
-				<td>강사명</td>
-				<td>시간</td>
-				<td>장소</td>
-				<td>수강인원</td>
-				<td>버튼</td>
-			</tr>
-		</thead>
-		<tbody id="classList">
-			
-		</tbody>
-	
-	</table>
+	<div>
+		<table>
+			<caption id="table_caption"></caption>
+			<thead>
+				<tr>
+					<td>강사명</td>
+					<td>시간</td>
+					<td>장소</td>
+					<td>수강인원</td>
+					<td>버튼</td>
+				</tr>
+			</thead>
+			<tbody id="classList">
+				
+			</tbody>
+		
+		</table>
+	</div>
 
 	
 	

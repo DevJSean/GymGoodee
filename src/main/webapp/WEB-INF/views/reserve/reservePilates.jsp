@@ -14,6 +14,10 @@
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+
+<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/reset.css">
+
 <script>
 
 	// 페이지로드 이벤트
@@ -28,6 +32,7 @@
 		fnReserveConfirm();
 		fnbtnReserveEnd();
 		fnbtnClassEnd();
+		fnbtnEnd();
 		
 		fnAdminReservation();
 	})
@@ -106,7 +111,7 @@
 						else{
 							tr.append($('<td colspan="5">').text('개설된 강좌가 없습니다.'));	
 							if(obj.state == 0){
-								$('#table_caption').html('잔여 횟수가 0회입니다.<br><a id="btnPayPilates">수강권 구매하기</a>');	
+								$('#table_caption').html('※ 잔여 횟수가 0회입니다. ※<br><a id="btnPayPilates">수강권 구매하러가기</a>');	
 								$('body').on('click','#btnPayPilates',function(){
 									window.opener.location.href='${contextPath}/pay/payPilates';	// 부모창에서 새로운 경로로 이동
 									window.close();
@@ -132,7 +137,7 @@
 						else{
 							// 수강권이 없는 회원의 경우 잔여 횟수에 대한 정보를 <caption>에 추가
 							if(obj.state == 0){
-								$('#table_caption').html('잔여 횟수가 0회입니다.<br><a id="btnPayPilates">수강권 구매하기</a>');	
+								$('#table_caption').html('잔여 횟수가 0회입니다.<br><a id="btnPayPilates">수강권 구매하기</a><br>');	
 								$('body').on('click','#btnPayPilates',function(){
 									window.opener.location.href='${contextPath}/pay/payPilates';	// 부모창에서 새로운 경로로 이동
 									window.close();
@@ -346,9 +351,17 @@
 		})
 	}
 	
+	// 8. [종료] 버튼
+	function fnbtnEnd(){
+		$('body').on('click','.btnEnd',function(){
+			if(alert('종료된 강좌입니다.')){
+				window.close();
+			}
+		})
+	}
 	
 	
-	// 8. [관리자] 예약관리 버튼 
+	// 9. [관리자] 예약관리 버튼 
 	function fnAdminReservation(){
 		$('body').on('click','.btnAdminReservation',function(){
 			var classCode = $(this).data('classcode');
@@ -364,13 +377,69 @@
 <style>
 
 	h1{
-		margin: auto;
+		margin: 10px auto;
 		text-align : center;
+		font-size : 40px;
+	}
+	
+	div{
+		background-color : white;
+		border-radius : 20px;
+		width: 520px;
+		text-align: center;
+		margin : 10px auto;
+		padding : 8px 0 10px 0;
+		
 	}
 	
 	table{
-		margin : auto;
+		border-collapse : collapse;
+		width : 500px;
+		text-align : center;
+		margin : 0 auto;
+		vertical-align : middle;
 	}
+	
+	table caption{
+		margin: 0 auto 5px auto;
+		line-height: 25px;
+		
+	}
+	table caption a{
+		background-color : lightgrey;
+		border : 1px solid lightgrey;
+		border-radius: 3px;
+	
+	}
+	table caption a:hover{
+		cursor:pointer;
+		text-decoration: underline;
+	}
+	
+	table thead tr{
+		border-top : 2px solid lightgrey;
+		border-bottom : 2px solid lightgrey;
+	}
+	table tbody tr{
+		border-bottom : 1px solid lightgrey;
+	}
+	
+	td{
+		padding: 5px;
+	}
+	
+	input[type=button]{
+		background-color : lightgrey;
+		border : 1px solid lightgrey;
+		border-radius : 3px;
+		cursor: pointer;
+		
+	}
+	
+	input[type=button]:hover{
+		background-color : #BADFC4;
+		border : 1px solid #BADFC4;
+	} 
 
 </style>
 </head>
@@ -381,24 +450,25 @@
 	<fmt:formatDate value="${parseDateValue}" pattern="yyyy-MM-dd" var="Date"/>
 	<h1>${Date}</h1>
 	
-	<hr>	
 
-	<table border="1">
-		<caption id="table_caption"></caption>
-		<thead>
-			<tr>
-				<td>강사명</td>
-				<td>시간</td>
-				<td>장소</td>
-				<td>수강인원</td>
-				<td>버튼</td>
-			</tr>
-		</thead>
-		<tbody id="classList">
-			
-		</tbody>
-	
-	</table>
+	<div>
+		<table>
+			<caption id="table_caption"></caption>
+			<thead>
+				<tr>
+					<td>강사명</td>
+					<td>시간</td>
+					<td>장소</td>
+					<td>수강인원</td>
+					<td>버튼</td>
+				</tr>
+			</thead>
+			<tbody id="classList">
+				
+			</tbody>
+		
+		</table>
+	</div>
 
 	
 	

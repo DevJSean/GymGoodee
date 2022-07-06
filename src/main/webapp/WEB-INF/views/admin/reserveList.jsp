@@ -13,11 +13,15 @@
 <title>관리자페이지 - 예약 내역</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/reset.css">
+
 <script>
 
 	$(function(){
 		fnReserveCancle();
-		
+		//$('tbody tr').empty();
 	})
 	
 
@@ -45,71 +49,39 @@
 		})	
 	}
 	
+	 
 	
 	
 										
 </script>
 <style>
-	.myPageNav {
-		display: flex;
-		flex-direction: column;
-		width: 100px;
-		list-style-type: none;
-	}
-	.navItem {
-		background-color: teal; 
-		padding: 15px;
-		cursor: pointer;
-	}
-	.navItem a {
-		text-align: center;
-		text-decoration: none;
-		color: white;
-	}
-	.navItem:hover {
-		background-color: navy;
-	}
-	nav {
-		display: flex;
-		margin-right: 30px;
-	}
-	section {
-		display: flex;
-	}
-	td {
-		text-align: center;
-	}
-	
-	/* 검색창 */
-	.equalArea{
-		display: inline;
-	}
+
+   
 	
 </style>
 </head>
 <body>
 
-	<h1>관리자페이지</h1>
 	
 	<header>
 		<jsp:include page="../layout/header.jsp"></jsp:include>
 	</header>
-	
+
 	<section>
 	
-		<nav>
+		<nav id="listNav">
 			<ul class="myPageNav">
 				<li class="navItem"><a href="${contextPath}/admin/memberList">회원목록</a></li>
 				<li class="navItem"><a href="${contextPath}/admin/addTeacherPage">강사등록</a></li>
 				<li class="navItem"><a href="${contextPath}/admin/addClassPage">강좌개설</a></li>
-				<li class="navItem"><a href="${contextPath}/admin/classList">개설강좌</a></li>
 				<li class="navItem nowPage">예약내역</li>
 				<li class="navItem"><a href="${contextPath}/admin/payList">결제내역</a></li>
 			</ul>	
 		</nav>
 	
-		<div>
+		<div id="wrapper">
 			<table>
+				<caption>예약 내역</caption>
 				<thead>
 					<tr>
 						<td>번호</td>
@@ -168,14 +140,19 @@
 				</tbody>
 				<tfoot>	
 					<tr>
-						<td colspan="7">
+						<td colspan="8">
 							${paging}
 						</td>
 					</tr>
 				</tfoot>
 			</table>
+			<%@ include file="reserveSearch.jsp" %>
 		</div>
 	</section>
+	
+	<footer>
+		<jsp:include page="../layout/footer.jsp"></jsp:include>
+	</footer>
 
 </body>
 </html>

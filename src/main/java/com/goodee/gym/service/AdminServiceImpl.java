@@ -159,9 +159,19 @@ public class AdminServiceImpl implements AdminService {
 		m.put("beginRecord", p.getBeginRecord());
 		m.put("endRecord", p.getEndRecord());
 		
+		
+		// 목록과 현재 신청 인원 수 가져오기
+		List<ClassDTO> classes = adminMapper.selectClassList(m);
+		for(int i = 0; i<classes.size();i++) {
+			
+			// 2-1) 해당 강좌에 예약한 사람 수
+			String classCode = classes.get(i).getClassCode();
+			classes.get(i).setCurrentCount(adminMapper.selectCountByClassCode(classCode));
+		}
+		
 		// 목록과 페이징 정보를 반환한다.
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("classes", adminMapper.selectClassList(m));
+		map.put("classes", classes);
 		map.put("p", p);
 		System.out.println("map : " + map);
 				
@@ -193,38 +203,7 @@ public class AdminServiceImpl implements AdminService {
 		model.addAttribute("totalRecord", totalRecord);
 		model.addAttribute("paging", pageUtils.getPaging(request.getContextPath() + "/admin/memberList"));
 	}
-	
-	@Override
-	public void classList(HttpServletRequest request, Model model) {
-		int totalRecord = adminMapper.selectClassCount();
 		
-		Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
-		int page = Integer.parseInt(opt.orElse("1"));
-		
-		// PageEntity
-		PageUtils pageUtils = new PageUtils();
-		pageUtils.setPageEntity(totalRecord, page);
-		
-		// Map
-		Map<String, Object> map = new HashMap<>();
-		map.put("beginRecord", pageUtils.getBeginRecord());
-		map.put("endRecord", pageUtils.getEndRecord());
-		
-		// 목록 가져오기
-		
-		List<ClassDTO> classes = adminMapper.selectClassList(map);
-		for(int i = 0; i<classes.size();i++) {
-			
-			// 2-1) 해당 강좌에 예약한 사람 수
-			String classCode = classes.get(i).getClassCode();
-			classes.get(i).setCurrentCount(adminMapper.selectCountByClassCode(classCode));
-		}
-
-		model.addAttribute("classes", classes);
-		model.addAttribute("totalRecord", totalRecord);
-		model.addAttribute("paging", pageUtils.getPaging(request.getContextPath() + "/admin/classList"));
-	}
-	
 	@Override
 	public void payList(HttpServletRequest request, Model model) {
 		int totalRecord = adminMapper.selectPayCount();
