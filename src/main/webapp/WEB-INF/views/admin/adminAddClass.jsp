@@ -358,19 +358,24 @@
    .navItem {
    	  text-align: center;
       background-color: white; 
-      padding: 15px;
+      /* padding: 15px; */
       cursor: pointer;
       border-left: 2px solid  rgba(44, 62, 80, 0.65); 
 	  border-right: 2px solid  rgba(44, 62, 80, 0.65);
+	  width: 100px;
+      height: 50px;
+	  line-height: 50px;
    }
    .navItem a {
-   	  
       text-decoration: none;
       color: rgb(70, 70, 70);
+      display: inline-block;
+      width: 100px;
+      height: 50px;
    }
    .nowPage {
       background-color:  #2C3E50;
-      opaity: 0.65;
+      opacity: 0.65;
       color: #F5F6F7;
    }
    .myPageNav .navItem:first-of-type { 

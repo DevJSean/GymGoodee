@@ -61,15 +61,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE MEMBER_NO = #{memberNo} AND CLASS_CODE = #{classCode}
 	</select>
 	
-	<!-- 수영강좌 예약하기(1) -->
+	<!-- 새로 추가 2가지 -->
+	<insert id="insertReservationSeq">
+		INSERT INTO RESERVATION_SEQ
+		VALUES()
+	</insert>
+	
+	<select id="selectReservationSeq" resultType="Integer">
+		SELECT RESERVE_SEQ FROM RESERVATION_SEQ
+	</select>
+	
+	
+	<!-- 강좌 예약하기(1) -->
 	<update id="updateAgainReserve" parameterType="Map">
 		UPDATE RESERVATION
 		SET RESERVATION_STATE = 0, RESERVATION_DATE = SYSTIMESTAMP
 		WHERE MEMBER_NO = #{memberNo} AND CLASS_CODE = #{classCode}
 	</update>
 
-	<!-- 수영강좌 예약하기(2) // 종목별로 다 만들기 -->
-	<insert id="insertReserveSwim" parameterType="ReservationDTO">
+	<!-- 강좌 예약하기(2) // 종목별로 다 만들기 -->
+	<insert id="insertReserve" parameterType="ReservationDTO">
 		INSERT INTO RESERVATION
 			(RESERVATION_CODE, MEMBER_NO, CLASS_CODE, RESERVATION_DATE, RESERVATION_STATE)
 		VALUES

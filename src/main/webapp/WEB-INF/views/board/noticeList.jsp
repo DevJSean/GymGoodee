@@ -109,16 +109,25 @@
 		display: flex;
 		flex-direction: column;
 		list-style-type: none;
-  		font-size: 20px;
 	}
 	.navItem {
-		background-color: white; 
-		padding: 15px;
-		cursor: pointer;
-		border-left: 2px solid  rgba(44, 62, 80, 0.65); 
-        border-right: 2px solid  rgba(44, 62, 80, 0.65);
-        text-align: center;
-	}
+   	  text-align: center;
+      background-color: white; 
+      /* padding: 15px; */
+      cursor: pointer;
+      border-left: 2px solid  rgba(44, 62, 80, 0.65); 
+	  border-right: 2px solid  rgba(44, 62, 80, 0.65);
+	  width: 100px;
+      height: 50px;
+	  line-height: 50px;
+   }
+   .navItem a {
+      text-decoration: none;
+      color: rgb(70, 70, 70);
+      display: inline-block;
+      width: 100px;
+      height: 50px;
+   }
     .myPageNav .navItem:first-of-type { 
          border-radius : 10px 10px 0 0; 
          border-top: 2px solid  rgba(44, 62, 80, 0.65); 
@@ -127,10 +136,7 @@
          border-radius : 0 0 10px 10px; 
          border-bottom: 2px solid  rgba(44, 62, 80, 0.65); 
     }
-	.navItem a {
-		text-decoration: none;
-		color: #464646;
-	}
+	
 	.nowPage {
 		background-color: #2C3E50;
 		opacity: 0.65;

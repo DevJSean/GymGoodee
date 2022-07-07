@@ -130,8 +130,8 @@
     }
     ul.myMenu > li { 
     	display: inline-block; 
-    	width:150px; 
-    	padding:25px 10px; 
+    	width:170px; 
+    	/* padding:25px 10px;  */
     	background-color: #2C3E50; 
     	text-align:center; 
     	position:relative; 
@@ -139,11 +139,12 @@
     ul.myMenu > li ul.submenu { 
     	display:none; 
     	position:absolute; 
-    	top:73px; 
+    	top:60px; 
     	left:0; 
     }
     ul.myMenu > li:hover ul.submenu {
     	display:block; 
+    	z-index: 5;
     }
     ul.myMenu > li:hover, ul.myMenu > li:hover > a {
     	color: #FFF4DB;
@@ -151,8 +152,9 @@
     }
     ul.myMenu > li ul.submenu > li { 
     	display:inline-block; 
-    	width:150px; 
-    	padding:15px 10px; 
+    	width:170px;
+    	height: 60px; 
+    	/* padding:15px 10px;  */
     	background-color: #78818C; 
     	text-align:center; 
     }
@@ -163,16 +165,23 @@
     }
     .indexItem {
 	    background-color: #2C3E50; 
-	    padding: 15px;
+	    /* padding: 15px; */
 	    cursor: pointer;
 	    color: #F5F6F7;
 	    font-weight: 600;
+	    text-align: center;
+	    line-height: 60px;
+	    
     }
 	.indexItem a {
         text-align: center;
         text-decoration: none;
         color: #F5F6F7;
         font-weight: 600;
+        display: inline-block;
+        width: 170px;
+        height:60px;
+        
     }
     .font {
     	font-size: 20px;
