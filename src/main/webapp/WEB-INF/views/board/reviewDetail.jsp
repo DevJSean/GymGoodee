@@ -93,8 +93,8 @@
 		let tr = '<tr><td colspan="4">'
 			if('${loginMember.memberId}') {
 				tr += '<form>';
-				tr += '<input type="text" name="writer" value="${loginMember.memberId}" readonly>&nbsp;&nbsp;';
-				tr += '<input type="text" name="content" class="replyContent" placeholder="내용" size="80">&nbsp;&nbsp';
+				tr += '<input type="text" name="writer" value="${loginMember.memberId}" readonly>&nbsp;&nbsp;&nbsp;';
+				tr += '<input type="text" name="content" class="replyContent" placeholder="내용" size="80">&nbsp;&nbsp&nbsp;';
 				tr += '<input type="button" value="작성" class="btnReplySave">';
 				<!-- 원글의 Depth, GroupNo, GroupOrd -->
 				tr += '<input type="hidden" name="depth" value="${review.reviewDepth}">';
@@ -124,7 +124,7 @@
 						for(let i = 0; i < reply.reviewDepth; i++){
 							tr += '&nbsp;&nbsp;';
 						}
-						tr += '<i class="fa-brands fa-replyd"></i>' + decodeURIComponent(reply.reviewContent) + '<a class="reply_link"><i class="fa-solid fa-reply"></i></a><td>';
+						tr += '<i class="fa-brands fa-replyd">&nbsp;</i>' + decodeURIComponent(reply.reviewContent) + '<a class="reply_link"><i class="fa-solid fa-reply"></i></a><td>';
 					} else {
 						tr += '<td>' + decodeURIComponent(reply.reviewContent) + '<a class="reply_link"><i class="fa-solid fa-reply"></i></a><td>';
 					}
@@ -141,7 +141,7 @@
 						tr2 += '<input type="text" name="content" class="replyContent" placeholder="내용" size="100">';
 						tr2 += '<input type="button" value="작성" class="btnReplySave">';
 						<!-- 누른 댓글의 depth, GroupNo, GroupOrd -->
-							tr2 += '<input type="hidden" name="depth" value="' + reply.reviewDepth + '">';
+						tr2 += '<input type="hidden" name="depth" value="' + reply.reviewDepth + '">';
 						tr2 += '<input type="hidden" name="groupNo" value="' + reply.reviewGroupNo + '">';
 						tr2 += '<input type="hidden" name="groupOrd" value="' + reply.reviewGroupOrd + '">';
 						tr2 += '</form>';
@@ -255,24 +255,18 @@
 	}
 </script>
 <style>
-	* {
-		box-sizing: border-box;
-	}
 	.blind {
 		display: none;
 	}
 	
 	article {
-		text-align: center;
 		background-color : white;
-		width: 50%;
+		width: 60%;
+  		margin: 50px auto;		
   		border-radius : 50px;
-  		position : absolute;
-  		top : 200px;
-  		left: 50%;
-  		transform: translate(-50%, 0%);
+  		padding: 30px;
+		text-align: center;
   		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
-  		padding: 0 0 30px 0; 
 	}	
 	.pageName {
 		margin: 30px auto;
@@ -281,19 +275,19 @@
 	}	
 	#divNo {
 		margin: 30px auto 0 auto;
-		width: 95%;
+		width: 88%;
 		text-align: left;
 		font-size: 20px;
 	}	
 	#divClass, #divTitle, #divHit, #divCreated {
 		margin: 5px auto 0 auto;
-		width: 95%;
+		width: 88%;
 		text-align: left;	
 		font-size: 20px;	
 	}	
 	#divContent {
 		margin: 30px auto 0 auto;
-	    width: 95%;
+	    width: 88%;
 	    text-align: left;
 	    font-size: 20px;
 	}
@@ -363,6 +357,20 @@
 		border-right: 0;
 		border-bottom: 0;
 		text-align: center;
+	}
+	table td:nth-of-type(1) {
+		width: 13%;
+	}	
+	table td:nth-of-type(2) {
+		text-align: left;
+		width: 50%;
+	}
+	table td:nth-of-type(3) {
+		width: 1%;
+	}	
+	table td:nth-of-type(4) {
+		width: 25%;
+		font-size: 12px;
 	}
 		
 </style>

@@ -123,9 +123,9 @@
 </head>
 <body>
 	
-<%@ include file="noticeList.jsp" %>
+	<%@ include file="noticeList.jsp" %>
 
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
  				<div id="searchForm">
 					<form id="f" method="get">
 						<select name="column" id="column">
@@ -146,9 +146,9 @@
 						<input type="button" value="전체조회" id="btnSearchAll">
 					</form>
 				</div>
-			</table>	
-		</article>
-	</div>
+			</table>
+		</div>
+	</section>
 
 	<footer>
 		<jsp:include page="../layout/footer.jsp"></jsp:include>

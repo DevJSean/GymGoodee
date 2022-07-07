@@ -87,17 +87,14 @@
 		
 </script>
 <style>
-	* {
-		box-sizing: border-box;
-	}
  	article {
-		text-align: center;
 		background-color : white;
-		width: 52%;
+		width: 60%;
+  		margin: 50px auto;		
   		border-radius : 50px;
-  		margin: 90px auto;
-  		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
-  		padding: 20px 0 30px 0;  		
+  		padding: 30px;
+		text-align: center;
+  		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);		
 	}
 	#pageName {
 		margin: 30px auto;
@@ -171,7 +168,7 @@
 				작성자&nbsp;&nbsp;<input type="text" name="writer" value="${loginMember.memberId}" readonly>
 			</div>
 			<div id="divTitle">
-				제목&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="title" placeholder="제목을 입력해 주세요">
+				제목&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="title" name="title" placeholder="제목을 입력해 주세요">
 			</div>
 			<div id="divContent">
 				<textarea name="content" id="content"></textarea>

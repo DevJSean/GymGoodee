@@ -96,20 +96,14 @@
 	}	
 </script>
 <style>
-	* {
-		box-sizing: border-box;
-	}
 	article {
-		text-align: center;
 		background-color : white;
-		width: 50%;
+		width: 60%;
+  		margin: 50px auto;		
   		border-radius : 50px;
-  		position : absolute;
-  		top : 200px;
-  		left: 50%;
-  		transform: translate(-50%, 0%);
+  		padding: 30px;
+		text-align: center;
   		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
-  		padding: 0 0 30px 0;
 	}	
 	.pageName {
 		margin: 30px auto;
@@ -187,10 +181,10 @@
 			게시글번호 : ${question.questionNo}
 		</div>
 		<div id="divWriter">
-			작성자 : ${question.memberId}
+			작성자 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${question.memberId}
 		</div>
 		<div id="divTitle">
-			제목 : ${question.questionTitle}
+			제목 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${question.questionTitle}
 		</div>
 		<div id="divCreated">
 			최초작성일 : ${question.questionCreated}

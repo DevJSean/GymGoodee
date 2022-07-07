@@ -49,20 +49,14 @@
 </script>
 </head>
 <style>
-	* {
-		box-sizing: border-box;
-	}
 	article {
-		text-align: center;
 		background-color : white;
-		width: 50%;
+		width: 60%;
+  		margin: 50px auto;		
   		border-radius : 50px;
-  		position : absolute;
-  		top : 200px;
-  		left: 50%;
-  		transform: translate(-50%, 0%);
+  		padding: 30px;
+		text-align: center;
   		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
-  		padding: 0 0 30px 0; 
 	}
 	#pageName {
 		margin: 30px auto;

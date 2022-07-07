@@ -154,8 +154,8 @@
 					</form>
 				</div>
 			</table>
-		</article>
-	</div>
+		</div>
+	</section>
 	
 	<footer>
 		<jsp:include page="../layout/footer.jsp"></jsp:include>
