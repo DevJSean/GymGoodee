@@ -34,12 +34,12 @@
 	    
 	 }
 	 .navItem {
+	 	text-align: center;
 	    background-color: white; 
 	    padding: 15px;
 	    cursor: pointer;
 	 }
 	 .navItem a {
-	 	  text-align: center;
 	    text-decoration: none;
 	    color: rgb(70, 70, 70);
 	 }

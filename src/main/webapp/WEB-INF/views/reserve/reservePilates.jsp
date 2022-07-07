@@ -106,7 +106,11 @@
 						var tr = $('<tr>');
 						if(memberId == 'admin'){
 							// 강좌 개설 페이지로 이동하기
-							tr.append($('<td colspan="5">').text('개설된 강좌가 없습니다. 강좌를 개설하세요!'));
+							tr.append($('<td colspan="5">').html('<a id="btnAddClass">개설된 강좌가 없습니다. 강좌를 개설하세요!</a>'));
+							$('body').on('click','#btnAddClass',function(){
+								window.opener.location.href='${contextPath}/admin/addClassPage';	// 부모창에서 새로운 경로로 이동
+								window.close();
+							})
 						}
 						else{
 							tr.append($('<td colspan="5">').text('개설된 강좌가 없습니다.'));	
@@ -158,7 +162,8 @@
 							else if(today == pilatesclass.classDate){
 								if(pilatesclass.reservationState == 0){
 									// (1) 내가 예약한 수업이 당일 수업인 경우 [예약 확정] 버튼
-									tr.append($('<td>').html('<input type="button" class ="btnReserveConfirm" data-classcode="'+ pilatesclass.classCode + '" value="예약확정">'));																		
+									//tr.append($('<td>').html('<input type="button" class ="btnReserveConfirm" data-classcode="'+ pilatesclass.classCode + '" value="예약확정">'));																		
+									tr.append($('<td class ="btnReserveConfirm">').text('예약확정'));	
 								} 
 								else if(pilatesclass.reservationState == 1){
 									// (2) 수강이 끝난 후
@@ -437,9 +442,19 @@
 	}
 	
 	input[type=button]:hover{
-		background-color : #BADFC4;
-		border : 1px solid #BADFC4;
+		background-color :  #2C3E50; 
+		opacity: 0.65;
+		border : 1px solid #2C3E50;
+		color:  #F5F6F7;
 	} 
+	
+	.btnReserveConfirm{
+		color: #e62578;
+	}
+	
+	#btnPayPilates, #btnAddClass{
+		cursor: pointer;
+	}
 
 </style>
 </head>
@@ -460,7 +475,7 @@
 					<td>시간</td>
 					<td>장소</td>
 					<td>수강인원</td>
-					<td>버튼</td>
+					<td></td>
 				</tr>
 			</thead>
 			<tbody id="classList">
