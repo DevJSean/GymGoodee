@@ -8,6 +8,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
 <title>운동소개</title>
 	<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="../resources/css/reset.css">
@@ -81,9 +82,21 @@
 	.last {
 		border-bottom: 1px solid grey;
 	}
-	.tag {
+	.tag1 {
 		text-align: right;
-		margin: 30px 110px 50px 0;
+		margin: 25px 110px 0 0;
+		line-height: 0;
+		font-size: 0.85em;
+	}
+	.tag2 {
+		text-align: right;
+		margin: 20px 349.5px 0 0;
+		line-height: 0;
+		font-size: 0.85em;
+	}
+	.tag3 {
+		text-align: right;
+		margin: 20px 288.5px 50px 0;
 		line-height: 0;
 		font-size: 0.85em;
 	}
@@ -130,7 +143,9 @@
 			</tbody>
 		</table>
 		
-		<div class="tag">※ 강좌는 종목마다 하루 4번의 고정된 시간에 해당 강사님의 스케줄에 따라 개설됩니다.</div>
+		<div class="tag1">※ 강좌는 종목마다 하루 4번의 고정된 시간에 해당 강사님의 스케줄에 따라 개설됩니다.</div>
+		<div class="tag2">※ 토요일은 A, B 시간의 강좌만 운영합니다.</div>
+		<div class="tag3">※ 강좌 예약 취소는 <span style="color: red"> 전날 자정 12시</span>까지만 가능합니다.</div>
 	
 		<br><br>
 	

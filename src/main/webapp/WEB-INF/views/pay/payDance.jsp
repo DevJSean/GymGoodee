@@ -7,62 +7,143 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>수영 결제</title>
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
+<title>스포츠댄스 결제</title>
 	<script src="../resources/js/jquery-3.6.0.js"></script>
 	<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="../resources/css/reset.css">
+	<style>
+	
+	  	#wrapper {
+			background-color : white;
+			width : 800px;
+			height: 950px;
+			margin : 0 auto 40px;
+			border-radius : 50px;
+			box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
+		}
+	
+	  	
+	  	.title{
+	  		text-align: center;
+	  		font-size: 5em;
+	        padding: 40px 0 0 0;
+	        margin: 40px;
+	  	}
+		#danceImage {
+			width : 200px;
+			height: 200px;
+			display : block;
+			margin: auto;
+		}
+		.nav {
+			text-align: center;
+	  		font-size: 1.25em;
+		}
+		
+		
+		
+		fieldset{
+			width: 240px;
+			height: 400px;
+			display: inline;
+			border-width: 2px;
+			border-style: groove;
+			border-radius: 20px;
+			margin-left: 15px;
+		}
+		
+		legend {
+			width: 100px;
+			height: 50px;
+			text-align: center;
+			font-size: 1.5em;
+		}
+		.first {
+			line-height: 50px;  
+		}
+		
+		
+		.price {
+			display: block;
+			width: 210px;
+			height: 130px;
+			margin: 35px 14px;
+		}
+		
+		.price > a {
+			display: inline-block;
+			width: 210px;
+			height: 95px;
+			text-align: center;
+			vertical-align: middle;
+			padding-top: 35px;
+			font-size: 1.25em;
+			line-height: 30px;
+			color: #F5F6F7;
+			text-decoration: none;
+			border: 0;
+			border-radius: 10px;
+			background-color: #2C3E50;
+			opacity: 0.65;
+		}
+		.price > .line {
+			height: 82px;
+			padding-top: 48px;
+		}
+		.price > a:hover {
+			background-color: #2C3E50;
+			opacity: inherit;
+		}
+	</style>
 </head>
 <body>
-	
-	<h1>수강권 구매</h1><br>
-	<h3>아래 버튼을 클릭하여 선택해 주세요</h3>
-	<br>
-	<hr>
-	<br><br><br>
+
+	<header>
+		<jsp:include page="../layout/header.jsp"></jsp:include>
+	</header>
 	
 	
-	<ul class="paymentNav">
-		<li class="paySwim"><a href="${contextPath}/pay/paySwim">수영</a></li>
-		<li class="payPilates"><a href="${contextPath}/pay/payPliates">필라테스</a></li>
-		<li class="paySpinning"><a href="${contextPath}/pay/paySpinning">스피닝</a></li>
-		<li class="payDance">스포츠 댄스</li>
-	</ul>
+	<div id="wrapper">
+		<div class="title">수강권 구매</div>
+		<div><img id="danceImage" alt="수영" src="../resources/images/dance.png"></div>		
+	
+		<div class="nav">원하시는 수강권을 아래에서 선택해 주세요</div>
+		<br><br><br><br><br>
 	
 	
-	<br><br><br>
-	<hr>
-	<br><br><br>
-	
-	<table border="1">
-		<thead>
-			<tr>
-				<td>1개월</td>
-				<td></td>
-				<td>3개월(10%)</td>
-				<td></td>
-				<td>6개월(20%)</td>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td><a href="${contextPath}/order/order?ticketNo=7">8회 - 8만원</a></td>
-				<td></td>
-				<td><a href="${contextPath}/order/order?ticketNo=9">24회 - 21.6만원</a></td>
-				<td></td>
-				<td><a href="${contextPath}/order/order?ticketNo=11">40회 - 32만원</a></td>
-			</tr>
-			<tr>
-				<td><a href="${contextPath}/order/order?ticketNo=8">16회 - 16만원</a></td>
-				<td></td>
-				<td><a href="${contextPath}/order/order?ticketNo=10">32회 - 28.8만원</a></td>
-				<td></td>
-				<td><a href="${contextPath}/order/order?ticketNo=12">48회- 38.4만원</a></td>
-			</tr>
-		</tbody>
-	</table>
-	
-	<jsp:include page="../layout/footer.jsp"></jsp:include>
-	
+		<fieldset>
+			<legend class="first">1개월</legend>
+			<div class="price">
+				<a class="line" href="${contextPath}/order/order?ticketNo=7">8회 - 8만원</a>
+			</div>
+			<div class="price">
+				<a class="line" href="${contextPath}/order/order?ticketNo=8">16회 - 16만원</a>
+			</div>
+		</fieldset>
+		<fieldset>
+			<legend>3개월(10%)</legend>
+			<div class="price">
+				<a href="${contextPath}/order/order?ticketNo=9">24회 - <del>24만원</del><br>=>&nbsp;&nbsp;21.6만원</a>
+			</div>
+			<div class="price">
+				<a href="${contextPath}/order/order?ticketNo=10">32회 - <del>32만원</del><br>=>&nbsp;&nbsp;28.8만원</a>
+			</div>
+		</fieldset>
+		<fieldset>
+			<legend>6개월(20%)</legend>
+			<div class="price">
+				<a href="${contextPath}/order/order?ticketNo=11">40회 - <del>40만원</del><br>=>&nbsp;&nbsp;32만원</a>
+			</div>
+			<div class="price">
+				<a href="${contextPath}/order/order?ticketNo=12">48회 - <del>48만원</del><br>=>&nbsp;&nbsp;38.4만원</a>
+			</div>
+		</fieldset>
+	</div>
+	<footer>
+		<jsp:include page="../layout/footer.jsp"></jsp:include>
+	</footer>
+		
 </body>
 </html>
 

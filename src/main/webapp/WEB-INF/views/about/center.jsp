@@ -8,6 +8,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
 <title>센터소개</title>
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a2eaaee1257d5ccec0e423f47ffb938a"></script>
 	<script src="../resources/js/jquery-3.6.0.js"></script>
@@ -62,7 +63,7 @@
 	#titleName{
         font-size: 2.75em;
         padding: 40px 0 0 0;
-        margin: 70px;
+        margin: 40px;
      }
 	#box > img {
 		width: 400px;
