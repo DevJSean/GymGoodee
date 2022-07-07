@@ -92,7 +92,7 @@ public class MemberController {
 		return "index";
 	}
 	
-	@GetMapping("/member/kakaoCallback")
+	@GetMapping("/kakaoCallback")
 	public String kakaoCallback(Model model, HttpServletRequest request, HttpServletResponse response) {
 		memberService.kakaoCallback(request, response);
 		return "index";
