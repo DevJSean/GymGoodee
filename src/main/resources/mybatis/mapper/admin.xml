@@ -5,7 +5,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="com.goodee.gym.mapper.AdminMapper">
 	<!-- 강사 추가하기 -->
-	<insert id="insertTeacher" parameterType="TeacherDTO">
+	<insert id="insertTeacher" parameterType="TeacherDTO" useGeneratedKeys="true" keyProperty="TEACHER_NO">
 		INSERT INTO TEACHER
 			(TEACHER_NO, TEACHER_NAME, TEACHER_GENDER, TEACHER_SUBJECT)
 		VALUES
@@ -176,7 +176,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</update>
 	
 	
-	<!-- 테스트 -->
 	<!-- 예약내역 검색된 레코드 갯수 -->
 	<select id="selectReservationCount" parameterType="Map" resultType="Integer">
 		SELECT COUNT(A.RESERVATION_CODE)

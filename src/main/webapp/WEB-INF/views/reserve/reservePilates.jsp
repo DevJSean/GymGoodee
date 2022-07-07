@@ -242,8 +242,12 @@
 				dataType: 'json',
 				success : function(obj){
 					//console.log('버튼 ',obj);
-					if(obj.state == 501){
+					if(obj.state == 600){
 						alert('동일 날짜, 동일 시간대 강좌가 이미 예약되어 있습니다.');
+						return false;
+					}
+					if(obj.state == 601){
+						alert('강좌 예약 실패.');
 						return false;
 					}
 					if(obj.res == 1){

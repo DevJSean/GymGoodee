@@ -150,7 +150,7 @@ public class ReserveServiceImpl implements ReserveService {
 			String tmpCode = classCodes.get(i).substring(0,codeIndex);	// '날짜_시간'
 			//System.out.println("tmpCode : " + tmpCode);
 			if(originCode.equals(tmpCode)) {
-				result.put("state", 501);		// 중복되는 강좌 예약하려고 시도
+				result.put("state", 600);		// 중복되는 강좌 예약하려고 시도
 				return result;
 			}
 		}
@@ -168,6 +168,24 @@ public class ReserveServiceImpl implements ReserveService {
 		int res = 0;
 		int flag = reserveMapper.selectMemberFromReservation(tmp);
 		
+		// RESERVATION_SEQ 테이블 INSERT 작업을 한 뒤,
+		// SELECT로 SEQ 값을 받아와서 (reserv_seq)
+		// subject + reserve_seq.toString() 으로 classCode를 만들어서
+		// RESERVATION 테이블에 예약 코드로 추가한다.
+		int insertRes = reserveMapper.insertReservationSeq();
+		int reserveSeq = 0;
+		String reservationCode = "";
+		if(insertRes == 1) {
+			reserveSeq = reserveMapper.selectReservationSeq();
+			reservationCode += subject + String.valueOf(insertRes);
+		}
+		else {
+			result.put("state", 601);		// 중복되는 강좌 예약하려고 시도
+			return result;
+		}
+		
+		
+		
 		// 예약했다가 취소한 사람 (UPDATE 작업)
 		if(flag == 1) {
 			res = reserveMapper.updateAgainReserve(tmp);	
@@ -175,11 +193,12 @@ public class ReserveServiceImpl implements ReserveService {
 		// flag가 0이면 그냥 처음 예약하는 사람! (INSERT 작업)		
 		else if(flag == 0) {
 			ReservationDTO reservation = ReservationDTO.builder()
+					.reservationCode(reservationCode)
 					.classCode(classCode)
 					.memberNo(memberNo)
 					.subject(subject)		
 					.build();			
-			res = reserveMapper.insertReserveSwim(reservation);
+			res = reserveMapper.insertReserve(reservation);
 		}
 		
 		// 4) 위의 과정까지 예약이 완료되었으므로 잔여수강권 횟수를 -1 해야한다. (UPDATE)

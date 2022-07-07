@@ -89,18 +89,24 @@
 	    list-style-type: none;
 	    
 	 }
-	 .navItem {
-	 	text-align: center;
-	    background-color: white; 
-	    padding: 15px;
-	    cursor: pointer;
-	    border-left: 2px solid  rgba(44, 62, 80, 0.65); 
-	    border-right: 2px solid  rgba(44, 62, 80, 0.65);
-	 }
-	 .navItem a {
-	    text-decoration: none;
-	    color: rgb(70, 70, 70);
-	 }
+    .navItem {
+   	  text-align: center;
+      background-color: white; 
+      /* padding: 15px; */
+      cursor: pointer;
+      border-left: 2px solid  rgba(44, 62, 80, 0.65); 
+	  border-right: 2px solid  rgba(44, 62, 80, 0.65);
+	  width: 100px;
+      height: 50px;
+	  line-height: 50px;
+   }
+   .navItem a {
+      text-decoration: none;
+      color: rgb(70, 70, 70);
+      display: inline-block;
+      width: 100px;
+      height: 50px;
+   }
 	 .nowPage {
 	    background-color: #2C3E50; 
 	    opacity: 0.65;
