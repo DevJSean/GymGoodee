@@ -8,6 +8,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
 <title>수영 결제</title>
 	<link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="../resources/css/reset.css">
@@ -30,15 +31,14 @@
         margin: 40px;
   	}
 	#swimImage {
-		width : 150px;
-		height: 150px;
+		width : 200px;
+		height: 200px;
 		display : block;
 		margin: auto;
 	}
 	.nav {
 		text-align: center;
   		font-size: 1.25em;
-		margin: 40px 0 0 0;
 	}
 	
 	
