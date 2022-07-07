@@ -98,7 +98,7 @@
 		font-size: 20px;
 	}
 	.link:hover {
-		color: #63B47B;
+		color: #8AAAE5;
 	}
 	.nowUnlinkPage{
 	    color: black;
