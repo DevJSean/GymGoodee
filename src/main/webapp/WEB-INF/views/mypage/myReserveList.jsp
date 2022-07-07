@@ -11,6 +11,7 @@
 <meta charset="UTF-8">
 <title>마이페이지</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="../resources/css/reset.css">
@@ -434,6 +435,7 @@
     }
     .subjectTab {
     	width: 100%;
+    	height: 100%;
         text-decoration: none;
         position: relative;
         top: 18px;

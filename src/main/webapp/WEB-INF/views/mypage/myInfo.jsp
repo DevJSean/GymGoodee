@@ -316,6 +316,7 @@
 	    border-radius: 3px;
 	    outline: none;
 	    background-color: rgb(233, 233, 233);
+	    padding-left: 12px;
 	}
 	#authCodeSMS, #authCodeEmail {
 		width: 200px;
@@ -324,6 +325,7 @@
 	    border-radius: 3px;
 	    outline: none;
 		background-color:rgb(240, 240, 240);
+		padding-left: 12px;
 	}
 	#authCodeEmail, #authCodeSMS {
 		display: none;

@@ -356,6 +356,7 @@
 
 </script>
 <style>
+	/* 비밀번호 변경 경고창 */
 	#modal.modal-overlay {
 	    width: 100%;
 	    height: 100%;
@@ -366,19 +367,14 @@
 	    flex-direction: column;
 	    align-items: center;
 	    justify-content: center;
-	    background: rgba(255, 255, 255, 0.25);
-	    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-	    backdrop-filter: blur(1.5px);
-	    -webkit-backdrop-filter: blur(1.5px);
 	    border-radius: 10px;
 	    border: 1px solid rgba(255, 255, 255, 0.18);
 	    display:none;
 	}
     #modal .modal-window {
-        background: rgba( 69, 139, 197, 0.70 );
+        background: rgb(184, 184, 184);
         box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
         backdrop-filter: blur( 13.5px );
-        -webkit-backdrop-filter: blur( 13.5px );
         border-radius: 10px;
         border: 1px solid rgba( 255, 255, 255, 0.18 );
         width: 400px;
@@ -390,7 +386,7 @@
         padding-left: 10px;
         display: inline;
         text-shadow: 1px 1px 2px gray;
-        color: white;
+        color: rgb(70, 70, 70);
     }
     #modal .title h2 {
         display: inline;
@@ -401,14 +397,14 @@
         padding-right: 10px;
         cursor: pointer;
         text-shadow: 1px 1px 2px gray;
-        color: white;
+        color: rgb(70, 70, 70);
     }
     
     #modal .content {
         margin-top: 20px;
         padding: 0px 10px;
         text-shadow: 1px 1px 2px gray;
-        color: white;
+        color: rgb(70, 70, 70);
     }
     #btnClose, #btnChangePw {
     	position: relative;
@@ -417,9 +413,27 @@
     	background-color: lightgrey;
 		width: 120px;
 		height: 40px;
-		color: grey;
 		border: none;
 		border-radius: 5px;
+    }
+    #btnClose:hover, #btnChangePw:hover {
+    	background-color: #2C3E50; 
+        opacity: 0.65;
+        color: #F5F6F7;
+        cursor: pointer;
+    }
+    #cookie {
+    	text-align: center;
+	}	   
+    #cookie a {
+    	text-decoration: none;
+    	position: relative;
+    	color: rgb(70, 70, 70);
+    	bottom: -50px;
+    }
+    #cookie a:hover {
+    	color: #F5F6F7;
+    	transition: ease 1s;
     }
 
 	/* 날씨 CSS */
@@ -560,7 +574,6 @@
           box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
         }
     }   
-   
 </style>
 </head>
 <body>
@@ -616,6 +629,9 @@
                 
                 <input type="button" value="다음에 변경하기" id="btnClose" onclick="fnModalClose()">
                 <input type="button" value="비밀번호 변경" id="btnChangePw" onClick="location.href='${contextPath}/mypage/changePwPage'">
+                <div id="cookie">
+                	<a href="">오늘 하루 보지 않기</a>
+                </div>
             </div>
         </div>
     </div>
