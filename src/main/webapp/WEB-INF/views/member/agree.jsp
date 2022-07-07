@@ -12,6 +12,61 @@
 <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css">
 <link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/reset.css">
 <title>GymGoodee : 회원가입</title>
+<script src="../resources/js/jquery-3.6.0.js"></script>
+<script src="http://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+
+	$(function(){
+		
+		// 체크박스
+		$('#checkAll').on('click', function(){
+			$('.checkOne').prop('checked', $('#checkAll').prop('checked'));
+			if($('#checkAll').is(':checked')){
+				$('.item, .items').addClass('check');
+			} else {
+				$('.item, .items').removeClass('check');
+			}
+		})
+		
+		$('.checkOne').on('click', function(){
+			let checkAll = true;                         
+			$.each($('.checkOne'), function(i, checkOne){
+				if($(checkOne).is(':checked') == false){   
+					$('#checkAll').prop('checked', false);
+					$('.items').removeClass('check');
+					checkAll = false;                      
+					return false;
+				}
+			})
+			if(checkAll){
+				$('#checkAll').prop('checked', true);
+				$('.items').addClass('check');
+			}
+		})
+		
+		// 
+		$('.item, .items').on('click', function(){
+			$(this).toggleClass('check');
+		})
+		
+		// 다음
+		$('#f').on('submit', function(event){
+			if($('#service').is(':checked') == false || $('#privacy').is(':checked') == false) {
+				alert("필수 약관에 모두 동의하세요.");
+				event.preventDefault();
+				return false;
+			}
+			return true;
+		})
+		
+		// 취소
+		$('#btnBack').on('click', function(){
+			location.href="${contextPath}/member/loginPage";
+		})
+		
+	})
+	
+</script>
 <style>
 
 	textarea {
@@ -90,62 +145,6 @@
     }
 
 </style>
-<script src="../resources/js/jquery-3.6.0.js"></script>
-<script src="http://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script>
-
-	$(function(){
-		
-		// 체크박스
-		$('#checkAll').on('click', function(){
-			$('.checkOne').prop('checked', $('#checkAll').prop('checked'));
-			if($('#checkAll').is(':checked')){
-				$('.item, .items').addClass('check');
-			} else {
-				$('.item, .items').removeClass('check');
-			}
-		})
-		
-		$('.checkOne').on('click', function(){
-			let checkAll = true;                         
-			$.each($('.checkOne'), function(i, checkOne){
-				if($(checkOne).is(':checked') == false){   
-					$('#checkAll').prop('checked', false);
-					$('.items').removeClass('check');
-					checkAll = false;                      
-					return false;
-				}
-			})
-			if(checkAll){
-				$('#checkAll').prop('checked', true);
-				$('.items').addClass('check');
-			}
-		})
-		
-		// 
-		$('.item, .items').on('click', function(){
-			$(this).toggleClass('check');
-		})
-		
-		// 다음
-		$('#f').on('submit', function(event){
-			if($('#service').is(':checked') == false || $('#privacy').is(':checked') == false) {
-				alert("필수 약관에 모두 동의하세요.");
-				event.preventDefault();
-				return false;
-			}
-			return true;
-		})
-		
-		// 취소
-		$('#btnBack').on('click', function(){
-			location.href="${contextPath}/member/loginPage";
-		})
-		
-	})
-	
-
-</script>
 </head>
 <body>
 

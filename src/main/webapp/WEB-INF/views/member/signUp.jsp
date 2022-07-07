@@ -12,133 +12,6 @@
 <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css">
 <link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/reset.css">
 <title>GymGoodee : 회원가입</title>
-<style>
-	.ok {
-		color: limegreen;
-	}
-	.dont {
-		color: crimson;
-	}
-	.wrap {
-        position: relative;
-        height: 100%;
-        letter-spacing: -0.5px;
-    }
-    .header .header_inner {
-        margin: 0 auto;
-        width: 743px;
-        text-align: center;
-        position: relative;
-    }
-    .header {
-        padding-bottom: 30px;
-    } 
-    .header_inner .logo {
-        display: inline-block;
-        width: 200px;
-        height: 100px;
-        margin-top: 30px;
-        background-image: url(../resources/images/linkedin_banner_image_navy.png);
-        background-size: 200px 100px;
-        background-repeat: no-repeat;
-        background-position: center;
-    }
-   	.blind {
-		display: none;
-	}
-    .container {
-        width: 743px;
-        margin: 0 auto;
-        position: relative;
-        
-    }
-    .content {
-    	width: 460px;
-    	margin: 0 auto;
-    }
-    .row group {
-    	overflow: hidden;
-    	width: 100%;
-    }
-    .join_title {
-	    margin: 19px 0 8px;
-	    font-size: 14px;
-	    font-weight: 700;
-	}
-	.ps_box {
-	    display: block;
-	    position: relative;
-	    width: 100%;
-	    height: 51px;
-	    border: solid 1px #dadada;
-	    padding: 10px 10px 10px 14px;
-	    background: #fff;
-	    box-sizing: border-box;
-	    vertical-align: top;
-	}
-	.int {
-	    display: block;
-	    position: relative;
-	    width: 100%;
-	    height: 29px;
-	    padding-right: 25px;
-	    line-height: 29px;
-	    border: none;
-	    background: #fff;
-	    font-size: 15px;
-	    box-sizing: border-box;
-	}
-	.error_box {
-	    display: block;
-	    margin: 9px 0 -2px;
-	    font-size: 12px;
-	    line-height: 14px;
-	}
-	.join_row{
-		position: relative;
-		margin-top: 10px;
-	}
-	.auth_row{
-		position: relative;
-		margin-top: 10px;
-		padding: 0 125px 0 0;
-	} 
-    .btn_auth{
-   	    position: absolute;
-	    top: 0;
-	    right: 0;
-	    width: 115px;
-	    height: 51px;
-	    color: #F5F6F7;
-	    font-weight: 700;
-	    text-align: center;
-	    box-sizing: border-box;
-        display: block;
-	    font-size: 12px;
-	    cursor: pointer;
-	    border: 1px solid lightgrey;
-        border-radius: 6px;
-	    background-color: lightgrey;
-    }
-    .btn_Area{
-    	height: 150px;
-    	position: relative;
-    	margin-top: 60px;
-    }
-    .btn_type{
-    	margin: 0 18px 0;
-    	width: 190px;
-    	height: 60px;
-    	font-size: 20px;
-    	font-weight: 700;
-    	color: #F5F6F7;
-	    cursor: pointer;
-	    border: 1px solid #2C3E50;
-        border-radius: 6px;
-	    background-color: #2C3E50;
-    	
-    }
-</style>
 <script src="../resources/js/jquery-3.6.0.js"></script>
 <script>
 
@@ -365,6 +238,133 @@
 	}
 	
 </script>
+<style>
+	.ok {
+		color: limegreen;
+	}
+	.dont {
+		color: crimson;
+	}
+	.wrap {
+        position: relative;
+        height: 100%;
+        letter-spacing: -0.5px;
+    }
+    .header .header_inner {
+        margin: 0 auto;
+        width: 743px;
+        text-align: center;
+        position: relative;
+    }
+    .header {
+        padding-bottom: 30px;
+    } 
+    .header_inner .logo {
+        display: inline-block;
+        width: 200px;
+        height: 100px;
+        margin-top: 30px;
+        background-image: url(../resources/images/linkedin_banner_image_navy.png);
+        background-size: 200px 100px;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+   	.blind {
+		display: none;
+	}
+    .container {
+        width: 743px;
+        margin: 0 auto;
+        position: relative;
+        
+    }
+    .content {
+    	width: 460px;
+    	margin: 0 auto;
+    }
+    .row group {
+    	overflow: hidden;
+    	width: 100%;
+    }
+    .join_title {
+	    margin: 19px 0 8px;
+	    font-size: 14px;
+	    font-weight: 700;
+	}
+	.ps_box {
+	    display: block;
+	    position: relative;
+	    width: 100%;
+	    height: 51px;
+	    border: solid 1px #dadada;
+	    padding: 10px 10px 10px 14px;
+	    background: #fff;
+	    box-sizing: border-box;
+	    vertical-align: top;
+	}
+	.int {
+	    display: block;
+	    position: relative;
+	    width: 100%;
+	    height: 29px;
+	    padding-right: 25px;
+	    line-height: 29px;
+	    border: none;
+	    background: #fff;
+	    font-size: 15px;
+	    box-sizing: border-box;
+	}
+	.error_box {
+	    display: block;
+	    margin: 9px 0 -2px;
+	    font-size: 12px;
+	    line-height: 14px;
+	}
+	.join_row{
+		position: relative;
+		margin-top: 10px;
+	}
+	.auth_row{
+		position: relative;
+		margin-top: 10px;
+		padding: 0 125px 0 0;
+	} 
+    .btn_auth{
+   	    position: absolute;
+	    top: 0;
+	    right: 0;
+	    width: 115px;
+	    height: 51px;
+	    color: rgb(70, 70, 70);
+	    font-weight: 700;
+	    text-align: center;
+	    box-sizing: border-box;
+        display: block;
+	    font-size: 14px;
+	    cursor: pointer;
+	    border: 1px solid lightgrey;
+        border-radius: 6px;
+	    background-color: lightgrey;
+    }
+    .btn_Area{
+    	height: 150px;
+    	position: relative;
+    	margin-top: 60px;
+    }
+    .btn_type{
+    	margin: 0 18px 0;
+    	width: 190px;
+    	height: 60px;
+    	font-size: 20px;
+    	font-weight: 700;
+    	color: #F5F6F7;
+	    cursor: pointer;
+	    border: 1px solid #2C3E50;
+        border-radius: 6px;
+	    background-color: #2C3E50;
+    	
+    }
+</style>
 </head>
 <body>
 	

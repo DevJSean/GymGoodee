@@ -280,7 +280,7 @@
 <style>
 		
       	.changeArea, .authAreaSMS, .changePw, #modal .titlePw h2 {
-		display: none;
+			display: none;
 		}
 		
 		#modal.modal-overlay {
@@ -591,13 +591,13 @@
             left: 3px;
         }
 		.dont {
-		color: red;
+			color: red;
 		}
 		.ok {
 			color: limegreen;
 		}
 	 	#findId:hover, #findPw:hover {
-		cursor: pointer;
+			cursor: pointer;
 		}
 </style>
 </head>
@@ -723,9 +723,5 @@
 	    	</div> 
 	    </div>  
     </div>
-    
-   	<footer>
-		<jsp:include page="../layout/footer.jsp"></jsp:include>
-	</footer>		
 </body>
 </html>
