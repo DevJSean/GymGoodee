@@ -104,15 +104,15 @@
 							<td>${reservation.classCode}</td>
 							<td>${reservation.reservationDate}</td>
 							
-							<td>
+							<td> 
 								<c:if test="${reservation.reservationState == -1}">
-									예약취소							
+									<span>예약취소</span>							
 								</c:if>
 								<c:if test="${reservation.reservationState == 0}">
-									예약완료							
+									<span>예약완료</span>							
 								</c:if>
 								<c:if test="${reservation.reservationState == 1}">
-									수강완료							
+									<span id="classDone">수강완료</span>							
 								</c:if>
 							</td>
 							

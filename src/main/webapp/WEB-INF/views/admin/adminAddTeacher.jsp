@@ -137,6 +137,7 @@
       
    }
    .navItem {
+   	  text-align: center;
       background-color: white; 
       padding: 15px;
       cursor: pointer;
@@ -144,7 +145,6 @@
 	  border-right: 2px solid  rgba(44, 62, 80, 0.65);
    }
    .navItem a {
-   	  text-align: center;
       text-decoration: none;
       color: rgb(70, 70, 70);
    }
@@ -193,6 +193,7 @@
 	
 	#wrapper1{
 		line-height: 30px;
+		margin-left: 45px;
 	}
 
 	
@@ -265,8 +266,8 @@
 		
 		<div id="wrapper">
 			<div id="wrapper1">
-				이름 <input type="text" name="teacherName" id="teacherName"><br>
-				성별
+				이름&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="teacherName" id="teacherName"><br>
+				성별&nbsp;&nbsp;
 				<label for="M">
 					남자<input type="radio" name="teacherGender" value="M" id="M">
 				</label>
@@ -274,7 +275,7 @@
 					여자<input type="radio" name="teacherGender" value="F" id="F">
 				</label>
 				<br>
-				종목
+				종목&nbsp;&nbsp;
 				<label for="SWIN">
 					수영<input type="radio" name="teacherSubject" value="SWIM" id="SWIM">
 				</label>

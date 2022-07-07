@@ -356,6 +356,7 @@
       
    }
    .navItem {
+   	  text-align: center;
       background-color: white; 
       padding: 15px;
       cursor: pointer;
@@ -363,7 +364,7 @@
 	  border-right: 2px solid  rgba(44, 62, 80, 0.65);
    }
    .navItem a {
-   	  text-align: center;
+   	  
       text-decoration: none;
       color: rgb(70, 70, 70);
    }
@@ -551,20 +552,20 @@
 				
 		
 				<form id="f">
-					강사 선택
+					강사 선택&nbsp;&nbsp;
 					<select id="teachers" name="teacherNo">
 					</select>
 					<br>
-					장소 선택
+					장소 선택&nbsp;&nbsp;
 					<select id="locations" name="locationCode">
 					</select>
 					<br>
 					
-					날짜 선택
+					날짜 선택&nbsp;&nbsp;
 					<input type="text" name="classDate" id="classDate" autocomplete="off">
 					<br>
 					
-					시간 선택
+					시간 선택&nbsp;&nbsp;
 					<select id="classTime" name="classTime">
 						<option value="A">A(09:00)</option>
 						<option value="B">B(10:00)</option>
