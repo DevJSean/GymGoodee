@@ -49,16 +49,21 @@
         list-style-type: none;
     }
     .navItem {
-        text-align: center;
+    	text-align: center;
         background-color: white; 
-        padding: 15px;
         cursor: pointer;
         border-left: 2px solid  rgba(44, 62, 80, 0.65); 
         border-right: 2px solid  rgba(44, 62, 80, 0.65);
+        width: 100px;
+        height: 50px;
+        line-height: 50px;
     }
     .navItem a {
         text-decoration: none;
         color: rgb(70, 70, 70);
+        display: inline-block;
+        width: 100px;
+        height: 50px;
     }
     .nowPage {
         background-color: #2C3E50;
@@ -92,31 +97,31 @@
 		display: flex;
 	}
 	#btnCheck, #btnCancle {
-	  width: 235px;
-	  padding: 16px 0px 15px;
-	  margin-top: 10px;
-      background-color: lightgrey;
-      border: 1px solid lightgrey;
-      font-size: 16px;
-      border-radius: 3px;
-      cursor: pointer;
-      margin: 2px;
-      margin-top: 10px;
+	    width: 235px;
+	    padding: 16px 0px 15px;
+	    margin-top: 10px;
+        background-color: lightgrey;
+        border: 1px solid lightgrey;
+        font-size: 16px;
+        border-radius: 3px;
+        cursor: pointer;
+        margin: 2px;
+        margin-top: 10px;
    }
    
    #btnCheck:hover, #btnCancle:hover{
-      background-color: #2C3E50; 
-      opacity: 0.65;
-      color: #F5F6F7;
+        background-color: #2C3E50; 
+        opacity: 0.65;
+        color: #F5F6F7;
    } 
    #wrapper{
-      background-color: white;
-      width: 70%;
-      margin: 50px auto;
-      border-radius: 50px;
-      padding: 30px;
-      text-align: center;
-      box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
+        background-color: white;
+        width: 70%;
+        margin: 50px auto;
+        border-radius: 50px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
    }
 	.pw_wrap {
 		text-align: center;
@@ -143,7 +148,6 @@
         letter-spacing: -0.5px;
         color: #222;
         line-height: 19px;
-        z-index: 4;  
         position: relative;
     }
 	.blind {

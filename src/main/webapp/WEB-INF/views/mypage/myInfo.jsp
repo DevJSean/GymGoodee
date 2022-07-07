@@ -10,6 +10,7 @@
 <meta charset="UTF-8">
 <title>마이페이지</title>
 <script src="../resources/js/jquery-3.6.0.js"></script>
+<link rel="icon" type="image/png" href="../resources/images/favicon.png"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="../resources/css/reset.css">
@@ -212,16 +213,21 @@
         list-style-type: none;
     }
     .navItem {
-        text-align: center;
+    	text-align: center;
         background-color: white; 
-        padding: 15px;
         cursor: pointer;
         border-left: 2px solid  rgba(44, 62, 80, 0.65); 
         border-right: 2px solid  rgba(44, 62, 80, 0.65);
+        width: 100px;
+        height: 50px;
+        line-height: 50px;
     }
     .navItem a {
         text-decoration: none;
         color: rgb(70, 70, 70);
+        display: inline-block;
+        width: 100px;
+        height: 50px;
     }
     .nowPage {
         background-color: #2C3E50;

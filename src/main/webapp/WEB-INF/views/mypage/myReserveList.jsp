@@ -18,14 +18,23 @@
 <script>
 	
 	$(function() {
-		fnSubjectList();
 		fnCommingReserveList();
 		fnOverReserveList();
 		fnReserveCancle();
 		fnGetTime();
-		fnWriteReview();
-		fnPagingLink();
+		$('body').on('click', '.subjectTab', function() {
+			//$('.tab').addClass('not_clicked').removeClass('clicked');
+			//$(this).parent().addClass('clicked').removeClass('not_clicked');
+			$('.tab').removeClass('clicked');
+			$('.tab').removeClass('not_clicked');
+			$(this).parent().addClass('clicked');
+			page = 1;
+			fnCommingSubjectList($(this).data('subject'));
+			fnOverSubjectList($(this).data('subject'));
+			fnSubjectPagingLink($(this).data('subject'));
+		})
 	})
+	
 	
 	// 오늘 날짜 추출
 	var now = Date.now();
@@ -46,8 +55,7 @@
     function fnCommingReserveList() {
 		$.ajax({
 			// 요청
-			url: '${contextPath}/mypage/myCommingReserveList',
-			data: 'subject=${remainTicket.remainTicketSubject}',
+			url: '${contextPath}/mypage/myCommingReserveList?page=' + page,
 			type: 'get',
 			// 응답
 			dataType: 'json',
@@ -90,113 +98,16 @@
 		})	// ajax
 	}
     
-	// 전체 예약 내역 종목별로 보여주기
-	var page = 1;  // 초기화
-	function fnSubjectList() {
-		$('body').on('click', '.subjectTab', function() {
-			$('.tab').addClass('not_clicked').removeClass('clicked');
-			$(this).parent().addClass('clicked').removeClass('not_clicked');
-			$.ajax({
-				// 요청
-				url: '${contextPath}/mypage/myCommingReserveList',
-				data: 'subject=' + $(this).data('subject'),
-				type: 'get',
-				// 응답
-				dataType: 'json',
-				success: function(obj) {
-					$('#commingReservationsList').empty();
-					$('#commingTotalCount').text(obj.commingTotalCount);
-					if(obj.commingTotalCount == 0) {
-						var tr = $('<tr>')
-						.append($('<td colspan="5">').text('예약된 내역이 없습니다.'));
-						$(tr).appendTo('#commingReservationsList');
-					} 
-					$.each(obj.commingReservations, function(i, comming) {
-						var tr = $('<tr>')
-						.append($('<td>').text(comming.rn))
-						.append($('<td>').text(comming.classDate))
-						.append($('<td>').text(comming.classTime));
-						if(comming.reservationCode.startsWith('SWIM')) {
-							$(tr).append($('<td>').text('수영'))
-							.append($('<input type="hidden" name="remainTicketSubject" value="SWIM">'));
-						} else if(comming.reservationCode.startsWith('DANCE')) {
-							$(tr).append($('<td>').text('스포츠댄스'))
-							.append($('<input type="hidden" name="remainTicketSubject" value="DANCE">'));
-						} else if(comming.reservationCode.startsWith('SPINNING')) {
-							$(tr).append($('<td>').text('스피닝'))
-							.append($('<input type="hidden" name="remainTicketSubject" value="SPINNING">'));
-						} else if(comming.reservationCode.startsWith('PILATES')) {
-							$(tr).append($('<td>').text('필라테스'))
-							.append($('<input type="hidden" name="remainTicketSubject" value="PILATES">'));
-						}
-						$(tr).append($('<td>').text(fnGetTime(comming.reservationDate)));
-						if(comming.classDate == todayDate) {
-							$(tr).append($('<td>').text('취소불가'));
-						} else {
-							$(tr).append($('<td>').html('<input type="button" value="예약취소" class="btnReserveCancle" data-reservation_code="' + comming.reservationCode + '">'));
-						}
-						
-						$(tr).appendTo('#commingReservationsList');
-					})
-				}
-			})	// ajax
-			$.ajax({
-				url: '${contextPath}/mypage/myOverReserveList',
-				data: 'page=' + page + '&subject=' + $(this).data('subject'),
-				type: 'get',
-				dataType: 'json',
-				success: function(obj){
-					$('#overTotalCount').text(obj.overTotalCount);
-					fnPrintOverReservationList(obj);
-					fnPrintPaging(obj.p);
-				}
-			})	// ajax
-		})
-	}
-	
-	// 예약취소
-	function fnReserveCancle() {
-		$('body').on('click', '.btnReserveCancle', function() {
-			if(confirm('예약을 취소할까요 ?')) {
-				$.ajax({
-					// 요청
-					url: '${contextPath}/reserveCancle',
-					data: 'reservationCode=' + $(this).data('reservation_code') + '&memberId=${loginMember.memberId}&remainTicketSubject=' + $(this).parent().prev().prev().val(),
-					type: 'get',
-					// 응답
-					dataType: 'json',
-					success: function(obj){
-						if(obj.resState > 0 && obj.resRemain > 0) {
-							alert('예약이 취소되었습니다.');
-							fnRemainTickets();
-							fnCommingReserveList();
-							fnOverReserveList();
-						} else {
-							alert('예약취소에 실패했습니다.');
-						}
-					}
-				}) // ajax
-			}
-		}) // onClick
-	}
-	
-	// 페이징 링크 처리(page 전역변수 값을 링크의 data-page값으로 바꿈)
-	function fnPagingLink() {
-		$(document).on('click', '.enable_link', function(){
-			page = $(this).data('page');
-		})
-	}
-	
 	// 지난 예약 목록 전체
 	var page = 1;  // 초기화
 	function fnOverReserveList() {
 		$.ajax({
-			url: '${contextPath}/mypage/myOverReserveList',
-			data: 'page=' + page + '&subject=${remainTicket.remainTicketSubject}',
+			url: '${contextPath}/mypage/myOverReserveList?page=' + page,
 			type: 'get',
 			dataType: 'json',
 			success: function(obj){
 				$('#overTotalCount').text(obj.overTotalCount);
+				fnOverPagingLink();
 				fnPrintOverReservationList(obj);
 				fnPrintPaging(obj.p);
 			}
@@ -226,17 +137,119 @@
 				tr += '<td>스피닝</td>';
 			}
 			tr += '<td>' + fnGetTime(over.reservationDate) +'</td>';
-			tr += '<td><input type="button" value="리뷰작성" class="review" data-class_code="' + over.classCode +'"></td>';
 			tr += '</tr>';
 			$('#overReservations').append(tr);
 		})
 	}
 	
-	// 리뷰 작성 버튼 클릭시
-	function fnWriteReview() {
-		$('body').on('click', '.review', function() {
-			location.href='${contextPath}/board/reviewAddPage';
-			$('#class').val($(this).data('class_code'));
+
+	// 다가올 수업 종목별로 보여주기
+	function fnCommingSubjectList(subject) {
+		$.ajax({
+			// 요청
+			url: '${contextPath}/mypage/myCommingReserveList?page=' + page,
+			data: 'subject=' + subject,
+			type: 'get',
+			// 응답
+			dataType: 'json',
+			success: function(obj) {
+				$('#commingReservationsList').empty();
+				$('#commingTotalCount').text(obj.commingTotalCount);
+				if(obj.commingTotalCount == 0) {
+					var tr = $('<tr>')
+					.append($('<td colspan="5">').text('예약된 내역이 없습니다.'));
+					$(tr).appendTo('#commingReservationsList');
+				} 
+				$.each(obj.commingReservations, function(i, comming) {
+					var tr = $('<tr>')
+					.append($('<td>').text(comming.rn))
+					.append($('<td>').text(comming.classDate))
+					.append($('<td>').text(comming.classTime));
+					if(comming.reservationCode.startsWith('SWIM')) {
+						$(tr).append($('<td>').text('수영'))
+						.append($('<input type="hidden" name="remainTicketSubject" value="SWIM">'));
+					} else if(comming.reservationCode.startsWith('DANCE')) {
+						$(tr).append($('<td>').text('스포츠댄스'))
+						.append($('<input type="hidden" name="remainTicketSubject" value="DANCE">'));
+					} else if(comming.reservationCode.startsWith('SPINNING')) {
+						$(tr).append($('<td>').text('스피닝'))
+						.append($('<input type="hidden" name="remainTicketSubject" value="SPINNING">'));
+					} else if(comming.reservationCode.startsWith('PILATES')) {
+						$(tr).append($('<td>').text('필라테스'))
+						.append($('<input type="hidden" name="remainTicketSubject" value="PILATES">'));
+					}
+					$(tr).append($('<td>').text(fnGetTime(comming.reservationDate)));
+					if(comming.classDate == todayDate) {
+						$(tr).append($('<td>').text('취소불가'));
+					} else {
+						$(tr).append($('<td>').html('<input type="button" value="예약취소" class="btnReserveCancle" data-reservation_code="' + comming.reservationCode + '">'));
+					}
+					
+					$(tr).appendTo('#commingReservationsList');
+				})
+			}
+		})	// ajax
+	}
+	
+	// 지난 수업 종목별로 보여주기
+	function fnOverSubjectList(subject) {
+		$.ajax({
+			url: '${contextPath}/mypage/myOverReserveList?page=' + page,
+			data: 'subject=' + subject,
+			type: 'get',
+			dataType: 'json',
+			success: function(obj){
+				$('#overTotalCount').text(obj.overTotalCount);
+				fnPrintOverReservationList(obj);
+				fnPrintPaging(obj.p);
+			}
+		})	// ajax
+	}
+	
+	// 예약취소
+	function fnReserveCancle() {
+		$('body').on('click', '.btnReserveCancle', function() {
+			if(confirm('예약을 취소할까요 ?')) {
+				$.ajax({
+					// 요청
+					url: '${contextPath}/reserveCancle',
+					data: 'reservationCode=' + $(this).data('reservation_code') + '&memberId=${loginMember.memberId}&remainTicketSubject=' + $(this).parent().prev().prev().val(),
+					type: 'get',
+					// 응답
+					dataType: 'json',
+					success: function(obj){
+						if(obj.resState > 0 && obj.resRemain > 0) {
+							alert('예약이 취소되었습니다.');
+							$('.tab').addClass('not_clicked').removeClass('clicked');
+							fnCommingReserveList();
+							fnOverReserveList();
+						} else {
+							alert('예약취소에 실패했습니다.');
+						}
+					}
+				}) // ajax
+			}
+		}) // onClick
+	}
+	
+	// 페이징 링크 처리(page 전역변수 값을 링크의 data-page값으로 바꿈)
+	function fnOverPagingLink() {
+		$(document).on('click', '.enable_link', function(){
+			page = $(this).data('page');
+			if($('.tab').hasClass('clicked')==false) {
+				fnOverReserveList();
+			}
+		})
+	}
+	
+	// 종목 페이징 링크 처리(page 전역변수 값을 링크의 data-page값으로 바꿈)
+	function fnSubjectPagingLink(subject) {
+		$(document).on('click', '.enable_link', function(){
+			page = $(this).data('page');
+			if($('.tab').hasClass('clicked')) {
+				console.log(subject);
+				fnOverSubjectList(subject);
+			}
 		})
 	}
 	
@@ -249,39 +262,39 @@
 		
 		// ◀◀ : 이전 블록으로 이동
 		if(page <= p.pagePerBlock){
-			paging += '<div class="disable_link"><i class="fa-solid fa-caret-left"></i><i class="fa-solid fa-caret-left"></i></div>';
+			paging += '<div class="link disable_link"><i class="fa-solid fa-caret-left"></i><i class="fa-solid fa-caret-left"></i></div>';
 		} else {
-			paging += '<div class="enable_link" data-page="' + (p.beginPage - 1) + '"><i class=\"fa-solid fa-caret-left\"></i><i class=\"fa-solid fa-caret-left\"></i></div>';
+			paging += '<div class="link enable_link" data-page="' + (p.beginPage - 1) + '"><i class=\"fa-solid fa-caret-left\"></i><i class=\"fa-solid fa-caret-left\"></i></div>';
 		}
 		
 		// ◀  : 이전 페이지로 이동
 		if(page == 1){
-			paging += '<div class="disable_link"><i class="fa-solid fa-caret-left"></i></div>';
+			paging += '<div class="link disable_link"><i class="fa-solid fa-caret-left"></i></div>';
 		} else {
-			paging += '<div class="enable_link" data-page="' + (page - 1) + '"><i class=\"fa-solid fa-caret-left\"></i></div>';
+			paging += '<div class="link enable_link" data-page="' + (page - 1) + '"><i class=\"fa-solid fa-caret-left\"></i></div>';
 		}
 		
 		// 1 2 3 4 5 : 페이지 번호
 		for(let i = p.beginPage; i <= p.endPage; i++){
 			if(i == page){
-				paging += '<div class="disable_link nowUnlinkPage">' + i + '</div>';
+				paging += '<div class="link disable_link nowUnlinkPage">' + i + '</div>';
 			} else {
-				paging += '<div class="enable_link" data-page="' + i + '">' + i + '</div>';
+				paging += '<div class="link enable_link" data-page="' + i + '">' + i + '</div>';
 			}
 		}
 		
 		// ▶  : 다음 페이지로 이동
 		if(page == p.totalPage){
-			paging += '<div class="disable_link"><i class=\"fa-solid fa-caret-right\"></i></div>';
+			paging += '<div class="link disable_link"><i class=\"fa-solid fa-caret-right\"></i></div>';
 		} else {
-			paging += '<div class="enable_link" data-page="' + (page + 1) + '"><i class=\"fa-solid fa-caret-right\"></i></div>';
+			paging += '<div class="link enable_link" data-page="' + (page + 1) + '"><i class=\"fa-solid fa-caret-right\"></i></div>';
 		}
 		
 		// ▶▶ : 다음 블록으로 이동
 		if(p.endPage == p.totalPage){
-			paging += '<div class="disable_link"><i class=\"fa-solid fa-caret-right\"></i><i class=\"fa-solid fa-caret-right\"></i></div>';
+			paging += '<div class="link disable_link"><i class=\"fa-solid fa-caret-right\"></i><i class=\"fa-solid fa-caret-right\"></i></div>';
 		} else {
-			paging += '<div class="enable_link" data-page="' + (p.endPage + 1) + '"><i class=\"fa-solid fa-caret-right\"></i><i class=\"fa-solid fa-caret-right\"></i></div>';
+			paging += '<div class="link enable_link" data-page="' + (p.endPage + 1) + '"><i class=\"fa-solid fa-caret-right\"></i><i class=\"fa-solid fa-caret-right\"></i></div>';
 		}
 		
 		$('#paging').append(paging);
@@ -300,14 +313,19 @@
     .navItem {
     	text-align: center;
         background-color: white; 
-        padding: 15px;
         cursor: pointer;
         border-left: 2px solid  rgba(44, 62, 80, 0.65); 
         border-right: 2px solid  rgba(44, 62, 80, 0.65);
+        width: 100px;
+        height: 50px;
+        line-height: 50px;
     }
     .navItem a {
         text-decoration: none;
         color: rgb(70, 70, 70);
+        display: inline-block;
+        width: 100px;
+        height: 50px;
     }
     .nowPage {
         background-color: #2C3E50;
@@ -419,7 +437,7 @@
     }
     .tab {
     	display:inline-block;
-        width: 70px;
+        width: 100px;
    		height: 50px;
         border: 2px solid rgba(44, 62, 80, 0.65);
         border-bottom: none;
@@ -433,14 +451,14 @@
     .tab:hover a {
     	color: #F5F6F7;
     }
-    .subjectTab {
+    .tab a {
+    	display: inline-block;
     	width: 100%;
     	height: 100%;
         text-decoration: none;
         position: relative;
-        top: 18px;
-        padding: 5px;
 		margin: 0 auto;
+		line-height: 50px;
     }
     .subjectTab:hover {
     	cursor: pointer;
@@ -515,7 +533,7 @@
 				<tbody id="overReservations"></tbody>
 				<tfoot>	
 				<tr>
-					<td colspan="6">
+					<td colspan="5">
 						<div id="paging"></div>
 					</td>
 				</tr>
