@@ -385,7 +385,7 @@ public class MemberServiceImpl implements MemberService {
 		String clientId = "3e6d88b955a2408ebdcace4d52b2bf99";
 		String redirectURI = null;
 		try {
-			redirectURI = URLEncoder.encode("http://localhost:9090/gym/member/kakaoCallback", "UTF-8");
+			redirectURI = URLEncoder.encode("http://localhost:9090/gym/kakaoCallback", "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}	
@@ -411,7 +411,7 @@ public class MemberServiceImpl implements MemberService {
 	    String header = null;
 	    
 		try {
-			redirectURI = URLEncoder.encode("http://localhost:9090/gym/member/kakaoCallback", "UTF-8");
+			redirectURI = URLEncoder.encode("http://localhost:9090/gym/kakaoCallback", "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}	

@@ -279,326 +279,326 @@
 </script>
 <style>
 		
-      	.changeArea, .authAreaSMS, .changePw, #modal .titlePw h2 {
-			display: none;
-		}
+    .changeArea, .authAreaSMS, .changePw, #modal .titlePw h2 {
+		display: none;
+	}
 		
-		#modal.modal-overlay {
-		    width: 100%;
-		    height: 100%;
-		    position: absolute;
-		    left: 0;
-		    top: 0;
-		    display: flex;
-		    flex-direction: column;
-		    align-items: center;
-		    justify-content: center;
-		    background: rgba(255, 255, 255, 0.25);
-		    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-		    backdrop-filter: blur(1.5px);
-		    -webkit-backdrop-filter: blur(1.5px);
-		    border-radius: 10px;
-		    border: 1px solid rgba(255, 255, 255, 0.18);
-		    display:none;
-		    z-index: 2;
-		}
-	    #modal .modal-window {
-	        background: rgba( 69, 139, 197, 0.70 );
-	        box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
-	        backdrop-filter: blur( 13.5px );
-	        -webkit-backdrop-filter: blur( 13.5px );
-	        border-radius: 10px;
-	        border: 1px solid rgba( 255, 255, 255, 0.18 );
-	        width: 400px;
-	        height: 200px;
-	        position: relative;
-	        padding: 10px;
-	    }
-	    #modal .titleId, #modal .titlePw {
-	        padding-left: 10px;
-	        display: inline;
-	        text-shadow: 1px 1px 2px gray;
-	        color: white;
-	    }
-	    #modal .titleId h2, #modal .titlePw h2 {
-	        display: inline;
-	        font-size: 20px;
-	    }
-	    #modal .close-area {
-	        display: inline;
-	        float: right;
-	        padding-right: 10px;
-	        cursor: pointer;
-	        text-shadow: 1px 1px 2px gray;
-	        color: white;
-	    }
-	    
-	    #modal .int {
-	    	margin-top: 5px;
-	    	width: 200px;
-	   	 	height: 20px;
-	    }
-	    
-	    #modal .authArea, #modal .changeArea, #modal .authAreaSMS, #modal .changePw {
-	        margin-top: 20px;
-	        padding: 0px 10px;
-	        text-shadow: 1px 1px 2px gray;
-	        color: white;
-	    }
-	    #btnClose1, #btnFindId {
-	    	position: relative;
-	    	left: 250px;
-	    	bottom: 130px;
-	    	margin: 10px 0 0;
-	    	background-color: lightgrey;
-			width: 120px;
-			height: 40px;
-			color: grey;
-			border: none;
-			border-radius: 5px;
-	    }
-	    
-	    #btnClose2, #btnFindPw, #btnSignUp {
-	    	position: relative;
-	    	left: 250px;
-	    	bottom: 110px;
-	    	background-color: lightgrey;
-			width: 120px;
-			height: 40px;
-			color: grey;
-			border: none;
-			border-radius: 5px;
-	    }
-	    
-	    #findIdMsg {
-	    	font-size: 14px;
-	    }
-	    
-	    #btnClose3, #btnGetAuthCodeSMS, #btnVerifyAuthCodeSMS {
-	    	position: relative;
-	    	left: 250px;
-	    	bottom: 140px;
-	    	background-color: lightgrey;
-			width: 120px;
-			height: 40px;
-			color: grey;
-			border: none;
-			border-radius: 5px;
-	    }
-	    #btnClose4, #btnChangePw {
-	    	margin: 0 5px 0;
-	    	position: relative;
-	    	left: 115px;
-	    	bottom: -10px;
-	    	background-color: lightgrey;
-			width: 120px;
-			height: 40px;
-			color: grey;
-			border: none;
-			border-radius: 5px;
-	    }
-	    
-	    
-        html, body, button, dd, dl, dt, fieldset, form,
-        h1, h2, h3, h4, h5, h6, input, legend, 
-        li, ol, p, select, table, td, textarea, th, ul,
-        div, a, span, label {
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-        }
-        html {
-            font-size: 14px;
-            height: 100%;
-        }
-        body {
-            height: 100%;
-            color: #222;
-        }
-        a {
-            text-decoration: none;
-        }
-        input, button {
-            border: none;
-            outline: none;
-            cursor: pointer;
-        }
-        ul {
-            list-style-type: none;
-        }
-        .wrap {
-            height: 100%;
-            letter-spacing: -0.5px;
-        }
-        .header {
-            padding-bottom: 48px;
-        } 
-        .header .header_inner {
-            margin: 0 auto;
-            width: 743px;
-            text-align: center;
-            position: relative;
-        }
-        .header_inner .logo {
-            display: inline-block;
-            width: 300px;
-            height: 150px;
-            margin-top: 108px;
-            background-image: url(../resources/images/linkedin_banner_image_navy.png);
-            background-size: 300px 150px;
-            background-repeat: no-repeat;
-        }
-        .blind {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-        }
-        .login_wrap {
-        	position: relative;
-            width: 460px;
-            margin: 0 auto;
-        }
-        .panel_wrap {
-            margin-top: -8px;
-            z-index: 1; 
-            position: relative;
-        }
-        .panel_item {
-            border: 1px solid #c6c6c6;
-            border-radius: 6px;
-            background-color: #fff;
-        }
-        .panel_inner {
-            padding: 20px 28px;
-        }
-        .id_pw_wrap .input_row {
-            display: table;
-            table-layout: fixed;
-            width: 100%;
-            padding: 14px 17px 13px;
-            border: 1px solid #dadada;
-            position: relative;
-        }
-        .id_pw_wrap .input_row:first-of-type {
-            border-radius: 6px 6px 0 0;
-            border-bottom: 0;
-        }
-        .id_pw_wrap .input_row:last-of-type {
-            border-radius: 0 0 6px 6px;
-        }
-        .id_pw_wrap .input_row .icon_cell {
-            display: table-cell;
-            width: 24px;
-            vertical-align: middle;
-        }
-        .id_pw_wrap .input_row .icon_cell .icon_id,
-        .id_pw_wrap .input_row .icon_cell .icon_pw {
-            width: 16px;
-            height: 16px;
-            background-image: url(https://ssl.pstatic.net/static/nid/login/m_sp_01_login_008d5216.png);
-            background-size: 266px 225px;
-            position: absolute;
-            top: 50%;
-            left: 17px;
-            margin-top: -8px;
-        }
-        .id_pw_wrap .input_row .icon_cell .icon_id {
-            background-position: -93px -203px;
-        }
-        .id_pw_wrap .input_row .icon_cell .icon_pw {
-            background-position: -129px -203px;
-        }
-        .id_pw_wrap .input_row .input_text {
-            display: table-cell;
-            padding-right: 30px;
-            width: 100%;
-            font-size: 16px;
-            letter-spacing: -0.5px;
-            color: #222;
-            line-height: 19px;
-            z-index: 1;  
-            position: relative;
-        }
-       	.blindCheck {
-			display: none;
-		}
-        .id_remember_wrap {
-            margin-top: 10px;
-            padding-right: 90px;
-            position: relative;
-        }
-        .remember_text {
-        	font-size: 14px;
-        	color: #777;
- 			padding-left: 30px;
- 			padding-bottom: 5px;
-			background-image: url(../resources/images/uncheck.png);
-			background-size: 16px 16px;
-			background-repeat: no-repeat;
-        }
-        .remember_check {
-            background-image: url(../resources/images/check.png);
-        }
-        .btn_login_wrap {
-            margin-top: 38px;
-        }
-        .btn_login {
-            display: block;
-            width: 100%;
-            padding: 13px 0;
-            border: 1px solid #2C3E50;
-            border-radius: 6px;
-            background-color: #2C3E50;
-        }
-        .btn_login .btn_text {
-            font-size: 20px;
-            font-weight: 700;
-            color: #F5F6F7;
-            line-height: 24px;
-        }
-        .api_login {
-            padding: 20px 0 35px;
-            position: relative;
-            display: inline-block;
-            line-height: 17px;
-        }
-        .find_wrap {
-            padding: 20px 0 35px;
-            text-align: center;
-        }
-        .find_wrap li {
-            display: inline-block;
-            position: relative;
-        }
-        .find_wrap .find_text {
-            display: inline-block;
-            line-height: 17px;
-            color: #888;
-        }
-        .find_wrap li+li {
-            position: relative;
-            padding-left: 13px;
-        }
-        .find_wrap li+li::before {
-            content: '';
-            width: 1px;
-            height: 12px;
-            background-color: #dadada;
-            border-radius: 0.5px;
-            position: absolute;
-            top: 3px;
-            left: 3px;
-        }
-		.dont {
-			color: red;
-		}
-		.ok {
-			color: limegreen;
-		}
-	 	#findId:hover, #findPw:hover {
-			cursor: pointer;
-		}
+	#modal.modal-overlay {
+	    width: 100%;
+	    height: 100%;
+	    position: absolute;
+	    left: 0;
+	    top: 0;
+	    display: flex;
+	    flex-direction: column;
+	    align-items: center;
+	    justify-content: center;
+	    background: rgba(255, 255, 255, 0.25);
+	    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+	    backdrop-filter: blur(1.5px);
+	    -webkit-backdrop-filter: blur(1.5px);
+	    border-radius: 10px;
+	    border: 1px solid rgba(255, 255, 255, 0.18);
+	    display:none;
+	    z-index: 2;
+	}
+    #modal .modal-window {
+        background: rgba( 69, 139, 197, 0.70 );
+        box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+        backdrop-filter: blur( 13.5px );
+        -webkit-backdrop-filter: blur( 13.5px );
+        border-radius: 10px;
+        border: 1px solid rgba( 255, 255, 255, 0.18 );
+        width: 400px;
+        height: 200px;
+        position: relative;
+        padding: 10px;
+    }
+    #modal .titleId, #modal .titlePw {
+        padding-left: 10px;
+        display: inline;
+        text-shadow: 1px 1px 2px gray;
+        color: white;
+    }
+    #modal .titleId h2, #modal .titlePw h2 {
+        display: inline;
+        font-size: 20px;
+    }
+    #modal .close-area {
+        display: inline;
+        float: right;
+        padding-right: 10px;
+        cursor: pointer;
+        text-shadow: 1px 1px 2px gray;
+        color: white;
+    }
+    
+    #modal .int {
+    	margin-top: 5px;
+    	width: 200px;
+   	 	height: 20px;
+    }
+    
+    #modal .authArea, #modal .changeArea, #modal .authAreaSMS, #modal .changePw {
+        margin-top: 20px;
+        padding: 0px 10px;
+        text-shadow: 1px 1px 2px gray;
+        color: white;
+    }
+    #btnClose1, #btnFindId {
+    	position: relative;
+    	left: 250px;
+    	bottom: 130px;
+    	margin: 10px 0 0;
+    	background-color: lightgrey;
+		width: 120px;
+		height: 40px;
+		color: grey;
+		border: none;
+		border-radius: 5px;
+    }
+    
+    #btnClose2, #btnFindPw, #btnSignUp {
+    	position: relative;
+    	left: 250px;
+    	bottom: 110px;
+    	background-color: lightgrey;
+		width: 120px;
+		height: 40px;
+		color: grey;
+		border: none;
+		border-radius: 5px;
+    }
+    
+    #findIdMsg {
+    	font-size: 14px;
+    }
+    
+    #btnClose3, #btnGetAuthCodeSMS, #btnVerifyAuthCodeSMS {
+    	position: relative;
+    	left: 250px;
+    	bottom: 140px;
+    	background-color: lightgrey;
+		width: 120px;
+		height: 40px;
+		color: grey;
+		border: none;
+		border-radius: 5px;
+    }
+    #btnClose4, #btnChangePw {
+    	margin: 0 5px 0;
+    	position: relative;
+    	left: 115px;
+    	bottom: -10px;
+    	background-color: lightgrey;
+		width: 120px;
+		height: 40px;
+		color: grey;
+		border: none;
+		border-radius: 5px;
+    }
+    
+    
+       html, body, button, dd, dl, dt, fieldset, form,
+       h1, h2, h3, h4, h5, h6, input, legend, 
+       li, ol, p, select, table, td, textarea, th, ul,
+       div, a, span, label {
+           padding: 0;
+           margin: 0;
+           box-sizing: border-box;
+       }
+       html {
+           font-size: 14px;
+           height: 100%;
+       }
+       body {
+           height: 100%;
+           color: #222;
+       }
+       a {
+           text-decoration: none;
+       }
+       input, button {
+           border: none;
+           outline: none;
+           cursor: pointer;
+       }
+       ul {
+           list-style-type: none;
+       }
+       .wrap {
+           height: 100%;
+           letter-spacing: -0.5px;
+       }
+       .header {
+           padding-bottom: 48px;
+       } 
+       .header .header_inner {
+           margin: 0 auto;
+           width: 743px;
+           text-align: center;
+           position: relative;
+       }
+       .header_inner .logo {
+           display: inline-block;
+           width: 300px;
+           height: 150px;
+           margin-top: 108px;
+           background-image: url(../resources/images/linkedin_banner_image_navy.png);
+           background-size: 300px 150px;
+           background-repeat: no-repeat;
+       }
+       .blind {
+           position: absolute;
+           width: 1px;
+           height: 1px;
+           overflow: hidden;
+       }
+       .login_wrap {
+       	position: relative;
+           width: 460px;
+           margin: 0 auto;
+       }
+       .panel_wrap {
+           margin-top: -8px;
+           z-index: 1; 
+           position: relative;
+       }
+       .panel_item {
+           border: 1px solid #c6c6c6;
+           border-radius: 6px;
+           background-color: #fff;
+       }
+       .panel_inner {
+           padding: 20px 28px;
+       }
+       .id_pw_wrap .input_row {
+           display: table;
+           table-layout: fixed;
+           width: 100%;
+           padding: 14px 17px 13px;
+           border: 1px solid #dadada;
+           position: relative;
+       }
+       .id_pw_wrap .input_row:first-of-type {
+           border-radius: 6px 6px 0 0;
+           border-bottom: 0;
+       }
+       .id_pw_wrap .input_row:last-of-type {
+           border-radius: 0 0 6px 6px;
+       }
+       .id_pw_wrap .input_row .icon_cell {
+           display: table-cell;
+           width: 24px;
+           vertical-align: middle;
+       }
+       .id_pw_wrap .input_row .icon_cell .icon_id,
+       .id_pw_wrap .input_row .icon_cell .icon_pw {
+           width: 16px;
+           height: 16px;
+           background-image: url(https://ssl.pstatic.net/static/nid/login/m_sp_01_login_008d5216.png);
+           background-size: 266px 225px;
+           position: absolute;
+           top: 50%;
+           left: 17px;
+           margin-top: -8px;
+       }
+       .id_pw_wrap .input_row .icon_cell .icon_id {
+           background-position: -93px -203px;
+       }
+       .id_pw_wrap .input_row .icon_cell .icon_pw {
+           background-position: -129px -203px;
+       }
+       .id_pw_wrap .input_row .input_text {
+           display: table-cell;
+           padding-right: 30px;
+           width: 100%;
+           font-size: 16px;
+           letter-spacing: -0.5px;
+           color: #222;
+           line-height: 19px;
+           z-index: 1;  
+           position: relative;
+       }
+      	.blindCheck {
+		display: none;
+	}
+       .id_remember_wrap {
+           margin-top: 10px;
+           padding-right: 90px;
+           position: relative;
+       }
+       .remember_text {
+       	font-size: 14px;
+       	color: #777;
+			padding-left: 30px;
+			padding-bottom: 5px;
+		background-image: url(../resources/images/uncheck.png);
+		background-size: 16px 16px;
+		background-repeat: no-repeat;
+       }
+       .remember_check {
+           background-image: url(../resources/images/check.png);
+       }
+       .btn_login_wrap {
+           margin-top: 38px;
+       }
+       .btn_login {
+           display: block;
+           width: 100%;
+           padding: 13px 0;
+           border: 1px solid #2C3E50;
+           border-radius: 6px;
+           background-color: #2C3E50;
+       }
+       .btn_login .btn_text {
+           font-size: 20px;
+           font-weight: 700;
+           color: #F5F6F7;
+           line-height: 24px;
+       }
+       .api_login {
+           padding: 20px 0 35px;
+           position: relative;
+           display: inline-block;
+           line-height: 17px;
+       }
+       .find_wrap {
+           padding: 20px 0 35px;
+           text-align: center;
+       }
+       .find_wrap li {
+           display: inline-block;
+           position: relative;
+       }
+       .find_wrap .find_text {
+           display: inline-block;
+           line-height: 17px;
+           color: #888;
+       }
+       .find_wrap li+li {
+           position: relative;
+           padding-left: 13px;
+       }
+       .find_wrap li+li::before {
+           content: '';
+           width: 1px;
+           height: 12px;
+           background-color: #dadada;
+           border-radius: 0.5px;
+           position: absolute;
+           top: 3px;
+           left: 3px;
+       }
+	.dont {
+		color: red;
+	}
+	.ok {
+		color: limegreen;
+	}
+ 	#findId:hover, #findPw:hover {
+		cursor: pointer;
+	}
 </style>
 </head>
 <body>
