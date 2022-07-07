@@ -11,30 +11,26 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <style>
 
-	
-	/* 네비게이션 글작성, 표, 검색 감싸는 영역 */
-	#mainArea {
+	section {
 		display: flex;
 	}
 	
-	/* 글작성, 표, 검색 감싸는 영역 */
-	article {
-		text-align: center;
+	#wrapper {
 		background-color : white;
-  		width : 50%;
-  		height: 650px;
+  		width : 65%;
+  		margin: 50px auto;
   		border-radius : 50px;
+  		padding: 30px;
+		text-align: left;
   		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
   		overflow: hidden;
-  		margin: 80px 0 0 80px;
 	}
-	
 	/* 표 */
 	#list {
 		border-collapse: collapse;
-		width : 800px;
-		height : 550px;
-		margin :90px auto;
+		width: 90%;		
+		text-align : center;
+		margin : 0 auto;
 	}
 	#list td {
 		vertical-align: middle;
@@ -52,6 +48,10 @@
 		height: 80px;
 		vertical-align: bottom;
 	}
+	table tbody tr{
+		border-bottom : 1px solid lightgrey;
+		line-height: 50px;
+	}		
 	
 	/* 검색 */
 	#searchForm {
@@ -117,6 +117,7 @@
 		cursor: pointer;
 		border-left: 2px solid  rgba(44, 62, 80, 0.65); 
         border-right: 2px solid  rgba(44, 62, 80, 0.65);
+        text-align: center;
 	}
     .myPageNav .navItem:first-of-type { 
          border-radius : 10px 10px 0 0; 
@@ -143,10 +144,10 @@
 		color: #F5F6F7;
 	}
 	#listNav {
-		text-align: center;
-		display: flex;
-		margin-top: 280px;
-		margin-left: 300px;
+	    display: flex;
+		margin-right: 20px;
+		margin-left: 80px;
+		margin-top: 50px;
 	}
 	
 	/* 글 작성 버튼 */
@@ -161,7 +162,7 @@
 		border-radius : 15px;
 		float: left;
 		margin-top: 35px;
-		margin-left: 70px;
+		margin-left: 95px;
 	}
 	#btnAdd:hover {
 		background-color: #2C3E50;
@@ -175,8 +176,9 @@
 	<header>
 		<jsp:include page="../layout/header.jsp"></jsp:include>
 	</header>
-	
-	<div id="mainArea">
+
+	<section>
+		
 		<nav id="listNav">
 			<ul class="myPageNav">
 				<li class="navItem nowPage">공지사항</li>
@@ -185,7 +187,9 @@
 			</ul>	
 		</nav>
 		
-		<article>
+			
+			
+		<div id="wrapper">			
 			
 			<c:if test="${loginMember.memberId eq 'admin'}">
 				<input type="button" value="글 작성" id="btnAdd" onclick="location.href='${contextPath}/board/noticeAddPage'">

@@ -50,20 +50,14 @@
 	img {
 		width: 500px;
 	}
-	* {
-		box-sizing: border-box;
-	}
 	article {
-		text-align: center;
 		background-color : white;
-		width: 50%;
+		width: 60%;
+  		margin: 50px auto;		
   		border-radius : 50px;
-  		position : absolute;
-  		top : 200px;
-  		left: 50%;
-  		transform: translate(-50%, 0%);
+  		padding: 30px;
+		text-align: center;
   		box-shadow: 0 5px 18px -7px rgba(0,0,0,1);
-  		padding: 0 0 30px 0; 
 	}	
 	.pageName {
 		margin: 30px auto;
@@ -127,19 +121,19 @@
 			공지사항
 		</div>
 		<div id="divNo">		
-			번호 ${notice.noticeNo}
+			번호 &nbsp;&nbsp;&nbsp; : ${notice.noticeNo}
 		</div>
 		<div id="divTitle">
-			제목 ${notice.noticeTitle}
+			제목 &nbsp;&nbsp;&nbsp; : ${notice.noticeTitle}
 		</div>
 		<div id="divHit">
-			조회수 ${notice.noticeHit}
+			조회수 : ${notice.noticeHit}
 		</div>
 		<div id="divCreated">
-			작성일 ${notice.noticeCreated}
+			작성일 : ${notice.noticeCreated}
 		</div>
 		<div id="divModified">
-			수정일 ${notice.noticeModified}
+			수정일 : ${notice.noticeModified}
 		</div>
 		<div id="divContent">
 			내용<br><textarea rows="30" cols="80" id="content" class="content" readonly>${notice.noticeContent}</textarea><br>

@@ -129,9 +129,9 @@
 </head>
 <body>
 	
-<%@ include file="questionList.jsp" %>
+	<%@ include file="questionList.jsp" %>
 
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
  				<div id="searchForm">
 					<form id="f" method="get">
 						<select name="column" id="column">
@@ -154,8 +154,8 @@
 					</form>
 				</div>
 			</table>
-		</article>
-	</div>
+		</div>
+	</section>
 
 	<footer>
 		<jsp:include page="../layout/footer.jsp"></jsp:include>
