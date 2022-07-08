@@ -120,7 +120,7 @@
 				<div id="sub">다시 결제하시려면 아래버튼을 클릭해주세요</div>
 			</div>
 			<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-			<input type="button" value="다시 예약하기" id=""  onclick="location.href='${contextPath}/pay/paySwim'">
+			<input type="button" value="다시 결제하기" id=""  onclick="location.href='${contextPath}/pay/paySwim'">
 		</form>
 	</c:if>
 

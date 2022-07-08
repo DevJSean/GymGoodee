@@ -64,7 +64,7 @@ public class AlertRemainSevenDays {
 				
 			    HashMap<String, String> params = new HashMap<>();
 			    params.put("to", memberPhone);
-				params.put("from", "01056466373");
+				params.put("from", "0221085900");
 				params.put("type", "SMS");
 				params.put("text", "[gym] 수강권 만료일이 7일 남았습니다.");
 				params.put("app_version", "test app 1.2");

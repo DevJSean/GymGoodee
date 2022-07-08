@@ -22,7 +22,7 @@ pageEncoding="UTF-8"%>
 		$("#orderFormSubmit").on("click", function (event) {
 			var fm = $("#orderForm")[0];
 			if ($('#memberPhone').val() == '카카오가입') {
-				alert('마이페이지에서 비밀번호를 수정해 주세요.')
+				alert('마이페이지에서 전화번호를 수정해 주세요.')
 				location.href="${contextPath}/mypage/myInfo"
 				return false;
 			}
