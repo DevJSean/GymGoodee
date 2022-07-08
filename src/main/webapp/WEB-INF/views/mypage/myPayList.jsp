@@ -170,8 +170,6 @@
 				<tbody id="endDate"></tbody>
 			</table>
 			<table id="payListTable">
-				<%-- <caption id="endDate">
-				</caption> --%>
 				<thead>
 					<tr>
 						<td>번호</td>

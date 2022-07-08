@@ -15,14 +15,28 @@
 <link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/reset.css">
 <script>
 	$(function() {
+		
+		// 비밀번호 변경일이 90일 이상인지 조회
 		$.ajax({
 			url: '${contextPath}/mypage/pwModifiedCheck',
 			dataType: 'json',
 			type: 'get',
 			success: function(obj) {
 				if(obj.postDays >=  3) {
-					$('#modal.modal-overlay').css('display', 'flex');
+					if($.cookie('closeOneDay') == undefined) {
+						$('#modal.modal-overlay').css('display', 'flex');
+					}
 				}
+			}
+		})
+		
+		// 다시 보지 않기 버튼 클릭
+		$('#btnClose').on('click', function() {
+			// 무조건 모달창 닫기			
+			$('#modal.modal-overlay').css('display', 'none');
+			// 오늘 하루 보지 않기 체크가 되어있을 시
+			if($('#closeOneDay').is(':checked')) {
+				$.cookie('closeOneDay', 'close', { expires: 1, path: '/' });
 			}
 		})
 		
@@ -37,9 +51,6 @@
 		setInterval(nextSlide, 5000); //5초마다 다음 슬라이드로 넘어감
 	})
 	
-	function fnModalClose() {
-		$('#modal.modal-overlay').css('display', 'none');
-	}
 	
 	// 시계 달기
 	function fnClock() {
@@ -128,6 +139,7 @@
 					if(obj.response.header.resultCode == "01") {
 						let i = '<i class="wi wi-refresh"></i>';
 						$('#todayWeather').append($(i));
+						$('#nowTemperature').append($(i));
 					}
 					let item = obj.response.body.items.item;
 					if(item[18].fcstValue == 1 && item[6].fcstValue == 0) {
@@ -383,7 +395,7 @@
         padding: 10px;
     }
     #modal .title {
-        padding-left: 10px;
+        padding-left: 20px;
         display: inline;
         text-shadow: 1px 1px 2px gray;
         color: rgb(70, 70, 70);
@@ -391,19 +403,9 @@
     #modal .title h2 {
         display: inline;
     }
-    #modal .close-area {
-        display: inline;
-        float: right;
-        padding-right: 10px;
-        cursor: pointer;
-        text-shadow: 1px 1px 2px gray;
-        color: rgb(70, 70, 70);
-    }
-    
     #modal .content {
         margin-top: 20px;
-        padding: 0px 10px;
-        text-shadow: 1px 1px 2px gray;
+        padding: 0px 20px;
         color: rgb(70, 70, 70);
     }
     #btnClose, #btnChangePw {
@@ -415,6 +417,7 @@
 		height: 40px;
 		border: none;
 		border-radius: 5px;
+		font-size: 16px;
     }
     #btnClose:hover, #btnChangePw:hover {
     	background-color: #2C3E50; 
@@ -424,20 +427,13 @@
     }
     #cookie {
     	text-align: center;
-	}	   
-    #cookie a {
-    	text-decoration: none;
     	position: relative;
     	color: rgb(70, 70, 70);
     	bottom: -50px;
-    }
-    #cookie a:hover {
-    	color: #F5F6F7;
-    	transition: ease 1s;
-    }
+	}	   
 
 	/* 날씨 CSS */
-   /* Slideshow container */
+    /* Slideshow container */
 	.slideshow-container {
 		max-width: 50%;
 		position: relative;
@@ -445,7 +441,6 @@
 		left : 30px;
 		height: 143.33px;
  		margin: 30px auto 70px auto;
- 		z-index: -1;
 	}
 	.mySlideDiv {
 		font-size: 50px;	
@@ -583,6 +578,10 @@
 		<jsp:include page="./layout/header.jsp"></jsp:include>
 	</header>
 	
+	<!-- jquery cookie -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" integrity="sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	
+	
 	<!-- 날씨 -->
 	<div class="slideshow-container weather">
 	     <div class="mySlideDiv fade active" id="todayWeather">
@@ -628,10 +627,12 @@
                 <p>비밀번호를 변경하신지 90일이 경과하였습니다.</p>
                 <p>안전을 위해 비밀번호를 변경해주세요.</p>
                 
-                <input type="button" value="다음에 변경하기" id="btnClose" onclick="fnModalClose()">
+                <input type="button" value="다음에 변경하기" id="btnClose">
                 <input type="button" value="비밀번호 변경" id="btnChangePw" onClick="location.href='${contextPath}/mypage/changePwPage'">
                 <div id="cookie">
-                	<a href="">오늘 하루 보지 않기</a>
+                	<label for="closeOneDay">
+	                	<input type="checkbox" id="closeOneDay">오늘 하루 보지 않기
+                	</label>
                 </div>
             </div>
         </div>

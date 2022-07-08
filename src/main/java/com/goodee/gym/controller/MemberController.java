@@ -86,7 +86,7 @@ public class MemberController {
 		
 	}
 	
-	@GetMapping("/member/naverCallback")
+	@GetMapping("/naverCallback")
 	public String naverCallback(HttpServletRequest request, HttpServletResponse response) {
 		memberService.naverCallback(request, response);
 		return "index";

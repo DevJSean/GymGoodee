@@ -56,6 +56,7 @@
 	}
 	.menu_text {
 	    color: #888;
+	    text-decoration: none;
 	}
 	.copyright_row {
    		display: flex;
@@ -73,6 +74,7 @@
     .copyright_text {
         color: #888;
         font-size: 12px;
+        text-decoration: none;
     }
     .info_line .map {
     	display: inline-block;
