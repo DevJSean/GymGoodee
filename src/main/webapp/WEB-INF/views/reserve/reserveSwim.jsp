@@ -464,7 +464,7 @@
 		color: #e62578;
 	}
 	
-	#btnPaySwim, #btnAddClass{
+	#btnPayDance, #btnAddClass, #btnLogin{
 		cursor: pointer;
 	}
 

@@ -177,7 +177,7 @@ public class ReserveServiceImpl implements ReserveService {
 		String reservationCode = "";
 		if(insertRes == 1) {
 			reserveSeq = reserveMapper.selectReservationSeq();
-			reservationCode += subject + String.valueOf(insertRes);
+			reservationCode += subject + String.valueOf(reserveSeq);
 		}
 		else {
 			result.put("state", 601);		// 중복되는 강좌 예약하려고 시도
