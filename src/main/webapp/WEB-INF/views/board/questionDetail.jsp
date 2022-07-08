@@ -72,6 +72,11 @@
 	// 답변 등록
 	function fnAddAnswer() {
 		$('#btnAddAnswer').on('click', function(){
+			if( $('#answerContent').val().charAt(0) == '?'){
+				alert('첫 글자는 ?로 시작할 수 없습니다.');
+				event.preventDefault();
+				return false;
+			}
 			fnRemoveAnswer();
 			$.ajax({
 				url: '${contextPath}/board/answerAdd',

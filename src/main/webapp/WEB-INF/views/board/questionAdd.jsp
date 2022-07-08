@@ -65,7 +65,6 @@
 								processData: false,
 								dataType: 'json',
 								success: function(obj){
-									console.log(obj.src);
 									$('#content').summernote('insertImage', obj.src);
 								}
 							})
