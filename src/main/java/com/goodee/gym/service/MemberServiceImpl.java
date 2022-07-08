@@ -469,7 +469,7 @@ public class MemberServiceImpl implements MemberService {
 			    	response.setContentType("text/html");
 			    	PrintWriter out = response.getWriter();
 		    		out.println("<script>");
-		    		out.println("alert('동의해!')");
+		    		out.println("alert('모든 약관에 동의해주세요.')");
 					out.println("location.href='" + apiURL3 + "'");
 		    		out.println("</script>");
 		    		out.close();
@@ -520,7 +520,28 @@ public class MemberServiceImpl implements MemberService {
 			    } catch (Exception e) {
 			    	e.printStackTrace();
 			    }
-		  } 
+		  } else {	// 방금 내가 추가!!!!!!!!!!!!!!!!!!!!!!!!!
+			  
+			  String logout_redirect_uri = "http://localhost:9090/gym";
+			    
+			  String logoutURL;
+			  logoutURL = "https://kauth.kakao.com/oauth/logout?";
+			  logoutURL += "client_id=" + clientId;
+			  logoutURL += "&logout_redirect_uri=" + logout_redirect_uri;
+			    
+			  try {
+			    	response.setContentType("text/html");
+			    	PrintWriter out = response.getWriter();
+		    		out.println("<script>");
+		    		out.println("alert('동일한 이메일로 가입된 계정이 있습니다. \\n로그아웃 후 다른 계정으로 로그인해주세요.')");
+					out.println("location.href='" + logoutURL + "'");
+		    		out.println("</script>");
+		    		out.close();
+			    	  
+			    } catch (Exception e) {
+			    	e.printStackTrace();
+			    }
+		  }
 		  
 		  
 		  MemberDTO loginMember = memberMapper.selectMemberById(memberId);
