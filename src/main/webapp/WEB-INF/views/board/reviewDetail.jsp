@@ -137,8 +137,8 @@
 					let tr2 = '<tr class="reply_form blind"><td colspan="4">';
 					if('${loginMember.memberId}') {
 						tr2 += '<form>';
-						tr2 += '<input type="text" name="writer" value="${loginMember.memberId}" readonly>';
-						tr2 += '<input type="text" name="content" class="replyContent" placeholder="내용" size="100">';
+						tr2 += '<input type="text" name="writer" value="${loginMember.memberId}" readonly>&nbsp;&nbsp&nbsp;';
+						tr2 += '<input type="text" name="content" class="replyContent" placeholder="내용" size="100">&nbsp;&nbsp&nbsp;';
 						tr2 += '<input type="button" value="작성" class="btnReplySave">';
 						<!-- 누른 댓글의 depth, GroupNo, GroupOrd -->
 						tr2 += '<input type="hidden" name="depth" value="' + reply.reviewDepth + '">';
@@ -358,20 +358,26 @@
 		border-bottom: 0;
 		text-align: center;
 	}
-	table td:nth-of-type(1) {
-		width: 13%;
-	}	
-	table td:nth-of-type(2) {
-		text-align: left;
-		width: 50%;
-	}
-	table td:nth-of-type(3) {
-		width: 1%;
-	}	
-	table td:nth-of-type(4) {
-		width: 25%;
-		font-size: 12px;
-	}
+   table td:nth-of-type(1) {
+      width: 10%;
+   }   
+   table td:nth-of-type(2) {
+      text-align: left;
+      width: 50%;
+   }
+    table td:nth-of-type(3) {
+      width: 0.5%;
+   }
+   table td:nth-of-type(4) {
+      width: 15%;
+      font-size: 10px;
+   }   
+   table td:nth-of-type(5) {
+      width: 3%;
+   }   
+    table td input:nth-of-type(2) {
+      width: 50%;
+   }
 		
 </style>
 </head>

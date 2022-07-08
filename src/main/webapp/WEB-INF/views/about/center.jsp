@@ -149,7 +149,7 @@
 	<form id="centerForm">
 		<div id="titleName">| 센터소개</div>
 		<div id="box">
-			<img src="../resources/images/picture.png" >
+			<img src="../resources/images/picture.jpg" >
 			<div class="boxTitle">저희 구디짐에 오신 것을<br>환영합니다!</div>
 			<div class="boxContent">
 				우리 센터는 시민의 생활체육과 건강증진을 위하여 수영장, 필라테스, 스피닝, 스포츠댄스
