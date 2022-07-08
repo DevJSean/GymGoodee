@@ -23,18 +23,20 @@
 		fnReserveCancle();
 		fnGetTime();
 		$('body').on('click', '.subjectTab', function() {
-			//$('.tab').addClass('not_clicked').removeClass('clicked');
-			//$(this).parent().addClass('clicked').removeClass('not_clicked');
-			$('.tab').removeClass('clicked');
-			$('.tab').removeClass('not_clicked');
-			$(this).parent().addClass('clicked');
+			// 선택된 종목에만 눌림 표시 주기
+			$('.tab').addClass('not_clicked').removeClass('clicked');
+			$(this).parent().addClass('clicked').removeClass('not_clicked');
+			// 기존 종목 정보 삭제
+			$('.clicked').removeData('subject');
+			// 선택된 종목 정보만 넘겨주기
+			$('.clicked').data('subject', $(this).data('subject'));
+			// 선택된 종목에 대한 예약 리스트 조회
 			page = 1;
 			fnCommingSubjectList($(this).data('subject'));
 			fnOverSubjectList($(this).data('subject'));
-			fnSubjectPagingLink($(this).data('subject'));
+			fnSubjectPagingLink($('.clicked').data('subject'));
 		})
 	})
-	
 	
 	// 오늘 날짜 추출
 	var now = Date.now();
@@ -247,7 +249,6 @@
 		$(document).on('click', '.enable_link', function(){
 			page = $(this).data('page');
 			if($('.tab').hasClass('clicked')) {
-				console.log(subject);
 				fnOverSubjectList(subject);
 			}
 		})
@@ -403,9 +404,10 @@
     }
     table caption {
 	  margin: 0 auto 10px auto;
-   	  text-align: center;
+   	  text-align: right;
     }
     td{
+    	height: 22px;
         padding: 5px;
         text-align: center;
     }
@@ -415,7 +417,7 @@
         border: 1px solid lightgrey;
         border-radius: 3px;
         cursor: pointer;
-        margin: 2px;
+        padding: 4px;
     }
     .btnReserveCancle:hover{
         background-color: #2C3E50; 

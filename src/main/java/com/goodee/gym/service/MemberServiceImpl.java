@@ -255,7 +255,7 @@ public class MemberServiceImpl implements MemberService {
 		String clientId = "XYULZHj0e4wadrMeNhvI";
 		String redirectURI = null;
 		try {
-			redirectURI = URLEncoder.encode("http://localhost:9090/gym/member/naverCallback", "UTF-8");
+			redirectURI = URLEncoder.encode("http://localhost:9090/gym/naverCallback", "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}	
@@ -281,7 +281,7 @@ public class MemberServiceImpl implements MemberService {
 	    String redirectURI = null;
 	    
 		try {
-			redirectURI = URLEncoder.encode("http://localhost:9090/gym/member/naverCallback", "UTF-8");
+			redirectURI = URLEncoder.encode("http://localhost:9090/gym/naverCallback", "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}	    
